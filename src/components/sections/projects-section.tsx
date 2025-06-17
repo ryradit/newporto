@@ -8,8 +8,8 @@ import { Button } from "../ui/button";
 
 const projects = [
   {
-    title: "Palm Tree Detection",
-    description: "Developed an AI Computer Vision model for enhancing and optimizing the harvest route of Palm Oil and Monitoring Tree Health.",
+    title: "Palm Tree Detection @ PT. Digital SawitPRO",
+    description: "Role: AI & Algorithm Engineer. (Jan 2025 – Feb 2025) - Jakarta, Indonesia\nDeveloped an AI- Computer Vision model for enhancing and optimizing the harvest route of Palm Oil and Monitoring Tree Health.",
     imageUrl: "/images/sawitpro.jpg",
     imageHint: "palm tree computer vision",
     tags: ["Computer Vision", "AI", "Algorithm Development", "Python", "Route Optimization", "Tree Health"],
@@ -27,12 +27,21 @@ const projects = [
   },
   {
     title: "Sports Booking Apps Startup",
-    description: "Developed an Android app to connect users with shared hobbies, featuring user profiles, event scheduling, and real-time notifications.",
+    description: "Role: Android Developer.\nDeveloped an Android app to connect users with shared hobbies, featuring user profiles, event scheduling, and real-time notifications.",
     imageUrl: "/images/sweat.png",
     imageHint: "mobile app interface",
     tags: ["Android Development", "Mobile App", "Java/Kotlin", "Firebase", "UI/UX"],
     liveLink: "#",
     codeLink: "#",
+  },
+  {
+    title: "AI-Powered Barbershop Website",
+    description: "Developed an AI-enhanced website for 'King Barbershop', featuring intelligent functionalities. View the live site or browse the code on GitHub.",
+    imageUrl: "/images/kingbarber.png",
+    imageHint: "barbershop website",
+    tags: ["AI", "Web Development", "Next.js", "React", "Vercel", "JavaScript", "UI/UX"],
+    liveLink: "https://king-barbershop.vercel.app/",
+    codeLink: "https://github.com/ryradit/King-Barbershop",
   },
 ];
 
@@ -72,10 +81,18 @@ export function ProjectsSection() {
               <CardFooter className="mt-auto pt-0">
                 <div className="flex space-x-2 w-full">
                    <Button variant="outline" size="sm" asChild className="flex-1">
-                      <a href={project.liveLink} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                        <ExternalLink className="mr-2 h-4 w-4" /> View
+                      <a href={project.liveLink !== "#" ? project.liveLink : project.codeLink} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                        <ExternalLink className="mr-2 h-4 w-4" /> View Project
                       </a>
                     </Button>
+                    {project.liveLink !== "#" && project.codeLink !== "#" && project.liveLink !== project.codeLink && (
+                       <Button variant="outline" size="sm" asChild className="flex-1">
+                        <a href={project.codeLink} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4 lucide lucide-github"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                          View Code
+                        </a>
+                      </Button>
+                    )}
                 </div>
               </CardFooter>
             </Card>
