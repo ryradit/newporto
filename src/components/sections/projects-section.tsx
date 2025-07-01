@@ -11,7 +11,7 @@ const projects = [
   {
     title: "Merra.ai - AI Interview Co-Pilot",
     description: "Developed Merra AI as AI Software Engineer, an AI-powered co-pilot for interviewers that assists with question generation, real-time response analysis, and provides post-interview insights.",
-    imageUrl: "/images/merra.png",
+    imageUrl: "/imagess/merra.png",
     imageHint: "AI platform dashboard",
     tags: ["AI", "SaaS", "Next.js", "Recruitment Tech", "NLP", "Startup"],
     liveLink: "https://www.trymerra.ai/",
@@ -20,7 +20,7 @@ const projects = [
   {
     title: "AI-Powered Barbershop Website",
     description: "Developed an AI-enhanced website for 'King Barbershop', featuring intelligent functionalities. View the live site or browse the code on GitHub.",
-    imageUrl: "/images/kingbarber.png",
+    imageUrl: "/imagess/kingbarber.png",
     imageHint: "barbershop website",
     tags: ["AI", "Web Development", "Next.js", "React", "Vercel", "JavaScript", "UI/UX"],
     liveLink: "https://king-barbershop.vercel.app/",
@@ -29,7 +29,7 @@ const projects = [
   {
     title: "LLM Research for Mental Health",
     description: "Focused research on Indonesian Large Language Models (LLMs) for mental health applications, aiming to build empathetic and supportive conversational AI systems using NLP techniques.",
-    imageUrl: "/images/mentalhealth.png",
+    imageUrl: "/imagess/mentalhealth.png",
     imageHint: "chatbot nlp",
     tags: ["LLMs", "NLP", "Python", "Research", "TensorFlow", "PyTorch"],
     liveLink: "https://medium.com/@ryradit/idmentalbert-for-enhancing-conversational-intelligence-in-indonesian-e26862f260a2",
@@ -38,7 +38,7 @@ const projects = [
   {
     title: "Sports Booking Apps Startup",
     description: "Role: Android Developer.\nDeveloped an Android app to connect users with shared hobbies, featuring user profiles, event scheduling, and real-time notifications.",
-    imageUrl: "/images/sweat.png",
+    imageUrl: "/imagess/sweat.png",
     imageHint: "mobile app interface",
     tags: ["Android Development", "Mobile App", "Java/Kotlin", "Firebase", "UI/UX"],
     liveLink: "#",
