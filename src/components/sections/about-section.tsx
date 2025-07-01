@@ -14,7 +14,7 @@ export function AboutSection() {
           <div className="md:flex">
             <div className="md:w-1/3">
               <Image
-                src="/images/foto2.jpg"
+                src="/imagess/foto2.jpg"
                 alt="Ryan Radityatama professional"
                 width={600}
                 height={800}
