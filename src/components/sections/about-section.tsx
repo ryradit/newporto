@@ -134,7 +134,7 @@ export function AboutSection() {
                   className="group bg-gradient-to-r from-blue-600 to-violet-600 hover:from-violet-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
                   asChild
                 >
-                  <a href="/files/Ryan Radityatama - Software Engineer.pdf" download className="flex items-center gap-2 relative overflow-hidden">
+                  <a href="https://drive.google.com/file/d/1Khi4BYPEInY6-oxs5OOyo2gsQgDepyxR/view?usp=drivesdk" download className="flex items-center gap-2 relative overflow-hidden">
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
                       width="16" 
