@@ -62,7 +62,7 @@ const idProjects: Project[] = [
   {
     title: "Seido Mitra Abadi - Website Perusahaan",
     description: "Mengembangkan website perusahaan modern untuk Seido Mitra Abadi dengan desain profesional, tata letak responsif, dan manajemen konten dinamis. Dibangun dengan Next.js dan TailwindCSS untuk kinerja optimal.",
-    imageUrl: "/imagess/sawitpro.jpg",
+    imageUrl: "/imagess/seido.png",
     imageHint: "antarmuka website perusahaan",
     tags: ["Next.js", "React", "TailwindCSS", "TypeScript", "Website Perusahaan", "Desain Responsif"],
     liveLink: "https://seidomitraabadi.vercel.app/",
@@ -110,7 +110,7 @@ const zhProjects: Project[] = [
   {
     title: "Seido Mitra Abadi - 公司网站",
     description: "为Seido Mitra Abadi开发了现代公司网站，具有专业设计、响应式布局和动态内容管理功能。使用Next.js和TailwindCSS构建以实现最佳性能。",
-    imageUrl: "/imagess/sawitpro.jpg",
+    imageUrl: "/imagess/seido.png",
     imageHint: "公司网站界面",
     tags: ["Next.js", "React", "TailwindCSS", "TypeScript", "公司网站", "响应式设计"],
     liveLink: "https://seidomitraabadi.vercel.app/",

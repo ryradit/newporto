@@ -136,7 +136,7 @@ export function AboutSection() {
                   className="group bg-gradient-to-r from-blue-600 to-violet-600 hover:from-violet-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
                   asChild
                 >
-                  <a href="/files/Ryan Radityatama - Software Engineer.pdf" download className="flex items-center gap-2 relative overflow-hidden">
+                  <a href="/Ryan Radityatama - Software Engineer.pdf" download className="flex items-center gap-2 relative overflow-hidden">
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
                       width="16" 
@@ -154,7 +154,7 @@ export function AboutSection() {
                       <line x1="12" y1="15" x2="12" y2="3" />
                     </svg>
                     <span className="transform transition-transform duration-300 group-hover:translate-y-0.5">
-                      Download CV
+                      {translate('about.downloadCV', language)}
                     </span>
                     <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-lg"></div>
                   </a>
@@ -166,14 +166,14 @@ export function AboutSection() {
 
         <div className="max-w-3xl">
           <h3 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8">
-            Professional Experience
+            {translate('about.professionalExperience', language)}
           </h3>
-          <Timeline items={careerHistory} />
+          <Timeline items={translate<any[]>('about.careerHistory', language)} />
           
           <h3 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8 mt-16">
-            Education
+            {translate('about.education', language)}
           </h3>
-          <EducationTimeline items={educationHistory} />
+          <EducationTimeline items={translate<any[]>('about.educationHistory', language)} />
         </div>
       </div>
     </AnimatedSection>

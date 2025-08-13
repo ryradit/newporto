@@ -8,6 +8,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/language-context";
+import { translate } from "@/translations";
 
 interface NavigationItem {
   name: string;
@@ -16,9 +18,9 @@ interface NavigationItem {
   icon: JSX.Element;
 }
 
-const getNavigationItems = (pathname: string): NavigationItem[] => [
+const getNavigationItems = (pathname: string, lang: 'en' | 'id' | 'zh'): NavigationItem[] => [
   {
-    name: "Home",
+    name: translate('menu.home', lang),
     href: '/',
     section: 'home',
     icon: (
@@ -38,7 +40,7 @@ const getNavigationItems = (pathname: string): NavigationItem[] => [
     ),
   },
   {
-    name: "About",
+    name: translate('menu.about', lang),
     href: '/about',
     section: 'about',
     icon: (
@@ -60,7 +62,7 @@ const getNavigationItems = (pathname: string): NavigationItem[] => [
   },
 
   {
-    name: "Projects",
+    name: translate('menu.projects', lang),
     href: '/projects',
     section: 'projects',
     icon: (
@@ -82,7 +84,7 @@ const getNavigationItems = (pathname: string): NavigationItem[] => [
   },
 
   {
-    name: "Chat Room",
+    name: translate('menu.chatRoom', lang),
     href: '/chat-room',
     section: 'chat-room',
     icon: (
@@ -102,7 +104,7 @@ const getNavigationItems = (pathname: string): NavigationItem[] => [
     ),
   },
   {
-    name: "Contact",
+    name: translate('menu.contact', lang),
     href: '/contact',
     section: 'contact',
     icon: (
@@ -128,53 +130,19 @@ export function MobileNav() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState('#hero');
+  const { language } = useLanguage();
   const [navigationItems, setNavigationItems] = useState<NavigationItem[]>(() => []);
   
   useEffect(() => {
-    setNavigationItems(getNavigationItems(pathname || '/'));
-  }, [pathname]);
+    setNavigationItems(getNavigationItems(pathname || '/', language));
+  }, [pathname, language]);
 
   useEffect(() => {
     setMounted(true);
-    
-    // Update active section on scroll with debounce
-    const handleScroll = () => {
-      const sections = ['hero', 'about', 'projects', 'room-chat', 'contact'];
-      const viewportHeight = window.innerHeight;
-      
-      for (const section of sections) {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          const elementMiddle = rect.top + rect.height / 2;
-          
-          // Check if the middle of the element is in the viewport
-          if (elementMiddle >= 0 && elementMiddle <= viewportHeight) {
-            setActiveSection('#' + section);
-            break;
-          }
-        }
-      }
-    };
-
-    // Debounce scroll handler
-    let scrollTimeout: NodeJS.Timeout;
-    const debouncedScroll = () => {
-      if (scrollTimeout) clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(handleScroll, 100);
-    };
-
+    // Update active section based on current pathname
+    setActiveSection(pathname || '/');
     // Update navigation items when pathname changes
-    setNavigationItems(getNavigationItems(pathname || '/'));
-
-    window.addEventListener('scroll', debouncedScroll);
-    // Initial check for active section
-    handleScroll();
-    
-    return () => {
-      window.removeEventListener('scroll', debouncedScroll);
-      if (scrollTimeout) clearTimeout(scrollTimeout);
-    };
+    setNavigationItems(getNavigationItems(pathname || '/', language));
   }, [pathname]);
 
   if (!mounted) return null;
@@ -202,14 +170,6 @@ export function MobileNav() {
         <div className="flex flex-col h-full">
           {/* Profile Section */}
           <div className="relative p-6 pb-8 border-b border-border">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-4 top-4 hover:bg-background/80"
-              onClick={() => setIsOpen(false)}
-            >
-              <X className="h-5 w-5" />
-            </Button>
             <div className="flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-primary/20">
                 <Image

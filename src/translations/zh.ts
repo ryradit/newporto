@@ -25,6 +25,106 @@ const zh = {
       '我是一名AI软件工程师，专长于AI集成、软件开发和系统优化。我擅长使用React和Node开发创新软件解决方案，在集成AI模型以增强功能方面拥有丰富的经验。',
       '精通TensorFlow、PyTorch和OpenCV等工具，我在前端和后端开发方面都有经验。我拥有北京理工大学计算机科学硕士学位，研究重点是用于心理健康应用的印尼语言模型。',
       '我擅长领导软件开发项目，提高系统性能，并推动持续创新。'
+    ],
+    downloadCV: '下载简历',
+    professionalExperience: '工作经验',
+    education: '教育背景',
+    careerHistory: [
+      {
+        title: 'AI工程师',
+        company: 'Trymerra AI有限公司',
+        location: '英国伦敦（远程）',
+        period: '2025年3月 – 2025年7月',
+        companyLogo: '/imagess/merra (2).png',
+        responsibilities: [
+          '开发了一个AI驱动的招聘平台的最小可行产品（MVP），负责从UI/UX设计到全栈实现的整个开发过程。目标是为候选人和招聘人员创造无缝的使用体验。',
+          '使用React构建前端并开发后端API来处理核心逻辑和数据操作。集成Appwrite作为后端即服务解决方案，用于身份验证、数据库管理和云函数。',
+          '集成高级对话AI功能，包括简历解析和自动面试模拟，以自动化和个性化候选人筛选过程。这些功能显著减少了手动工作量并提高了效率。',
+          '专注于优化系统性能以确保响应式、实时的用户体验。在前端响应性和后端速度方面应用最佳实践，同时持续测试各用户流程的稳定性。'
+        ]
+      },
+      {
+        title: 'AI和算法工程师',
+        company: 'PT. Digital SawitPRO',
+        location: '印度尼西亚雅加达',
+        period: '2025年1月 – 2025年2月',
+        companyLogo: '/imagess/sawitpro2.png',
+        responsibilities: [
+          '管理基于AI的计算机视觉系统的开发，用于从无人机和卫星图像中自动检测棕榈树。这有助于消除人工计数，显著提高种植园监测的效率和准确性。',
+          '使用PyTorch构建和微调深度学习模型，专注于适合密集农业布局的对象检测和图像分割方法。该算法经过优化，可以处理不同的图像质量和环境条件。',
+          '与工程和产品团队密切合作，将检测系统集成到可扩展的管道中，实现实时分析并支持棕榈种植园管理决策。'
+        ]
+      },
+      {
+        title: 'AI工程师',
+        company: '北京理工大学NLPIR研究实验室',
+        location: '中国北京',
+        period: '2023年4月 - 2024年4月',
+        companyLogo: '/imagess/bit.png',
+        responsibilities: [
+          '进行研究和开发，为印尼语言微调大型语言模型（LLM），专注于提高低资源NLP任务的性能，如情感分析、意图分类和文本生成。',
+          '预处理和整理大规模印尼语数据集，应用分词、清理和注释策略以提高模型训练质量和相关性。使用基准和人工反馈评估模型输出。'
+        ]
+      },
+      {
+        title: '高级信息技术解决方案专家',
+        company: 'Mercu Buana大学',
+        location: '印度尼西亚雅加达',
+        period: '2022年10月 – 2023年2月',
+        companyLogo: '/imagess/mercu.png',
+        responsibilities: [
+          '领导小型IT团队确保校园范围IT基础设施的顺利运行和可用性，维护系统可靠性并及时解决技术问题，以支持学术和行政活动。',
+          '发起并实施多项IT系统优化，通过改进工作流程、升级系统和更好地整合内部流程，使运营效率提高15%。',
+          '监督关键IT项目，包括系统升级、云迁移和安全协议增强。'
+        ]
+      },
+      {
+        title: 'IT解决方案与国际运营官员',
+        company: 'Mercu Buana大学',
+        location: '印度尼西亚雅加达',
+        period: '2019年9月 – 2022年10月',
+        companyLogo: '/imagess/mercu.png',
+        responsibilities: [
+          '管理国际学术计划数据库的开发和整合，确保各部门和全球合作伙伴之间的准确数据管理和信息流通。',
+          '为行政人员提供技术支持和实践培训，提高系统使用率和生产力。系统升级和自动化流程使整体效率提高20%。',
+          '协调学生交换和联合学位等国际项目，同时维护和更新国际关系网站，以符合机构品牌定位并支持基于云的整合。'
+        ]
+      }
+    ],
+    educationHistory: [
+      {
+        institution: '北京理工大学',
+        location: '中国北京',
+        degree: '计算机科学与技术硕士学位',
+        period: '2022 - 2024',
+        institutionLogo: '/imagess/bit.png',
+        details: [
+          '获奖：中国政府奖学金获得者',
+          '论文：印尼大型语言模型在心理健康领域的微调研究',
+          '担任印尼驻北京大使馆选举投票区主席（2024年2月-3月）：监督海外选举运作，与印尼大使馆官员和选举委员会协调。'
+        ]
+      },
+      {
+        institution: 'MERCU BUANA大学',
+        location: '印度尼西亚雅加达',
+        degree: '信息工程学士',
+        period: '2015 - 2019',
+        institutionLogo: '/imagess/mercu.png',
+        details: [
+          '获奖：学院优秀毕业生提名，累计GPA：3.88/4.0',
+          '论文：基于Android的在线运动场地查找移动应用'
+        ]
+      },
+      {
+        institution: '北京理工大学',
+        location: '中国北京',
+        degree: '计算机科学与技术学士学位',
+        period: '2015 - 2019',
+        institutionLogo: '/imagess/bit.png',
+        details: [
+          '论文：基于Android的在线运动场地查找移动应用'
+        ]
+      }
     ]
   },
   projects: {

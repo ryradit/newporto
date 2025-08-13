@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { MobileNav } from "./mobile-nav";
+import { LanguageSelector } from "@/components/ui/language-selector";
 
 export function MobileHeader() {
   const { theme, setTheme } = useTheme();
@@ -35,9 +36,7 @@ export function MobileHeader() {
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <div className="bg-primary/10 text-primary px-2.5 py-0.5 rounded-md text-xs font-medium">
-          ID
-        </div>
+        <LanguageSelector />
         <Button
           variant="ghost"
           size="icon"
