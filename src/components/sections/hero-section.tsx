@@ -33,7 +33,7 @@ import {
 } from "react-icons/si";
 import { BarChart, User, FolderKanban, MessageSquare, Mail } from "lucide-react";
 import { BrainCircuit, ScanText, Camera, Cpu } from "lucide-react";
-
+import { MobileHeader } from "@/components/layout/mobile-header";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
 const TYPING_SPEED = 120;
@@ -83,26 +83,27 @@ export function HeroSection() {
   }, [displayedText, isDeleting, taglineIndex]);
 
   return (
-    <AnimatedSection id="hero" className="flex flex-col items-center justify-center relative overflow-hidden">
-      <div className="container mx-auto px-4 py-20 md:py-32 relative z-10">
+    <AnimatedSection id="hero" className="flex flex-col relative overflow-hidden">
+      <MobileHeader />
+      <div className="container mx-auto px-4 py-16 md:py-32 relative z-10">
         <div className="flex flex-col items-center text-center">
           <div className="w-full max-w-4xl">
-            <h1 className="font-headline text-5xl sm:text-6xl md:text-7xl font-bold mb-4 leading-tight bg-gradient-to-r from-blue-300 via-slate-50 to-pink-300 text-transparent bg-clip-text">
+            <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-bold mb-4 leading-tight bg-gradient-to-r from-blue-300 via-slate-50 to-pink-300 text-transparent bg-clip-text">
               {translate('hero.title', language)}
             </h1>
-            <div className="font-headline text-2xl sm:text-3xl md:text-4xl text-primary mb-6 min-h-[40px] sm:min-h-[48px] md:min-h-[56px] flex items-center justify-center">
+            <div className="font-headline text-xl sm:text-2xl md:text-4xl text-primary mb-6 min-h-[32px] sm:min-h-[40px] md:min-h-[56px] flex items-center justify-center">
               <span>{displayedText}</span>
-              <span className="inline-block border-r-2 border-primary h-7 sm:h-8 md:h-10 animate-blink align-middle ml-1"></span>
+              <span className="inline-block border-r-2 border-primary h-6 sm:h-8 md:h-10 animate-blink align-middle ml-1"></span>
             </div>
-            <p className="text-base md:text-lg text-foreground/80 mb-10">
+            <p className="text-sm sm:text-base md:text-lg text-foreground/80 mb-8 md:mb-10 max-w-[90%] mx-auto">
               {translate('hero.description', language)}
             </p>
-            <div className="flex items-center justify-center gap-4 mb-8">
-              <div className="h-[1px] w-12 bg-primary/20"></div>
-              <h2 className="text-primary/80 text-sm font-medium uppercase tracking-wider">{translate('hero.skills', language)}</h2>
-              <div className="h-[1px] w-12 bg-primary/20"></div>
+            <div className="flex items-center justify-center gap-3 md:gap-4 mb-6 md:mb-8">
+              <div className="h-[1px] w-8 md:w-12 bg-primary/20"></div>
+              <h2 className="text-primary/80 text-xs md:text-sm font-medium uppercase tracking-wider">{translate('hero.skills', language)}</h2>
+              <div className="h-[1px] w-8 md:w-12 bg-primary/20"></div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4 mb-10">
+            <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 md:gap-4 mb-8 md:mb-10">
               {/* Python Ecosystem */}
               <div className="group relative">
                 <div className="p-3 rounded-xl bg-[#3776AB]/10 hover:bg-[#3776AB]/20 transition-all cursor-pointer">
@@ -253,8 +254,8 @@ export function HeroSection() {
             </div>
 
             {/* Preview Sections */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto w-full mt-16">
-              <a href="#about" className="group relative overflow-hidden rounded-xl bg-card hover:bg-accent transition-all duration-300 p-6 text-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto w-full mt-8 md:mt-16">
+              <a href="#about" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent transition-all duration-300 p-4 md:p-6 text-center">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/0 z-0 group-hover:from-primary/10 group-hover:to-primary/5 transition-colors duration-300"></div>
                 <div className="relative z-10">
                   <div className="relative">

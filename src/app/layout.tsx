@@ -37,8 +37,12 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <Providers>
           <div className="flex min-h-screen">
-            <Sidebar />
-            <main className="flex-1 pl-64">
+            {/* Desktop sidebar */}
+            <div className="hidden md:block">
+              <Sidebar />
+            </div>
+            {/* Main content */}
+            <main className="flex-1 md:pl-64">
               {children}
             </main>
             <FloatingChatButton />

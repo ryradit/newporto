@@ -1,4 +1,3 @@
-
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +26,6 @@ import { db } from "@/lib/firebase";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { motion } from "framer-motion";
-import { MobileHeader } from "@/components/layout/mobile-header";
 
 const roomChatFormSchema = z.object({
   message: z.string().min(1, { message: "Message cannot be empty." }),
@@ -122,7 +120,6 @@ export function RoomChatSection() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <MobileHeader />
       <div className="container px-2 md:px-4 lg:px-6">
         {/* Mobile User Info */}
         {user && (

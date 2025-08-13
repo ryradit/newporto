@@ -7,11 +7,13 @@ import { Instagram, Github, Linkedin, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
+import { MobileHeader } from "@/components/layout/mobile-header";
 
 export function ContactSection() {
   const { language } = useLanguage();
   return (
     <AnimatedSection id="contact" className="py-16 md:py-24 bg-background">
+      <MobileHeader />
       <div className="container mx-auto px-4">
         <div className="flex justify-center mb-8">
           <AppleHelloEnglishEffect className="h-16 -rotate-12" />

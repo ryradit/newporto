@@ -7,6 +7,7 @@ import { Timeline } from "@/components/ui/timeline";
 import { EducationTimeline } from "@/components/ui/education-timeline";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
+import { MobileHeader } from "@/components/layout/mobile-header";
 
 export function AboutSection() {
   const { language } = useLanguage();
@@ -112,6 +113,7 @@ export function AboutSection() {
 
   return (
     <AnimatedSection id="about" className="py-12 md:py-16 bg-background/50">
+      <MobileHeader />
       <div className="container pl-8 pr-4 md:pl-12">
         <h2 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8">
           {translate('about.title', language)}

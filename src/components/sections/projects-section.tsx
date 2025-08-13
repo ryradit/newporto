@@ -11,6 +11,7 @@ import { GlowingEffect } from "../ui/glowing-effect";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
 import { getProjectsByLanguage } from "@/lib/project-data";
+import { MobileHeader } from "@/components/layout/mobile-header";
 
 const techStackIcons: { [key: string]: any } = {
   "Next.js": Globe,
@@ -38,6 +39,7 @@ export function ProjectsSection() {
   const projects = getProjectsByLanguage(language);
   return (
     <AnimatedSection id="projects" className="py-16 md:py-24 bg-background">
+      <MobileHeader />
       <div className="container mx-auto px-4">
         <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary mb-12">
           {translate('projects.title', language)}
