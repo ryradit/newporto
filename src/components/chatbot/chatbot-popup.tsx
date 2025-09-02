@@ -234,7 +234,9 @@ export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
             }
           </div>
           <span className="text-sm font-medium whitespace-nowrap tracking-wide">
-            {translate('smartTalk.button', language)}
+            {language === 'en' ? 'Chat with AI Assistant' : 
+             language === 'id' ? 'Ngobrol dengan AI Asisten' : 
+             language === 'zh' ? '与AI助手聊天' : 'Chat with AI Assistant'}
           </span>
         </div>
       </GradientButton>
