@@ -31,11 +31,13 @@ import {
   SiHuggingface,
   SiNumpy
 } from "react-icons/si";
-import { BarChart, User, FolderKanban, MessageSquare, Mail } from "lucide-react";
+import { BarChart, User, FolderKanban, MessageSquare, Mail, Bot, Code2 } from "lucide-react";
 import { BrainCircuit, ScanText, Camera, Cpu } from "lucide-react";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
+import Link from "next/link";
+import { GradientText } from "@/components/ui/gradient-text";
 const TYPING_SPEED = 120;
 const DELETING_SPEED = 70;
 const PAUSE_DURATION = 2000; // Pause after typing
@@ -88,8 +90,8 @@ export function HeroSection() {
       <div className="container mx-auto px-4 py-16 md:py-32 relative z-10">
         <div className="flex flex-col items-center text-center">
           <div className="w-full max-w-4xl">
-            <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-bold mb-4 leading-tight bg-gradient-to-r from-blue-300 via-slate-50 to-pink-300 text-transparent bg-clip-text">
-              {translate('hero.title', language)}
+            <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-bold mb-4 leading-tight">
+              <GradientText variant="name">Ryan Radityatama</GradientText>
             </h1>
             <div className="font-headline text-xl sm:text-2xl md:text-4xl text-primary mb-6 min-h-[32px] sm:min-h-[40px] md:min-h-[56px] flex items-center justify-center">
               <span>{displayedText}</span>
@@ -253,93 +255,147 @@ export function HeroSection() {
               </div>
             </div>
 
-            {/* Preview Sections */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto w-full mt-8 md:mt-16">
-              <a href="#about" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent transition-all duration-300 p-4 md:p-6 text-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/0 z-0 group-hover:from-primary/10 group-hover:to-primary/5 transition-colors duration-300"></div>
-                <div className="relative z-10">
-                  <div className="relative">
-                    <User className="w-8 h-8 text-primary mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
-                  </div>
-                  <h3 className="font-headline text-lg font-medium mb-2">{translate('menu.about', language)}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Discover my background, skills, and experience.</p>
-                  <div className="h-0 group-hover:h-16 opacity-0 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                    <p className="text-xs text-primary/80">• AI & Software Engineer</p>
-                    <p className="text-xs text-primary/80">• Machine Learning Expert</p>
-                    <p className="text-xs text-primary/80">• Full Stack Developer</p>
-                  </div>
-                </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-300"></div>
-              </a>
-
-              <a href="#projects" className="group relative overflow-hidden rounded-xl bg-card hover:bg-accent transition-all duration-300 p-6 text-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/0 z-0 group-hover:from-primary/10 group-hover:to-primary/5 transition-colors duration-300"></div>
+            {/* Feature Cards Section */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full mt-8 md:mt-16">
+              {/* About Card */}
+              <Link href="/about" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
+                <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
                 <div className="relative z-10">
                   <div className="relative mb-4">
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      <img src="/imagess/mentalhealth.png" alt="Mental Health Project" className="w-full h-12 object-cover rounded-lg opacity-70 group-hover:opacity-100 transition-opacity" />
-                      <img src="/imagess/kingbarber.png" alt="King Barber Project" className="w-full h-12 object-cover rounded-lg opacity-70 group-hover:opacity-100 transition-opacity" />
+                    <div className="w-16 h-16 flex items-center justify-center mx-auto rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-500">
+                      <User className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
                     </div>
-                    <FolderKanban className="w-8 h-8 text-primary mx-auto transition-transform duration-300 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10"></div>
                   </div>
-                  <h3 className="font-headline text-lg font-medium mb-2">{translate('menu.projects', language)}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Explore my latest work and side projects.</p>
-                  <div className="h-0 group-hover:h-16 opacity-0 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                    <p className="text-xs text-primary/80">• Web Applications</p>
-                    <p className="text-xs text-primary/80">• AI/ML Solutions</p>
-                    <p className="text-xs text-primary/80">• Open Source Contributions</p>
+                  <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-white transition-colors">{translate('menu.about', language)}</h3>
+                  <p className="text-sm text-muted-foreground mb-4 group-hover:text-white/80 transition-colors">{translate('hero.aboutDescription', language) || "Discover my background, skills, and experience."}</p>
+                  <div className="h-0 group-hover:h-[4.5rem] opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden">
+                    <p className="text-xs text-white/80">• AI & Software Engineer</p>
+                    <p className="text-xs text-white/80">• Machine Learning Expert</p>
+                    <p className="text-xs text-white/80">• Full Stack Developer</p>
+                  </div>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <span className="inline-flex items-center text-xs font-medium text-white gap-1">
+                      {translate('hero.learnMore', language) || "Learn more"}
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
                   </div>
                 </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-300"></div>
-              </a>
+                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+              </Link>
 
-              <a href="#room-chat" className="group relative overflow-hidden rounded-xl bg-card hover:bg-accent transition-all duration-300 p-6 text-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/0 z-0 group-hover:from-primary/10 group-hover:to-primary/5 transition-colors duration-300"></div>
+              {/* Projects Card */}
+                            {/* Projects Card */}
+              <Link href="/projects" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
+                <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
                 <div className="relative z-10">
                   <div className="relative mb-4">
-                    <div className="flex flex-col gap-2 mb-4 mx-auto max-w-[140px]">
+                    <div className="w-16 h-16 flex items-center justify-center mx-auto rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-500">
+                      <Code2 className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
+                    </div>
+                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10"></div>
+                  </div>
+                  <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-white transition-colors">{translate('menu.projects', language)}</h3>
+                  <p className="text-sm text-muted-foreground mb-4 group-hover:text-white/80 transition-colors">{translate('hero.projectsDescription', language) || "Explore my portfolio of software projects."}</p>
+                  <div className="h-0 group-hover:h-[4.5rem] opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden">
+                    <p className="text-xs text-white/80">• AI/ML Applications</p>
+                    <p className="text-xs text-white/80">• Web Development</p>
+                    <p className="text-xs text-white/80">• Mobile Apps</p>
+                  </div>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <span className="inline-flex items-center text-xs font-medium text-white gap-1">
+                      {translate('hero.viewProjects', language) || "View projects"}
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
+                  </div>
+                </div>
+                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+              </Link>
+
+              {/* Live Chat Card */}
+              <Link href="/chat-room" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
+                <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
+                <div className="relative z-10">
+                  <div className="relative mb-4">
+                    <div className="flex flex-col gap-2 mb-4 mx-auto max-w-[160px]">
                       <div className="flex items-start gap-2">
-                        <div className="w-6 h-6 rounded-full bg-primary/20 flex-shrink-0"></div>
-                        <div className="bg-primary/10 rounded-lg p-2 text-[10px] text-left">Hey! How can I help?</div>
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center">
+                          <Bot className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="bg-primary/10 rounded-lg p-2 text-[10px] text-left group-hover:bg-primary/20 transition-colors">Hey! How can I help you today?</div>
                       </div>
                       <div className="flex items-start gap-2 justify-end">
-                        <div className="bg-primary/20 rounded-lg p-2 text-[10px] text-left">Tell me about your projects</div>
-                        <div className="w-6 h-6 rounded-full bg-accent flex-shrink-0"></div>
+                        <div className="bg-primary/20 rounded-lg p-2 text-[10px] text-left group-hover:bg-primary/30 transition-colors">Tell me about your projects</div>
+                        <div className="w-8 h-8 rounded-full bg-accent flex-shrink-0"></div>
                       </div>
                     </div>
-                    <MessageSquare className="w-8 h-8 text-primary mx-auto transition-transform duration-300 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                    <div className="w-16 h-16 flex items-center justify-center mx-auto rounded-full bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-500">
+                      <MessageSquare className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
+                    </div>
+                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10"></div>
                   </div>
-                  <h3 className="font-headline text-lg font-medium mb-2">{translate('menu.chatRoom', language)}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Chat room to express and sharing more.</p>
-                  <div className="h-0 group-hover:h-16 opacity-0 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                    <p className="text-xs text-primary/80">• Ask About My Experience</p>
-                    <p className="text-xs text-primary/80">• Project Inquiries</p>
-                    <p className="text-xs text-primary/80">• Real-time Responses</p>
+                  <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-white transition-colors">{translate('menu.chatRoom', language)}</h3>
+                  <p className="text-sm text-muted-foreground mb-4 group-hover:text-white/80 transition-colors">{translate('hero.chatDescription', language) || "Chat room to express and share more."}</p>
+                  <div className="h-0 group-hover:h-[4.5rem] opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden">
+                    <p className="text-xs text-white/80">• Ask About My Experience</p>
+                    <p className="text-xs text-white/80">• Project Inquiries</p>
+                    <p className="text-xs text-white/80">• Real-time Responses</p>
+                  </div>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <span className="inline-flex items-center text-xs font-medium text-white gap-1">
+                      {translate('hero.startChat', language) || "Start chatting"}
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
                   </div>
                 </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-300"></div>
-              </a>
+                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+              </Link>
 
-              <a href="#contact" className="group relative overflow-hidden rounded-xl bg-card hover:bg-accent transition-all duration-300 p-6 text-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/0 z-0 group-hover:from-primary/10 group-hover:to-primary/5 transition-colors duration-300"></div>
+              {/* Contact Card */}
+              <Link href="/contact" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
+                <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
                 <div className="relative z-10">
-                  <div className="relative">
-                    <Mail className="w-8 h-8 text-primary mx-auto mb-4 transition-transform duration-300 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                  <div className="relative mb-4">
+                    <div className="flex flex-col items-center mb-4">
+                      <div className="w-full max-w-[160px] bg-primary/5 rounded-lg p-3 mb-2 group-hover:bg-primary/15 transition-colors">
+                        <div className="h-3 w-2/3 bg-primary/20 rounded-full mb-2"></div>
+                        <div className="h-3 w-full bg-primary/20 rounded-full mb-2"></div>
+                        <div className="h-3 w-1/2 bg-primary/20 rounded-full"></div>
+                      </div>
+                      <div className="flex gap-2 mt-1">
+                        <div className="h-6 w-16 bg-primary/20 rounded-full group-hover:bg-primary/30 transition-colors flex items-center justify-center">
+                          <span className="text-[8px] text-white">Send</span>
+                        </div>
+                        <div className="h-6 w-16 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors flex items-center justify-center">
+                          <span className="text-[8px] text-white">Reset</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-16 h-16 flex items-center justify-center mx-auto rounded-full bg-primary/10 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-500">
+                      <Mail className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
+                    </div>
+                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10"></div>
                   </div>
-                  <h3 className="font-headline text-lg font-medium mb-2">{translate('menu.contact', language)}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">Get in touch for collaborations.</p>
-                  <div className="h-0 group-hover:h-16 opacity-0 group-hover:opacity-100 transition-all duration-300 overflow-hidden">
-                    <p className="text-xs text-primary/80">• Project Collaboration</p>
-                    <p className="text-xs text-primary/80">• Job Opportunities</p>
-                    <p className="text-xs text-primary/80">• Quick Response Time</p>
+                  <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-white transition-colors">{translate('menu.contact', language)}</h3>
+                  <p className="text-sm text-muted-foreground mb-4 group-hover:text-white/80 transition-colors">{translate('hero.contactDescription', language) || "Get in touch for collaborations."}</p>
+                  <div className="h-0 group-hover:h-[4.5rem] opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden">
+                    <p className="text-xs text-white/80">• Project Collaboration</p>
+                    <p className="text-xs text-white/80">• Job Opportunities</p>
+                    <p className="text-xs text-white/80">• Quick Response Time</p>
+                  </div>
+                  <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <span className="inline-flex items-center text-xs font-medium text-white gap-1">
+                      {translate('hero.contactMe', language) || "Contact me"}
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
+                    </span>
                   </div>
                 </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-300"></div>
-              </a>
+                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+              </Link>
             </div>
           </div>
         </div>
