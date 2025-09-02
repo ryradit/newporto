@@ -15,6 +15,43 @@ import { translate } from "@/translations";
 import { startVoiceCall, type VapiCallState } from "@/lib/vapi-config";
 import { VoiceCallPopup } from "./voice-call-popup";
 import Client from '@vapi-ai/web';
+import { Button } from "@/components/ui/button";
+import { GradientButton } fr    try {
+      // Check if this is a CV download request
+      if (isCVRequest(userMessage.content)) {
+        // First, simulate initial thinking time (1.5 to 2.5 seconds)
+        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+        
+        // Then simulate typing the response (50-80ms per character)
+        const responseText = "Here's Ryan's Software Engineering CV. It includes his technical skills, work experience, and projects. Feel free to download it below.";
+        const typingDelay = responseText.length * (50 + Math.random() * 30);
+        await new Promise(resolve => setTimeout(resolve, typingDelay));
+        
+        const cvMessage: ChatMessageProps = {
+          role: "assistant",
+          content: responseText,
+          action: {
+            type: "download-cv",
+            label: "Download CV",
+            onClick: handleCVDownload
+          }
+        };
+        setMessages((prev) => [...prev, cvMessage]);
+        setIsLoading(false);
+        return;
+      }/ui/gradient-button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bot, MessageCircle, Send, X, Loader2, Mic } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { ChatMessage, type ChatMessageProps } from "./chat-message";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/language-context";
+import { translate } from "@/translations";
+import { startVoiceCall, type VapiCallState } from "@/lib/vapi-config";
+import { VoiceCallPopup } from "./voice-call-popup";
+import Client from '@vapi-ai/web';
 
 interface ChatbotPopupProps {
   profileData: string;
@@ -44,7 +81,7 @@ export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
   });
   const activeCallRef = useRef<Client | null>(null);
   const [messages, setMessages] = useState<ChatMessageProps[]>([
-    { role: "assistant", content: "👋 Hi! I can help answer questions about Ryan. Feel free to ask me anything!" }
+    { role: "assistant", content: "👋 Hi! I can help answer questions about Ryan. Feel free to type or use voice chat." }
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -146,17 +183,9 @@ export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
     try {
       // Check if this is a CV download request
       if (isCVRequest(userMessage.content)) {
-        // First, simulate initial thinking time (1.5 to 2.5 seconds)
-        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
-        
-        // Then simulate typing the response (50-80ms per character)
-        const responseText = "Here's Ryan's Software Engineering CV. It includes his technical skills, work experience, and projects. Feel free to download it below.";
-        const typingDelay = responseText.length * (50 + Math.random() * 30);
-        await new Promise(resolve => setTimeout(resolve, typingDelay));
-        
         const cvMessage: ChatMessageProps = {
           role: "assistant",
-          content: responseText,
+          content: "Here's Ryan's Software Engineering CV. It includes his technical skills, work experience, and projects. Feel free to download it below. �",
           action: {
             type: "download-cv",
             label: "Download CV",
@@ -288,12 +317,22 @@ export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
               <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
                 <Input
                   type="text"
-                  placeholder="Type a message..."
+                  placeholder="Type a message or use voice..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   className="flex-1"
                   disabled={isLoading}
                 />
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => handleVoiceCall()}
+                  className="text-muted-foreground hover:text-primary"
+                  title="Voice Input"
+                >
+                  <Mic size={20} />
+                </Button>
                 <Button 
                   type="submit" 
                   size="icon" 

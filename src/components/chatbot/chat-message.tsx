@@ -29,6 +29,12 @@ function formatTimeAgo(date: Date) {
   return 'just now';
 }
 
+interface MessageAction {
+  type: "download-cv";
+  label: string;
+  onClick: () => void;
+}
+
 export interface ChatMessageProps {
   role: "user" | "assistant" | "author";
   content: string;
@@ -39,9 +45,10 @@ export interface ChatMessageProps {
     image: string;
     isAuthor?: boolean;
   };
+  action?: MessageAction;
 }
 
-export function ChatMessage({ role, content, user, timestamp }: ChatMessageProps) {
+export function ChatMessage({ role, content, user, timestamp, action }: ChatMessageProps) {
   const [isTranslating, setIsTranslating] = useState(false);
   const [translatedContent, setTranslatedContent] = useState<{
     en?: string;
@@ -114,7 +121,7 @@ export function ChatMessage({ role, content, user, timestamp }: ChatMessageProps
             )}
           </div>
         )}
-        <div className="flex">
+        <div className="flex flex-col gap-2">
           <div
             className={cn(
               "rounded-2xl py-2 px-3 inline-block",
@@ -158,6 +165,16 @@ export function ChatMessage({ role, content, user, timestamp }: ChatMessageProps
               </div>
             </div>
           </div>
+          {action && (
+            <div className="flex justify-start mt-2">
+              <button
+                onClick={action.onClick}
+                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:opacity-90 rounded-md shadow-md transition-all duration-200 ease-in-out transform hover:scale-105"
+              >
+                {action.label}
+              </button>
+            </div>
+          )}
         </div>
       </div>
       {isAuthor && (
