@@ -1,104 +1,256 @@
 
 'use client';
 
-import Image from "next/image";
+import { useState, useRef, useEffect } from 'react';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { ArrowUpRight, ExternalLink, Github } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnimatedSection } from "@/components/animated-section";
-import { ExternalLink, Code2, Server, Wind, FileCode, BrainCircuit, Layers, MessageCircle, GitFork, Database, Globe, Paintbrush, Smartphone, Flame } from "lucide-react";
-import { Button } from "../ui/button";
-import { GlowingEffect } from "../ui/glowing-effect";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
 import { getProjectsByLanguage } from "@/lib/project-data";
 import { MobileHeader } from "@/components/layout/mobile-header";
 
-const techStackIcons: { [key: string]: any } = {
-  "Next.js": Globe,
-  "React": Code2,
-  "TailwindCSS": Wind,
-  "TypeScript": FileCode,
-  "JavaScript": FileCode,
-  "Python": FileCode,
-  "AI": BrainCircuit,
-  "NLP": MessageCircle,
-  "TensorFlow": BrainCircuit,
-  "PyTorch": Layers,
-  "Firebase": Flame,
-  "Android Development": Smartphone,
-  "Mobile App": Smartphone,
-  "UI/UX": Paintbrush,
-  "Web Development": Globe,
-  "Git": GitFork,
-  "Node.js": Server,
-  "Database": Database,
+// A utility function for class names
+const cn = (...classes: (string | boolean | undefined)[]) => classes.filter(Boolean).join(' ');
+
+// Generative Art Canvas Component
+const GenerativeArtCanvas = ({ isHovered }: { isHovered: boolean }) => {
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        let animationFrameId: number;
+        let lines: Line[] = [];
+        const numLines = 30;
+
+        class Line {
+            x: number;
+            y: number;
+            speed: number;
+            angle: number;
+            length: number;
+
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.speed = Math.random() * 0.5 + 0.1;
+                this.angle = Math.random() * Math.PI * 2;
+                this.length = Math.random() * 20 + 5;
+            }
+            update() {
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                }
+            }
+            draw() {
+                if (!ctx) return;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.x - Math.cos(this.angle) * this.length, this.y - Math.sin(this.angle) * this.length);
+                ctx.strokeStyle = `rgba(168, 85, 247, ${Math.random() * 0.3 + 0.1})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        const init = () => {
+            lines = [];
+            for (let i = 0; i < numLines; i++) {
+                lines.push(new Line());
+            }
+        };
+
+        const animate = () => {
+            if (!ctx) return;
+            
+            if (isHovered) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                lines.forEach(line => {
+                    line.update();
+                    line.draw();
+                });
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            animationFrameId = requestAnimationFrame(animate);
+        };
+        
+        canvas.width = 400;
+        canvas.height = 400;
+        init();
+        animate();
+
+        return () => cancelAnimationFrame(animationFrameId);
+    }, [isHovered]);
+
+    return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />;
+};
+
+// Gallery Card Component with 3D tilt effect
+const ProjectCard = ({ project, index }: { project: any, index: number }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    const mouseXSpring = useSpring(x);
+    const mouseYSpring = useSpring(y);
+
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        x.set((e.clientX - rect.left) / rect.width - 0.5);
+        y.set((e.clientY - rect.top) / rect.height - 0.5);
+    };
+
+    const handleMouseLeave = () => {
+        x.set(0);
+        y.set(0);
+    };
+    
+    const cardVariants = {
+        offscreen: { y: 50, opacity: 0 },
+        onscreen: { y: 0, opacity: 1, transition: { type: "spring", bounce: 0.4, duration: 0.8, delay: index * 0.1 } }
+    };
+
+    const hasLiveDemo = project.liveLink !== "#";
+    const hasSourceCode = project.codeLink !== "#" && project.codeLink !== project.liveLink;
+
+    return (
+        <motion.div
+            variants={cardVariants}
+            initial="offscreen"
+            whileInView="onscreen"
+            viewport={{ once: true, amount: 0.2 }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
+            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            className="group relative h-80 w-full rounded-xl bg-slate-900 border border-slate-800 overflow-hidden"
+        >
+            <div 
+                style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}
+                className="absolute inset-4 flex flex-col justify-end p-6 rounded-lg overflow-hidden"
+            >
+                <img 
+                    src={project.imageUrl}
+                    alt={project.title}
+                    className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
+                    style={{ objectFit: 'cover' }}
+                    onError={(e) => { 
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null; 
+                        target.src='/imagess/placeholder.jpg'; 
+                    }}
+                />
+                <GenerativeArtCanvas isHovered={isHovered} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+                
+                <div className="relative z-10">
+                    <motion.h3 
+                        style={{ transform: "translateZ(75px)" }}
+                        className="text-xl font-bold text-white mb-1"
+                    >
+                        {project.title}
+                    </motion.h3>
+                    <motion.p
+                        style={{ transform: "translateZ(75px)" }}
+                        className="text-sm text-slate-400 mb-3 line-clamp-2"
+                    >
+                        {project.description}
+                    </motion.p>
+
+                    <div className="flex flex-wrap gap-2 mb-4" style={{ transform: "translateZ(75px)" }}>
+                        {project.tags.slice(0, 3).map((tag: string) => (
+                            <Badge 
+                                key={tag} 
+                                variant="secondary" 
+                                className="bg-black/50 hover:bg-black/70 text-white border border-white/10"
+                            >
+                                {tag}
+                            </Badge>
+                        ))}
+                        {project.tags.length > 3 && (
+                            <Badge 
+                                variant="secondary" 
+                                className="bg-black/50 hover:bg-black/70 text-white border border-white/10"
+                            >
+                                +{project.tags.length - 3}
+                            </Badge>
+                        )}
+                    </div>
+
+                    <div className="flex gap-3 mt-3" style={{ transform: "translateZ(75px)" }}>
+                        {hasLiveDemo && (
+                            <a 
+                                href={project.liveLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-all duration-300"
+                            >
+                                <ExternalLink size={16} className="text-white" />
+                            </a>
+                        )}
+                        {hasSourceCode && (
+                            <a 
+                                href={project.codeLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-all duration-300"
+                            >
+                                <Github size={16} className="text-white" />
+                            </a>
+                        )}
+                    </div>
+                </div>
+
+                <div className="absolute top-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <ArrowUpRight />
+                </div>
+            </div>
+        </motion.div>
+    );
 };
 
 export function ProjectsSection() {
   const { language } = useLanguage();
   const projects = getProjectsByLanguage(language);
+
   return (
-    <AnimatedSection id="projects" className="py-16 md:py-24 bg-background">
+    <AnimatedSection id="projects" className="py-16 md:py-24 bg-background relative overflow-hidden">
       <MobileHeader />
       <div className="container mx-auto px-4">
-        <h2 className="font-headline text-3xl md:text-4xl font-bold text-center text-primary mb-12">
-          {translate('projects.title', language)}
-        </h2>
+        <motion.h2 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeInOut" }}
+            className="font-headline text-3xl md:text-5xl font-bold text-center text-primary mb-4"
+        >
+            {translate('projects.title', language)}
+        </motion.h2>
+        <motion.p
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
+            className="text-lg text-center text-muted-foreground max-w-2xl mx-auto mb-12"
+        >
+            A showcase of my work, combining creative design with technical excellence.
+        </motion.p>
+
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
-            <Card key={index} className="group relative flex flex-col shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-              <GlowingEffect disabled={false} />
-              <div className="aspect-video overflow-hidden">
-                <Image
-                  src={project.imageUrl}
-                  alt={project.title}
-                  width={600}
-                  height={400}
-                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                  data-ai-hint={project.imageHint}
-                />
-              </div>
-              <CardHeader>
-                <CardTitle className="font-headline text-xl text-primary">{project.title}</CardTitle>
-                <CardDescription className="text-foreground/70 h-24 overflow-hidden whitespace-pre-line"> {}
-                  {project.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag) => {
-                    const Icon = techStackIcons[tag] || FileCode;
-                    return (
-                      <Badge 
-                        key={tag} 
-                        variant="secondary" 
-                        className="flex items-center gap-1.5 px-3 py-1 hover:bg-accent/20 transition-colors duration-200"
-                      >
-                        <Icon className="h-3.5 w-3.5 text-primary" />
-                        <span>{tag}</span>
-                      </Badge>
-                    );
-                  })}
-                </div>
-              </CardContent>
-              <CardFooter className="mt-auto pt-0">
-                <div className="flex space-x-2 w-full">
-                   <Button variant="outline" size="sm" asChild className="flex-1">
-                      <a href={project.liveLink !== "#" ? project.liveLink : project.codeLink} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                        <ExternalLink className="mr-2 h-4 w-4" /> {translate('projects.viewProject', language)}
-                      </a>
-                    </Button>
-                    {project.liveLink !== "#" && project.codeLink !== "#" && project.liveLink !== project.codeLink && (
-                       <Button variant="outline" size="sm" asChild className="flex-1">
-                        <a href={project.codeLink} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4 lucide lucide-github"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
-                          {translate('projects.sourceCode', language)}
-                        </a>
-                      </Button>
-                    )}
-                </div>
-              </CardFooter>
-            </Card>
+            <ProjectCard key={project.title} project={project} index={index} />
           ))}
         </div>
       </div>
