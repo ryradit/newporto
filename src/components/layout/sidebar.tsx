@@ -8,15 +8,22 @@ import {
   MessageSquare,
   Mail,
   Languages,
-  X
+  X,
+  Moon,
+  Sun,
+  Laptop,
+  Layers
 } from 'lucide-react';
 import Image from 'next/image';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FlipGallery } from "@/components/ui/flip-gallery";
+import { PortalSelector } from "@/components/ui/portal-selector";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { Language, getLanguageLabel } from "@/lib/language";
 import { translate } from "@/translations";
+import { useTheme } from 'next-themes';
+import { cn } from '@/lib/utils';
 
 const menuItems = [
   {
@@ -48,7 +55,9 @@ const menuItems = [
 
 export function Sidebar() {
   const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-background/95 border-r border-border/40">
       <div className="flex h-full flex-col">
@@ -118,6 +127,51 @@ export function Sidebar() {
             </Link>
           ))}
         </nav>
+
+        {/* Theme Selector */}
+        <div className="flex justify-center py-3">
+          <div className="flex items-center gap-2 p-2 rounded-full bg-accent/50">
+            <button
+              onClick={() => setTheme('light')}
+              className={cn(
+                "p-2 rounded-full transition-all",
+                theme === 'light' 
+                  ? 'bg-background text-primary shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+              title="Light Theme"
+            >
+              <Sun size={16} />
+            </button>
+            <button
+              onClick={() => setTheme('dark')}
+              className={cn(
+                "p-2 rounded-full transition-all",
+                theme === 'dark' 
+                  ? 'bg-background text-primary shadow-sm' 
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+              title="Dark Theme"
+            >
+              <Moon size={16} />
+            </button>
+            <button
+              onClick={() => {
+                setIsPortalOpen(true);
+              }}
+              className="p-2 rounded-full transition-all text-muted-foreground hover:text-foreground hover:text-orange-500"
+              title="Open Portal to Other Dimensions"
+            >
+              <Layers size={16} />
+            </button>
+          </div>
+        </div>
+        
+        {/* Portal Selector */}
+        <PortalSelector 
+          open={isPortalOpen} 
+          onOpenChange={setIsPortalOpen} 
+        />
 
         {/* Footer */}
         <div className="border-t border-border/40 p-4">
