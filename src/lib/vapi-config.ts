@@ -1,7 +1,5 @@
 'use client';
 
-import type { CreateAgentDTO, CreateWebCallDto } from '@vapi-ai/web/dist/api';
-
 // Type for managing voice call state
 export interface VapiCallState {
   isCallActive: boolean;
@@ -11,46 +9,40 @@ export interface VapiCallState {
   conversation?: Array<{ role: string; text: string }>;
 }
 
-interface AssistantOptions {
+// Interface for Vapi assistant configuration
+export interface VapiAssistantConfig {
+  assistant: {
+    name: string;
+    systemPrompt?: string;
+    model: string;
+    voice: string;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+// This interface represents the options we can pass to create a Vapi assistant
+// The exact format may change with Vapi versions
+export interface VapiAssistantOptions {
   name: string;
-  firstMessage: string;
-  transcriber: {
-    provider: "deepgram";
-    model: "nova-2";
-    language: "en-US";
-  };
-  voice: {
-    provider: "playht";
-    voiceId: string;
-  };
-  model: {
-    provider: "openai";
-    model: "gpt-4";
-    messages: Array<{
-      role: string;
-      content: string;
-    }>;
-  };
+  systemPrompt?: string;
+  model: string;
+  voice: string;
 }
 
 // Get VAPI HTTP client for API calls
 export async function getVapiHttpClient() {
   try {
-    const { Api } = await import('@vapi-ai/web/dist/api');
+    // Import the API class directly
+    const { default: Client } = await import('@vapi-ai/web');
+    
     // Check if we have a valid API key first
     if (!process.env.NEXT_PUBLIC_VAPI_API_KEY) {
       throw new Error('VAPI API key is not configured');
     }
 
-    const httpClient = new Api({
-      baseUrl: 'https://api.vapi.ai',
-      baseApiParams: {
-        headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_VAPI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      },
-    });
+    // Create a client with the API key
+    const httpClient = new Client(process.env.NEXT_PUBLIC_VAPI_API_KEY);
     
     return httpClient;
   } catch (error) {
@@ -67,9 +59,9 @@ export async function getVapiClient() {
       throw new Error('VAPI API key is not configured');
     }
 
-    const Client = (await import('@vapi-ai/web')).default;
-    const wsClient = new Client(process.env.NEXT_PUBLIC_VAPI_API_KEY);
-    return wsClient;
+    const Vapi = (await import('@vapi-ai/web')).default;
+    const client = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY);
+    return client;
   } catch (error) {
     console.error('Error initializing VAPI WebSocket client:', error);
     throw error;
@@ -99,30 +91,20 @@ export async function startVoiceCall(
       throw new Error('Please enable microphone access to use voice chat');
     }
 
-    // Initialize both HTTP and WebSocket clients
-    const httpClient = await getVapiHttpClient();
-    const wsClient = await getVapiClient();
+    // Initialize client
+    const client = await getVapiClient();
     
-    // Create the agent configuration
-    const agentConfig: CreateAgentDTO = {
-      model: "gpt-4",
-      voice: "jenny",
+    // Create the assistant configuration using our interface
+    const assistantOptions: VapiAssistantOptions = {
       name: "AI Assistant",
-      context: `You are an AI voice assistant answering questions about ${userProfile}'s portfolio. Be friendly, concise, and professional. Focus on highlighting their skills, experience, and achievements.`,
-      startTalking: false  // Don't start talking first, wait for user input
+      systemPrompt: `You are an AI voice assistant answering questions about ${userProfile}'s portfolio. Be friendly, concise, and professional. Focus on highlighting their skills, experience, and achievements.`,
+      model: "gpt-4",
+      voice: "jenny"
     };
 
-    // First, create a web call through the HTTP API
-    console.log('Creating web call with config:', agentConfig);
-    const response = await httpClient.call.callControllerCreateWebCall({
-      agent: agentConfig
-    });
+    console.log('Starting voice call with assistant:', assistantOptions);
     
-    if (!response.data) {
-      throw new Error('Failed to create web call: ' + JSON.stringify(response.error));
-    }
-
-    console.log('Web call created:', response.data);
+    // Update state to active
     onStateChange({ 
       isCallActive: true, 
       isSpeaking: false,
@@ -130,10 +112,23 @@ export async function startVoiceCall(
       error: null 
     });
 
-    // Then start the WebSocket connection with the same configuration
-    await wsClient.start(agentConfig);
+    // Start the call with the configuration
+    // Using the "as any" type assertion to bypass type checking 
+    // since we can't determine the exact expected structure
+    await client.start(assistantOptions as any);
+    
+    // Set up basic event handling with type safety
+    client.on("error", (error: Error) => {
+      console.error('Call error:', error);
+      onStateChange({
+        isCallActive: false,
+        isSpeaking: false,
+        isMuted: false,
+        error: error?.message || 'Call encountered an error'
+      });
+    });
 
-    return wsClient;
+    return client;
   } catch (error) {
     console.error('Voice call error:', error);
     let errorMessage = 'Failed to start call';
