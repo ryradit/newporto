@@ -612,29 +612,106 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                   )}
                 >
                   <div className="p-2 h-full flex flex-col">
-                    <div className={`${theme.innerBackground} h-3/4 rounded-md mb-4 overflow-hidden relative flex items-center justify-center`}>
-                      {theme.gradient && (
-                        <div className={`absolute inset-0 bg-gradient-to-b ${theme.gradient} group-hover:opacity-70 opacity-40 transition-opacity`} />
+                    <div className={`${theme.innerBackground} h-3/4 rounded-full mb-4 overflow-hidden relative flex items-center justify-center border-2`} 
+                      style={{
+                        borderColor: theme.id === 'dark' ? 'rgba(59, 130, 246, 0.5)' : 
+                                   theme.id === 'earth-838' ? 'rgba(156, 163, 175, 0.5)' : 
+                                   'rgba(147, 51, 234, 0.5)',
+                        boxShadow: theme.id === 'dark' ? '0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 15px rgba(59, 130, 246, 0.1)' :
+                                 theme.id === 'earth-838' ? '0 0 20px rgba(156, 163, 175, 0.3), inset 10px 10px 20px rgba(0,0,0,0.1), inset -10px -10px 20px rgba(255,255,255,0.7)' :
+                                 '0 0 20px rgba(147, 51, 234, 0.3), inset 0 0 15px rgba(147, 51, 234, 0.1)'
+                      }}>
+                      {/* Earth-like surface patterns */}
+                      {theme.id === 'dark' && (
+                        <div className="absolute inset-0 rounded-full overflow-hidden">
+                          {/* Continent-like patterns for Earth-616 */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 rounded-full" />
+                          <div className="absolute top-2 left-4 w-8 h-6 bg-green-700/80 rounded-lg transform rotate-12" />
+                          <div className="absolute top-6 right-3 w-6 h-4 bg-green-600/70 rounded transform -rotate-45" />
+                          <div className="absolute bottom-4 left-6 w-10 h-5 bg-green-800/80 rounded-xl transform rotate-6" />
+                          <div className="absolute bottom-6 right-2 w-7 h-4 bg-green-700/70 rounded transform rotate-12" />
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-8 bg-green-600/60 rounded-2xl rotate-45" />
+                          {/* Cloud patterns */}
+                          <div className="absolute inset-0 rounded-full" style={{
+                            background: 'radial-gradient(ellipse at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(255,255,255,0.2) 0%, transparent 40%)'
+                          }} />
+                          {/* Atmospheric glow */}
+                          <div className="absolute inset-0 rounded-full border border-blue-400/30" style={{
+                            boxShadow: 'inset 0 0 20px rgba(59, 130, 246, 0.3)'
+                          }} />
+                        </div>
                       )}
+                      
                       {theme.id === 'earth-838' && (
-                        <div className="absolute inset-0 shadow-[inset_10px_10px_20px_rgba(0,0,0,0.1),inset_-10px_-10px_20px_rgba(255,255,255,0.7)]" />
-                      )}
-                      {theme.id === 'coming-soon' ? (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="text-center">
-                            <div className="w-16 h-16 bg-white/10 rounded-full mx-auto mb-3 flex items-center justify-center">
-                              <span className="text-2xl">🔮</span>
-                            </div>
-                            <h3 className={`${theme.textColor} font-bold text-xl`}>{theme.name}</h3>
-                            <p className={`${theme.subtitleColor} text-sm mt-1`}>{theme.description}</p>
-                          </div>
+                        <div className="absolute inset-0 rounded-full overflow-hidden">
+                          {/* Neumorphic Earth design */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-gray-300 via-gray-200 to-gray-300 rounded-full" />
+                          {/* Soft relief continents */}
+                          <div className="absolute top-3 left-3 w-8 h-6 rounded-lg transform rotate-12"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.8), rgba(107, 114, 128, 0.6))',
+                              boxShadow: 'inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.8)'
+                            }} />
+                          <div className="absolute top-6 right-2 w-6 h-4 rounded transform -rotate-45"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.7), rgba(107, 114, 128, 0.5))',
+                              boxShadow: 'inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.8)'
+                            }} />
+                          <div className="absolute bottom-4 left-5 w-10 h-5 rounded-xl transform rotate-6"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.8), rgba(107, 114, 128, 0.6))',
+                              boxShadow: 'inset 2px 2px 4px rgba(0,0,0,0.1), inset -2px -2px 4px rgba(255,255,255,0.8)'
+                            }} />
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-8 rounded-2xl rotate-45"
+                            style={{
+                              background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.6), rgba(107, 114, 128, 0.4))',
+                              boxShadow: 'inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.8)'
+                            }} />
+                          {/* Soft atmospheric effect */}
+                          <div className="absolute inset-0 rounded-full" style={{
+                            background: 'radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.4) 0%, transparent 60%)'
+                          }} />
                         </div>
-                      ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <h3 className={`${theme.textColor} font-bold text-xl mt-2`}>{theme.name}</h3>
-                          <p className={`${theme.subtitleColor} text-sm mt-1`}>{theme.description}</p>
+                      )}
+                      
+                      {theme.id === 'Earth-199999' && (
+                        <div className="absolute inset-0 rounded-full overflow-hidden">
+                          {/* Mystical future Earth */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-900 rounded-full" />
+                          {/* Glowing mystical continents */}
+                          <div className="absolute top-2 left-4 w-8 h-6 bg-gradient-to-br from-pink-500/80 to-purple-600/80 rounded-lg transform rotate-12 blur-[1px]" />
+                          <div className="absolute top-6 right-3 w-6 h-4 bg-gradient-to-br from-cyan-500/70 to-purple-500/70 rounded transform -rotate-45 blur-[1px]" />
+                          <div className="absolute bottom-4 left-6 w-10 h-5 bg-gradient-to-br from-purple-500/80 to-pink-600/80 rounded-xl transform rotate-6 blur-[1px]" />
+                          <div className="absolute bottom-6 right-2 w-7 h-4 bg-gradient-to-br from-indigo-500/70 to-purple-600/70 rounded transform rotate-12 blur-[1px]" />
+                          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-8 bg-gradient-to-br from-purple-400/60 to-pink-500/60 rounded-2xl rotate-45 blur-[1px]" />
+                          {/* Mystical energy swirls */}
+                          <div className="absolute inset-0 rounded-full" style={{
+                            background: 'conic-gradient(from 0deg, transparent, rgba(168, 85, 247, 0.3) 30%, transparent 60%, rgba(236, 72, 153, 0.3) 90%, transparent)',
+                            animation: 'spin 8s linear infinite'
+                          }} />
+                          <div className="absolute inset-0 rounded-full" style={{
+                            background: 'radial-gradient(ellipse at 60% 40%, rgba(139, 92, 246, 0.4) 0%, transparent 50%)'
+                          }} />
+                          {/* Future tech grid overlay */}
+                          <div className="absolute inset-0 rounded-full border border-purple-400/40" style={{
+                            boxShadow: 'inset 0 0 20px rgba(147, 51, 234, 0.4)'
+                          }} />
                         </div>
                       )}
+
+                      {/* Earth name and description overlay */}
+                      <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                        <h3 className={`${theme.textColor} font-bold text-lg drop-shadow-lg`}>{theme.name}</h3>
+                        <p className={`${theme.subtitleColor} text-xs mt-1 drop-shadow-md`}>{theme.description}</p>
+                      </div>
+                      
+                      {/* Orbital ring effect */}
+                      <div className="absolute inset-0 rounded-full border border-white/20" style={{
+                        transform: 'rotateX(75deg)',
+                        borderStyle: 'dashed',
+                        borderWidth: '1px',
+                        opacity: 0.3
+                      }} />
                     </div>
                     <button 
                       disabled={theme.disabled}
