@@ -100,7 +100,7 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-screen h-screen p-0 border-none bg-black/70">
+      <DialogContent className="w-screen h-screen p-0 border-none bg-black/70 [&>button]:hidden">
         <DialogTitle className="sr-only">Theme Selection Portal</DialogTitle>
         
         {/* Scattered magical particles throughout the whole background */}
