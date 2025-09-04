@@ -51,18 +51,22 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
       }
     },
     {
-      id: 'Earth-199999',
-      name: 'Coming Soon',
-      description: 'Future theme variant',
+      id: 'Earth-X',
+      name: 'Earth-X',
+      description: 'Future Theme Dimension',
       background: 'bg-gradient-to-br from-purple-900 to-indigo-900',
       innerBackground: 'bg-purple-800/30',
       gradient: 'from-purple-600/10 to-indigo-600/20',
       buttonGradient: 'from-pink-500 to-rose-500',
       textColor: 'text-white',
       subtitleColor: 'text-purple-200',
-      buttonText: 'Stay Tuned',
-      disabled: true,
-      badge: 'new earth'
+      buttonText: 'Visit Earth-X',
+      disabled: false,
+      badge: 'new earth',
+      onClick: () => {
+        window.open('https://earth-x.ryradit.my.id/', '_blank');
+        setTimeout(() => onOpenChange(false), 200);
+      }
     }
   ];
 
