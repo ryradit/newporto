@@ -638,40 +638,55 @@
 }
 
 .carousel-container {
-  perspective: 1000px;
+  perspective: 1200px;
+  perspective-origin: center center;
 }
 
-.carousel-container:hover .carousel-card {
-  transform: translateY(-5px);
+.carousel-container:hover .carousel-card.active {
+  transform: rotateY(0deg) translateZ(90px) scale(1.1) translateY(-8px);
+}
+
+.carousel-container:hover .carousel-card.prev {
+  transform: rotateY(25deg) translateZ(30px) translateX(-120%) scale(0.9) translateY(-8px);
+}
+
+.carousel-container:hover .carousel-card.next {
+  transform: rotateY(-25deg) translateZ(30px) translateX(120%) scale(0.9) translateY(-8px);
+}
+
+.carousel-container:hover .carousel-card.back {
+  transform: rotateY(0deg) translateZ(-100px) scale(0.7) translateY(-8px);
 }
 
 .carousel-card {
-  transition: all 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-style: preserve-3d;
+  will-change: transform, opacity;
 }
 
 .carousel-card.active {
-  transform: rotateY(0deg) translateZ(50px) scale(1.08);
+  transform: rotateY(0deg) translateZ(80px) scale(1.1);
   z-index: 5;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  opacity: 1;
 }
 
 .carousel-card.prev {
-  transform: rotateY(40deg) translateZ(-100px) translateX(-70%) scale(0.8);
+  transform: rotateY(25deg) translateZ(20px) translateX(-120%) scale(0.9);
   z-index: 4;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .carousel-card.next {
-  transform: rotateY(-40deg) translateZ(-100px) translateX(70%) scale(0.8);
+  transform: rotateY(-25deg) translateZ(20px) translateX(120%) scale(0.9);
   z-index: 4;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .carousel-card.back {
-  transform: rotateY(180deg) translateZ(-200px) scale(0.7);
-  z-index: 3;
-  opacity: 0.25;
+  transform: rotateY(0deg) translateZ(-100px) scale(0.7);
+  z-index: 2;
+  opacity: 0.5;
 }
 
 .carousel-controls {
