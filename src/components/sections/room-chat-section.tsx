@@ -23,9 +23,8 @@ import { ChatMessage, type ChatMessageProps } from "@/components/chatbot/chat-me
 import { useState, useRef, useEffect } from "react";
 import { Bot, Loader2, Send, MessageSquarePlus, User } from "lucide-react";
 import { useAuth } from "@/contexts/auth-context";
-import { db } from "@/lib/firebase";
+import { supabase } from "@/lib/supabase";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { motion } from "framer-motion";
 import { MobileHeader } from "@/components/layout/mobile-header";
 
@@ -57,25 +56,46 @@ export function RoomChatSection() {
   });
 
   useEffect(() => {
-    const q = query(
-      collection(db, "chat_messages"),
-      orderBy("timestamp", "asc")
-    );
+    const fetchMessages = async () => {
+      const { data, error } = await supabase
+        .from('chat_messages')
+        .select('*')
+        .order('timestamp', { ascending: true });
+        
+      if (error) {
+        console.error("Error fetching messages:", error);
+      } else if (data) {
+        setChatMessages(data.map(msg => ({
+          role: msg.role,
+          content: msg.content,
+          timestamp: new Date(msg.timestamp),
+          user: msg.user
+        })));
+      }
+    };
+    
+    fetchMessages();
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messages = snapshot.docs.map(doc => {
-        const data = doc.data();
-        return {
-          role: data.role,
-          content: data.content,
-          timestamp: data.timestamp?.toDate(),
-          user: data.user
-        } as ChatMessageProps;
-      });
-      setChatMessages(messages);
-    });
+    const channel = supabase
+      .channel('public:chat_messages')
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'chat_messages' },
+        (payload) => {
+          const newMsg = payload.new as any;
+          setChatMessages(prev => [...prev, {
+            role: newMsg.role,
+            content: newMsg.content,
+            timestamp: new Date(newMsg.timestamp),
+            user: newMsg.user
+          }]);
+        }
+      )
+      .subscribe();
 
-    return () => unsubscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -99,12 +119,16 @@ export function RoomChatSection() {
         isAuthor: isAuthor
       };
 
-      await addDoc(collection(db, "chat_messages"), {
-        role: isAuthor ? "author" : "user",
-        content: data.message,
-        timestamp: serverTimestamp(),
-        user: userData
-      });
+      const { error } = await supabase
+        .from('chat_messages')
+        .insert({
+          role: isAuthor ? "author" : "user",
+          content: data.message,
+          timestamp: new Date().toISOString(),
+          user: userData
+        });
+
+      if (error) throw error;
       
       form.reset({ message: "" });
     } catch (error) {

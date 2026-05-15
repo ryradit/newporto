@@ -16,7 +16,15 @@ const id = {
       softwareEngineer: 'Insinyur Perangkat Lunak'
     },
     description: 'Membangun solusi cerdas yang menjembatani kesenjangan antara data dan dampak dunia nyata. Mengeksplorasi perbatasan Machine Learning dan Deep Learning.',
-    skills: 'Keahlian Saya'
+    skills: 'Keahlian Saya',
+    aboutDescription: 'Software & AI Engineer. Temukan latar belakang, keahlian, dan pengalaman saya.',
+    projectsDescription: 'Jelajahi portofolio proyek AI, Web, dan Mobile saya.',
+    chatDescription: 'Ruang obrolan untuk berekspresi dan berbagi lebih banyak.',
+    contactDescription: 'Hubungi saya untuk kolaborasi.',
+    viewProjects: 'Lihat proyek',
+    startChat: 'Mulai obrolan',
+    contactMe: 'Hubungi saya',
+    learnMore: 'Pelajari lebih lanjut'
   },
   about: {
     title: 'Tentang Saya',
@@ -30,6 +38,32 @@ const id = {
     professionalExperience: 'Pengalaman Profesional',
     education: 'Pendidikan',
     careerHistory: [
+      {
+        title: 'WEBSITE SUCCESS ASSOCIATE',
+        company: 'DreamHost',
+        location: 'Brea, California, Amerika Serikat',
+        period: 'Des 2025 – Sekarang',
+        companyLogo: '/dreamhost logo.png',
+        responsibilities: [
+          'Merancang dan meluncurkan website yang responsif dan berfokus pada pengguna, mengelola pengembangan ujung-ke-ujung dari konsep, perencanaan, dan desain hingga pengujian, penerapan, dan dukungan pasca-peluncuran.',
+          'Memberi saran kepada klien tentang pendekatan pengembangan yang sesuai, menyesuaikan website dengan kebutuhan bisnis, mengintegrasikan API dan layanan backend, serta memberikan solusi digital yang dapat diskalakan dan berkinerja tinggi.',
+          'Meningkatkan kinerja dan keandalan website melalui caching, integrasi CDN, lazy loading, pengoptimalan gambar, praktik terbaik SEO, ditambah konfigurasi DNS, pengaturan SSL, dan penerapan hosting.',
+          'Berkolaborasi dengan tim lintas fungsi untuk menyelesaikan masalah teknis, menyederhanakan alur kerja pelanggan, dan mendidik pengguna melalui dokumentasi, sumber daya yang dapat digunakan kembali, dan praktik terbaik pengembangan website modern.'
+        ]
+      },
+      {
+        title: 'MACHINE LEARNING ENGINEER',
+        company: 'AME Research',
+        location: 'Jakarta, Indonesia',
+        period: 'Nov 2025 – Des 2025',
+        companyLogo: '/ame_research_logo.jpg',
+        responsibilities: [
+          'Mengembangkan skrip scraping dan parsing khusus untuk mengekstrak dan menyusun kumpulan data penting dari PDF terstruktur yang tidak standar untuk Industri Pertambangan.',
+          'Meningkatkan arsitektur perkiraan dengan menerapkan algoritme AI tingkat lanjut, meningkatkan efisiensi sistem, dan mengurangi overhead komputasi.',
+          'Menerapkan model analisis sentimen yang disesuaikan dengan terminologi sektor pertambangan untuk mengotomatiskan deteksi pergeseran dan anomali pasar.',
+          'Merancang alur kerja data ujung-ke-ujung yang menghubungkan ekstraksi dokumen, pemodelan prediktif, dan analitik untuk pelaporan yang mulus.'
+        ]
+      },
       {
         title: 'INSINYUR AI',
         company: 'Trymerra AI Ltd.',

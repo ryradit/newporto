@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '
 // Language detection function
 async function detectLanguage(text: string) {
   const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash-lite",
     generationConfig: {
       temperature: 0.1,
       maxOutputTokens: 10,
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     const inputLanguage = await detectLanguage(question);
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash-lite",
       generationConfig: {
         temperature: 0.7,
         topK: 1,

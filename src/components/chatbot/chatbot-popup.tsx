@@ -88,37 +88,19 @@ export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
   };
 
   const handleCVDownload = async () => {
-    const fileName = 'Ryan Radityatama - Software Engineer.pdf';
-    const encodedFileName = encodeURIComponent(fileName);
-    const cvUrl = `/${encodedFileName}`;
-
     try {
-      const response = await fetch(cvUrl);
-      if (!response.ok) {
-        throw new Error('CV file not found');
+      if (typeof window !== "undefined") {
+        window.open("https://drive.google.com/drive/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing", "_blank", "noopener,noreferrer");
       }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      
-      // Clean up
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(link);
-
       toast({
-        title: "Download Started",
-        description: "Your download should begin shortly.",
+        title: "Opening CV",
+        description: "Ryan's CV is opening in a new tab.",
       });
     } catch (error) {
       console.error('CV download error:', error);
       toast({
-        title: "Download Failed",
-        description: "Could not download the CV. Please try again later.",
+        title: "Failed to open",
+        description: "Could not open the CV link.",
         variant: "destructive",
       });
     }

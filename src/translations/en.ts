@@ -14,7 +14,15 @@ const en = {
       softwareEngineer: 'Software Engineer'
     },
     description: 'Welcome to my portfolio! I\'m glad you\'re here. I specialize in building intelligent solutions that make technology more human-friendly. Let\'s explore how we can create something amazing together.',
-    skills: 'My Skills'
+    skills: 'My Skills',
+    aboutDescription: 'AI & Software Engineer. Discover my background, skills, and experience.',
+    projectsDescription: 'Explore my portfolio of AI, Web, and Mobile projects.',
+    chatDescription: 'Chat room to express and share more.',
+    contactDescription: 'Get in touch for collaborations.',
+    viewProjects: 'View projects',
+    startChat: 'Start chatting',
+    contactMe: 'Contact me',
+    learnMore: 'Learn more'
   },
   about: {
     title: 'About Me',
@@ -28,6 +36,32 @@ const en = {
     professionalExperience: 'Professional Experience',
     education: 'Education',
     careerHistory: [
+      {
+        title: 'WEBSITE SUCCESS ASSOCIATE',
+        company: 'DreamHost',
+        location: 'Brea, California, United States',
+        period: 'Dec 2025 – Now',
+        companyLogo: '/dreamhost logo.png',
+        responsibilities: [
+          'Designed and launched responsive, user-focused websites, managing end-to-end development from concept, planning, and design through testing, deployment, and post-launch support.',
+          'Advised clients on suitable development approaches, customized websites to business needs, integrated APIs and backend services, and delivered scalable, high-performing digital solutions.',
+          'Improved website performance and reliability through caching, CDN integration, lazy loading, image optimization, SEO best practices, plus DNS configuration, SSL setup, and hosting deployment.',
+          'Collaborated with cross-functional teams to resolve technical issues, streamline customer workflows, and educate users through documentation, reusable resources, and modern website development best practices.'
+        ]
+      },
+      {
+        title: 'MACHINE LEARNING ENGINEER',
+        company: 'AME Research',
+        location: 'Jakarta, Indonesia',
+        period: 'Nov 2025 – Dec 2025',
+        companyLogo: '/ame_research_logo.jpg',
+        responsibilities: [
+          'Developed custom scraping and parsing scripts to extract and structure critical datasets from non-standardized structured PDFs for Mining Industry.',
+          'Upgraded forecasting architectures by implementing advanced AI algorithms, increasing system efficiency and reducing computational overhead.',
+          'Implemented sentiment analysis models tailored to mining sector terminology to automate the detection of market shifts and anomalies.',
+          'Designed end-to-end data workflows that link document extraction, predictive modeling, and analytics for seamless reporting.'
+        ]
+      },
       {
         title: 'AI ENGINEER',
         company: 'Trymerra AI Ltd.',

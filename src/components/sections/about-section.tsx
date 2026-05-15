@@ -8,9 +8,37 @@ import { EducationTimeline } from "@/components/ui/education-timeline";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
 import { MobileHeader } from "@/components/layout/mobile-header";
+import { useState, useEffect } from "react";
+import { getExperiences, getEducation } from "@/lib/supabase-cms";
 
 export function AboutSection() {
   const { language } = useLanguage();
+  const [experiences, setExperiences] = useState<any[]>([]);
+  const [education, setEducation] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const expData = await getExperiences(language);
+        if (expData && expData.length > 0) {
+          setExperiences(expData.map(e => ({ ...e, companyLogo: e.company_logo })));
+        } else {
+          setExperiences(translate<any[]>('about.careerHistory', language) || []);
+        }
+
+        const eduData = await getEducation(language);
+        if (eduData && eduData.length > 0) {
+          setEducation(eduData.map(e => ({ ...e, institutionLogo: e.institution_logo })));
+        } else {
+          setEducation(translate<any[]>('about.educationHistory', language) || []);
+        }
+      } catch (err) {
+        setExperiences(translate<any[]>('about.careerHistory', language) || []);
+        setEducation(translate<any[]>('about.educationHistory', language) || []);
+      }
+    }
+    load();
+  }, [language]);
   
   const educationHistory = [
     {
@@ -136,7 +164,7 @@ export function AboutSection() {
                   className="group bg-gradient-to-r from-blue-600 to-violet-600 hover:from-violet-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
                   asChild
                 >
-                  <a href="/Ryan Radityatama - Software Engineer.pdf" download className="flex items-center gap-2 relative overflow-hidden">
+                  <a href="https://drive.google.com/drive/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 relative overflow-hidden">
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
                       width="16" 
@@ -168,12 +196,12 @@ export function AboutSection() {
           <h3 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8">
             {translate('about.professionalExperience', language)}
           </h3>
-          <Timeline items={translate<any[]>('about.careerHistory', language)} />
+          <Timeline items={experiences} />
           
           <h3 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8 mt-16">
             {translate('about.education', language)}
           </h3>
-          <EducationTimeline items={translate<any[]>('about.educationHistory', language)} />
+          <EducationTimeline items={education} />
         </div>
       </div>
     </AnimatedSection>

@@ -1,8 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { auth, googleProvider } from '@/lib/firebase';
-import { signInWithPopup, signOut as firebaseSignOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { supabase } from '@/lib/supabase';
 
 interface User {
   id: string;
@@ -25,38 +24,63 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
 });
 
-function formatUser(user: FirebaseUser): User {
-  return {
-    id: user.uid,
-    name: user.displayName || 'User',
-    email: user.email || '',
-    image: user.photoURL || undefined,
-  };
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(formatUser(user));
+    // Get initial session
+    const initializeAuth = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error("Error getting session:", error);
+      }
+
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          name: session.user.user_metadata.full_name || session.user.user_metadata.name || 'User',
+          email: session.user.email || '',
+          image: session.user.user_metadata.avatar_url || undefined,
+        });
       } else {
         setUser(null);
       }
       setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    initializeAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          setUser({
+            id: session.user.id,
+            name: session.user.user_metadata.full_name || session.user.user_metadata.name || 'User',
+            email: session.user.email || '',
+            image: session.user.user_metadata.avatar_url || undefined,
+          });
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const signInWithGoogle = async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      if (result.user) {
-        setUser(formatUser(result.user));
-      }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          // redirectTo: `${window.location.origin}/auth/callback` // Optional, depending on your routing setup
+        }
+      });
+      if (error) throw error;
     } catch (error) {
       console.error('Error signing in with Google:', error);
     }
@@ -64,8 +88,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
-      setUser(null);
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
     } catch (error) {
       console.error('Error signing out:', error);
     }

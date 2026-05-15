@@ -20,7 +20,7 @@ export function TimelineItem({ title, company, location, period, responsibilitie
       <div className="absolute left-0 top-4 bottom-0 w-px bg-primary/20 transform -translate-x-1/2"></div>
       <div className={`bg-card rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-primary/10 ${isExpanded ? 'scale-[1.02]' : ''}`}>
         <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-background/50 border border-primary/10">
+          <div className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border border-primary/10 ${company === 'DreamHost' ? 'bg-white' : 'bg-background/50'}`}>
             {companyLogo ? (
               <Image
                 src={companyLogo}

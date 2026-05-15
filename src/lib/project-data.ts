@@ -12,6 +12,33 @@ export type Project = {
 
 const enProjects: Project[] = [
   {
+    title: "Dlob Community Platform Website",
+    description: "A dynamic community platform website featuring interactive elements and engagement tools. Built to support and connect growing online communities.",
+    imageUrl: "/dlob.png",
+    imageHint: "community platform website",
+    tags: ["Web Development", "Community Platform", "Next.js", "React", "TailwindCSS"],
+    liveLink: "https://www.dlobcommunity.com/beranda",
+    codeLink: "#",
+  },
+  {
+    title: "Wonderful Indonesia - AI Trip Planner",
+    description: "An intelligent travel planner for exploring Indonesia, combining rich tourism data with an AI assistant to curate personalized itineraries.",
+    imageUrl: "/wonderfulindo.png",
+    imageHint: "AI Travel Platform",
+    tags: ["AI", "Next.js", "Travel Tech", "React"],
+    liveLink: "https://wonderfulindonesia.dreamhosters.com/",
+    codeLink: "#",
+  },
+  {
+    title: "Future Windows XP - Nostalgia OS with AI",
+    description: "A nostalgic web-based recreation of Windows XP, beautifully infused with modern AI capabilities to bring classic memories into the future.",
+    imageUrl: "/futurexp.png",
+    imageHint: "AI OS Interface",
+    tags: ["Web OS", "AI", "Nostalgia", "React"],
+    liveLink: "https://futurexp.dreamhosters.com/",
+    codeLink: "#",
+  },
+  {
     title: "Seido Mitra Abadi - Company Website",
     description: "Developed a modern company website for Seido Mitra Abadi featuring professional design, responsive layout, and dynamic content management. Built with Next.js and TailwindCSS for optimal performance.",
     imageUrl: "/imagess/seido.png",
@@ -60,6 +87,33 @@ const enProjects: Project[] = [
 
 const idProjects: Project[] = [
   {
+    title: "Dlob Community Platform Website",
+    description: "Website platform komunitas dinamis yang dilengkapi elemen interaktif dan alat keterlibatan. Dibangun untuk mendukung dan menghubungkan komunitas online.",
+    imageUrl: "/dlob.png",
+    imageHint: "website platform komunitas",
+    tags: ["Pengembangan Web", "Platform Komunitas", "Next.js", "React", "TailwindCSS"],
+    liveLink: "https://www.dlobcommunity.com/beranda",
+    codeLink: "#",
+  },
+  {
+    title: "Wonderful Indonesia - Perencana Perjalanan AI",
+    description: "Perencana perjalanan cerdas untuk menjelajahi Indonesia, menggabungkan data pariwisata dengan asisten AI untuk menyusun rencana perjalanan yang dipersonalisasi.",
+    imageUrl: "/wonderfulindo.png",
+    imageHint: "Platform Perjalanan AI",
+    tags: ["AI", "Next.js", "Teknologi Perjalanan", "React"],
+    liveLink: "https://wonderfulindonesia.dreamhosters.com/",
+    codeLink: "#",
+  },
+  {
+    title: "Future Windows XP - OS Nostalgia dengan AI",
+    description: "Rekreasi Windows XP berbasis web yang nostalgia, dipadukan dengan kemampuan AI modern untuk membawa kenangan klasik ke masa depan.",
+    imageUrl: "/futurexp.png",
+    imageHint: "Antarmuka OS AI",
+    tags: ["Web OS", "AI", "Nostalgia", "React"],
+    liveLink: "https://futurexp.dreamhosters.com/",
+    codeLink: "#",
+  },
+  {
     title: "Seido Mitra Abadi - Website Perusahaan",
     description: "Mengembangkan website perusahaan modern untuk Seido Mitra Abadi dengan desain profesional, tata letak responsif, dan manajemen konten dinamis. Dibangun dengan Next.js dan TailwindCSS untuk kinerja optimal.",
     imageUrl: "/imagess/seido.png",
@@ -107,6 +161,33 @@ const idProjects: Project[] = [
 ];
 
 const zhProjects: Project[] = [
+  {
+    title: "Dlob Community Platform Website",
+    description: "一个包含互动元素和参与工具的动态社区平台网站。旨在支持和连接不断增长的在线社区。",
+    imageUrl: "/dlob.png",
+    imageHint: "社区平台网站",
+    tags: ["网络开发", "社区平台", "Next.js", "React", "TailwindCSS"],
+    liveLink: "https://www.dlobcommunity.com/beranda",
+    codeLink: "#",
+  },
+  {
+    title: "Wonderful Indonesia - AI 旅行规划师",
+    description: "一个用于探索印度尼西亚的智能旅行规划器，将丰富的旅游数据与AI助手相结合，以策划个性化的行程。",
+    imageUrl: "/wonderfulindo.png",
+    imageHint: "AI 旅游平台",
+    tags: ["人工智能", "Next.js", "旅游科技", "React"],
+    liveLink: "https://wonderfulindonesia.dreamhosters.com/",
+    codeLink: "#",
+  },
+  {
+    title: "Future Windows XP - 结合 AI 的怀旧操作系统",
+    description: "一个基于网络的怀旧版Windows XP，完美融合了现代AI功能，将经典记忆带入未来。",
+    imageUrl: "/futurexp.png",
+    imageHint: "AI 操作系统界面",
+    tags: ["网络操作系统", "人工智能", "怀旧", "React"],
+    liveLink: "https://futurexp.dreamhosters.com/",
+    codeLink: "#",
+  },
   {
     title: "Seido Mitra Abadi - 公司网站",
     description: "为Seido Mitra Abadi开发了现代公司网站，具有专业设计、响应式布局和动态内容管理功能。使用Next.js和TailwindCSS构建以实现最佳性能。",

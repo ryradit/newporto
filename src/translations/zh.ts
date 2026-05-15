@@ -16,7 +16,15 @@ const zh = {
       softwareEngineer: '软件工程师'
     },
     description: '构建智能解决方案，连接数据与现实世界的影响。探索机器学习和深度学习的前沿。',
-    skills: '我的技能'
+    skills: '我的技能',
+    aboutDescription: '人工智能与软件工程师。了解我的背景、技能和经验。',
+    projectsDescription: '探索我的人工智能、网络和移动项目组合。',
+    chatDescription: '表达和分享更多的聊天室。',
+    contactDescription: '联系我进行合作。',
+    viewProjects: '查看项目',
+    startChat: '开始聊天',
+    contactMe: '联系我',
+    learnMore: '了解更多'
   },
   about: {
     title: '关于我',
@@ -30,6 +38,32 @@ const zh = {
     professionalExperience: '工作经验',
     education: '教育背景',
     careerHistory: [
+      {
+        title: 'WEBSITE SUCCESS ASSOCIATE',
+        company: 'DreamHost',
+        location: '美国加利福尼亚州布雷亚',
+        period: '2025年12月 – 至今',
+        companyLogo: '/dreamhost logo.png',
+        responsibilities: [
+          '设计并推出了响应迅速、以用户为中心的网站，管理从概念、规划和设计到测试、部署和发布后支持的端到端开发。',
+          '就合适的开发方法向客户提供建议，根据业务需求定制网站，集成API和后端服务，并交付可扩展的高性能数字解决方案。',
+          '通过缓存、CDN集成、延迟加载、图像优化、SEO最佳实践以及DNS配置、SSL设置和托管部署，提高了网站性能和可靠性。',
+          '与跨职能团队合作解决技术问题，简化客户工作流程，并通过文档、可重用资源和现代网站开发最佳实践对用户进行教育。'
+        ]
+      },
+      {
+        title: 'MACHINE LEARNING ENGINEER',
+        company: 'AME Research',
+        location: '印度尼西亚雅加达',
+        period: '2025年11月 – 2025年12月',
+        companyLogo: '/ame_research_logo.jpg',
+        responsibilities: [
+          '开发了自定义抓取和解析脚本，从非标准化的结构化PDF中提取和构建关键数据集，服务于采矿行业。',
+          '通过实施高级AI算法升级了预测架构，提高了系统效率并减少了计算开销。',
+          '实施了针对采矿领域术语量身定制的情感分析模型，以自动检测市场变化和异常情况。',
+          '设计了端到端数据工作流，将文档提取、预测建模和分析连接起来，实现无缝报告。'
+        ]
+      },
       {
         title: 'AI工程师',
         company: 'Trymerra AI有限公司',

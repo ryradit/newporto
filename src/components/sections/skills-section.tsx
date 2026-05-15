@@ -25,6 +25,14 @@ import {
   Component
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getSkills } from "@/lib/supabase-cms";
+
+const iconMap: Record<string, LucideIcon> = {
+  Code2, BrainCircuit, MessageCircle, GitFork, Server, Palette, Layers, Camera,
+  Database, Cloud, Wind, Box, Replace, FastForward, FileCode, GithubIcon, Container,
+  Flame, Sparkles, Component
+};
 
 const Package = Box; 
 
@@ -33,26 +41,50 @@ interface SkillBadge {
   icon: LucideIcon;
 }
 
-const skillsListTopRow: SkillBadge[] = [
-  { name: "Python", icon: FileCode },
-  { name: "JavaScript", icon: FileCode },
-  { name: "TypeScript", icon: FileCode },
-  { name: "React.js", icon: Code2 },
-  { name: "Next.js", icon: FastForward },
-  { name: "Node.js", icon: Server },
-  { name: "TailwindCSS", icon: Wind },
-];
-
-const skillsListBottomRow: SkillBadge[] = [
-  { name: "TensorFlow", icon: BrainCircuit },
-  { name: "PyTorch", icon: Layers },
-  { name: "OpenCV", icon: Camera },
-  { name: "LLMs", icon: MessageCircle },
-  { name: "Git", icon: GitFork },
-  { name: "Firebase", icon: Flame },
-];
-
 export function SkillsSection() {
+  const [skillsListTopRow, setSkillsListTopRow] = useState<SkillBadge[]>([
+    { name: "Python", icon: FileCode },
+    { name: "JavaScript", icon: FileCode },
+    { name: "TypeScript", icon: FileCode },
+    { name: "React.js", icon: Code2 },
+    { name: "Next.js", icon: FastForward },
+    { name: "Node.js", icon: Server },
+    { name: "TailwindCSS", icon: Wind },
+  ]);
+  
+  const [skillsListBottomRow, setSkillsListBottomRow] = useState<SkillBadge[]>([
+    { name: "TensorFlow", icon: BrainCircuit },
+    { name: "PyTorch", icon: Layers },
+    { name: "OpenCV", icon: Camera },
+    { name: "LLMs", icon: MessageCircle },
+    { name: "Git", icon: GitFork },
+    { name: "Firebase", icon: Flame },
+  ]);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getSkills();
+        if (data && data.length > 0) {
+          const top = data.filter(s => s.row_placement === 'top').map(s => ({
+            name: s.name,
+            icon: iconMap[s.icon_name] || Code2
+          }));
+          const bottom = data.filter(s => s.row_placement === 'bottom').map(s => ({
+            name: s.name,
+            icon: iconMap[s.icon_name] || Code2
+          }));
+          
+          if (top.length > 0) setSkillsListTopRow(top);
+          if (bottom.length > 0) setSkillsListBottomRow(bottom);
+        }
+      } catch (err) {
+        console.error("Failed to load skills", err);
+      }
+    }
+    load();
+  }, []);
+
   const duplicatedSkillsTop = [...skillsListTopRow, ...skillsListTopRow];
   const duplicatedSkillsBottom = [...skillsListBottomRow, ...skillsListBottomRow];
 

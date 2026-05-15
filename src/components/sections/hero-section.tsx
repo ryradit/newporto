@@ -256,17 +256,35 @@ export function HeroSection() {
             </div>
 
             {/* Feature Cards Section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-5xl mx-auto w-full mt-8 md:mt-16">
+            <div className="relative max-w-5xl mx-auto w-full mt-8 md:mt-16">
+              {/* Colorful glow to make glassmorphism visible */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/20 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full">
               {/* About Card */}
-              <Link href="/about" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+              <Link href="/about" className="group relative overflow-hidden rounded-[2rem] bg-gradient-to-b from-white/[0.08] to-black/20 hover:from-white/[0.12] hover:to-black/40 backdrop-blur-3xl border border-white/[0.05] hover:border-white/[0.15] transition-all duration-700 p-6 md:p-8 text-center transform hover:-translate-y-3 shadow-2xl hover:shadow-[0_20px_40px_rgba(124,58,237,0.2)]">
+                <div className="absolute inset-x-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
                 <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
                 <div className="relative z-10">
-                  <div className="relative mb-4">
-                    <div className="w-16 h-16 flex items-center justify-center mx-auto rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-500">
-                      <User className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
+                  <div className="relative mb-4 h-24 flex items-center justify-center">
+                    <div className="flex flex-col items-center justify-center gap-2 w-full max-w-[160px] mx-auto bg-primary/5 rounded-xl p-3 border border-white/5 group-hover:bg-primary/10 group-hover:border-white/10 transition-all duration-500">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[2px] group-hover:scale-110 transition-transform duration-500">
+                        <div className="w-full h-full bg-zinc-950 rounded-full flex items-center justify-center">
+                          <User className="w-4 h-4 text-white/90" />
+                        </div>
+                      </div>
+                      <div className="w-full flex flex-col items-center gap-1.5">
+                        <div className="h-1.5 w-16 bg-primary/40 rounded-full"></div>
+                        <div className="h-1 w-20 bg-white/20 rounded-full"></div>
+                        <div className="flex gap-1 mt-0.5">
+                          <div className="h-1 w-6 bg-indigo-500/50 rounded-full"></div>
+                          <div className="h-1 w-8 bg-purple-500/50 rounded-full"></div>
+                          <div className="h-1 w-5 bg-pink-500/50 rounded-full"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10"></div>
+                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 -z-10"></div>
                   </div>
                   <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-white transition-colors">{translate('menu.about', language)}</h3>
                   <p className="text-sm text-muted-foreground mb-4 group-hover:text-white/80 transition-colors">{translate('hero.aboutDescription', language) || "Discover my background, skills, and experience."}</p>
@@ -282,20 +300,34 @@ export function HeroSection() {
                     </span>
                   </div>
                 </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+                
               </Link>
 
               {/* Projects Card */}
                             {/* Projects Card */}
-              <Link href="/projects" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+              <Link href="/projects" className="group relative overflow-hidden rounded-[2rem] bg-gradient-to-b from-white/[0.08] to-black/20 hover:from-white/[0.12] hover:to-black/40 backdrop-blur-3xl border border-white/[0.05] hover:border-white/[0.15] transition-all duration-700 p-6 md:p-8 text-center transform hover:-translate-y-3 shadow-2xl hover:shadow-[0_20px_40px_rgba(124,58,237,0.2)]">
+                <div className="absolute inset-x-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
                 <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
                 <div className="relative z-10">
-                  <div className="relative mb-4">
-                    <div className="w-16 h-16 flex items-center justify-center mx-auto rounded-full bg-primary/10 mb-4 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-500">
-                      <Code2 className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
+                  <div className="relative mb-4 h-24 flex items-center justify-center">
+                    <div className="grid grid-cols-2 gap-2 w-full max-w-[160px] mx-auto">
+                      <div className="bg-primary/10 border border-white/5 rounded-lg p-2.5 flex flex-col gap-1.5 group-hover:bg-primary/20 group-hover:border-primary/30 group-hover:-translate-y-1 transition-all duration-500">
+                        <div className="w-5 h-5 rounded bg-indigo-500/20 flex items-center justify-center mb-1">
+                          <BrainCircuit className="w-3 h-3 text-indigo-400" />
+                        </div>
+                        <div className="h-1.5 w-full bg-white/20 rounded-full"></div>
+                        <div className="h-1 w-2/3 bg-white/10 rounded-full"></div>
+                      </div>
+                      <div className="bg-primary/5 border border-white/5 rounded-lg p-2.5 flex flex-col gap-1.5 group-hover:bg-primary/15 group-hover:border-primary/20 group-hover:translate-y-1 transition-all duration-500">
+                        <div className="w-5 h-5 rounded bg-pink-500/20 flex items-center justify-center mb-1">
+                          <ScanText className="w-3 h-3 text-pink-400" />
+                        </div>
+                        <div className="h-1.5 w-full bg-white/20 rounded-full"></div>
+                        <div className="h-1 w-3/4 bg-white/10 rounded-full"></div>
+                      </div>
                     </div>
-                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-xl opacity-0 group-hover:opacity-70 transition-all duration-500 -z-10"></div>
+                    <div className="absolute inset-0 bg-primary/30 rounded-full blur-2xl opacity-0 group-hover:opacity-40 transition-all duration-500 -z-10"></div>
                   </div>
                   <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-white transition-colors">{translate('menu.projects', language)}</h3>
                   <p className="text-sm text-muted-foreground mb-4 group-hover:text-white/80 transition-colors">{translate('hero.projectsDescription', language) || "Explore my portfolio of software projects."}</p>
@@ -311,11 +343,12 @@ export function HeroSection() {
                     </span>
                   </div>
                 </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+                
               </Link>
 
               {/* Live Chat Card */}
-              <Link href="/chat-room" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+              <Link href="/chat-room" className="group relative overflow-hidden rounded-[2rem] bg-gradient-to-b from-white/[0.08] to-black/20 hover:from-white/[0.12] hover:to-black/40 backdrop-blur-3xl border border-white/[0.05] hover:border-white/[0.15] transition-all duration-700 p-6 md:p-8 text-center transform hover:-translate-y-3 shadow-2xl hover:shadow-[0_20px_40px_rgba(124,58,237,0.2)]">
+                <div className="absolute inset-x-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
                 <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
                 <div className="relative z-10">
@@ -351,11 +384,12 @@ export function HeroSection() {
                     </span>
                   </div>
                 </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+                
               </Link>
 
               {/* Contact Card */}
-              <Link href="/contact" className="group relative overflow-hidden rounded-lg md:rounded-xl bg-card hover:bg-accent/30 transition-all duration-500 p-5 md:p-6 text-center transform hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(76,29,149,0.15)]">
+              <Link href="/contact" className="group relative overflow-hidden rounded-[2rem] bg-gradient-to-b from-white/[0.08] to-black/20 hover:from-white/[0.12] hover:to-black/40 backdrop-blur-3xl border border-white/[0.05] hover:border-white/[0.15] transition-all duration-700 p-6 md:p-8 text-center transform hover:-translate-y-3 shadow-2xl hover:shadow-[0_20px_40px_rgba(124,58,237,0.2)]">
+                <div className="absolute inset-x-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
                 <span className="absolute -top-10 -right-10 w-20 h-20 bg-primary/10 rounded-full group-hover:bg-primary/20 blur-xl transition-all duration-500"></span>
                 <div className="relative z-10">
@@ -394,8 +428,9 @@ export function HeroSection() {
                     </span>
                   </div>
                 </div>
-                <div className="absolute inset-0 border border-primary/10 rounded-xl group-hover:border-primary/30 group-hover:scale-[1.01] transition-all duration-500"></div>
+                
               </Link>
+              </div>
             </div>
           </div>
         </div>

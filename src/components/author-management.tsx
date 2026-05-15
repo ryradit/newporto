@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { setUserAsAuthor, removeUserAsAuthor, checkIfUserIsAuthor } from '@/lib/firebase-admin';
+import { setUserAsAuthor, removeUserAsAuthor, checkIfUserIsAuthor } from '@/lib/supabase-admin';
 import { toast } from "@/hooks/use-toast";
 
 export function AuthorManagement() {

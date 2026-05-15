@@ -15,7 +15,7 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 // Function to detect language
 async function detectLanguage(text: string): Promise<'en' | 'id' | 'zh'> {
   const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash-lite",
     generationConfig: {
       temperature: 0.1, // Very low temperature for consistent language detection
       maxOutputTokens: 10,
@@ -47,7 +47,7 @@ export async function translateText(text: string, targetLang: 'en' | 'id' | 'zh'
 
     // Configure the model with appropriate settings
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash-lite",
       generationConfig: {
         temperature: 0.3, // Lower temperature for more consistent translations
         topP: 0.8,

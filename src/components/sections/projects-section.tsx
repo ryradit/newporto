@@ -9,6 +9,7 @@ import { AnimatedSection } from "@/components/animated-section";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
 import { getProjectsByLanguage } from "@/lib/project-data";
+import { getProjects } from "@/lib/supabase-cms";
 import { MobileHeader } from "@/components/layout/mobile-header";
 
 // A utility function for class names
@@ -137,86 +138,84 @@ const ProjectCard = ({ project, index }: { project: any, index: number }) => {
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
             style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className="group relative h-80 w-full rounded-xl bg-slate-900 border border-slate-800 overflow-hidden"
+            className="group relative flex flex-col h-[520px] w-full rounded-[2rem] bg-[#121212] border border-white/5 overflow-hidden shadow-[0_20px_40px_-15px_rgba(0,0,0,0.7)]"
         >
-            <div 
-                style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}
-                className="absolute inset-4 flex flex-col justify-end p-6 rounded-lg overflow-hidden"
-            >
-                <img 
-                    src={project.imageUrl}
-                    alt={project.title}
-                    className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
-                    style={{ objectFit: 'cover' }}
-                    onError={(e) => { 
-                        const target = e.target as HTMLImageElement;
-                        target.onerror = null; 
-                        target.src='/imagess/placeholder.jpg'; 
-                    }}
-                />
-                <GenerativeArtCanvas isHovered={isHovered} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+            {/* 3D Inner Container */}
+            <div className="w-full h-full flex flex-col" style={{ transform: "translateZ(30px)", transformStyle: "preserve-3d" }}>
                 
-                <div className="relative z-10">
-                    <motion.h3 
-                        style={{ transform: "translateZ(75px)" }}
-                        className="text-xl font-bold text-white mb-1"
-                    >
-                        {project.title}
-                    </motion.h3>
-                    <motion.p
-                        style={{ transform: "translateZ(75px)" }}
-                        className="text-sm text-slate-400 mb-3 line-clamp-2"
-                    >
-                        {project.description}
-                    </motion.p>
-
-                    <div className="flex flex-wrap gap-2 mb-4" style={{ transform: "translateZ(75px)" }}>
-                        {project.tags.slice(0, 3).map((tag: string) => (
-                            <Badge 
-                                key={tag} 
-                                variant="secondary" 
-                                className="bg-black/50 hover:bg-black/70 text-white border border-white/10"
-                            >
-                                {tag}
-                            </Badge>
-                        ))}
-                        {project.tags.length > 3 && (
-                            <Badge 
-                                variant="secondary" 
-                                className="bg-black/50 hover:bg-black/70 text-white border border-white/10"
-                            >
-                                +{project.tags.length - 3}
-                            </Badge>
-                        )}
-                    </div>
-
-                    <div className="flex gap-3 mt-3" style={{ transform: "translateZ(75px)" }}>
-                        {hasLiveDemo && (
-                            <a 
-                                href={project.liveLink} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-all duration-300"
-                            >
-                                <ExternalLink size={16} className="text-white" />
-                            </a>
-                        )}
-                        {hasSourceCode && (
-                            <a 
-                                href={project.codeLink} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="p-2 bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-all duration-300"
-                            >
-                                <Github size={16} className="text-white" />
-                            </a>
-                        )}
+                {/* Image Section (Top 55%) */}
+                <div className="relative h-[55%] w-full overflow-hidden bg-zinc-900 shrink-0">
+                    <img 
+                        src={project.imageUrl}
+                        alt={project.title}
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+                        onError={(e) => { 
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null; 
+                            target.src='/imagess/placeholder.jpg'; 
+                        }}
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                    <GenerativeArtCanvas isHovered={isHovered} />
+                    
+                    {/* Top Left Text from Reference */}
+                    <div className="absolute top-6 left-6 text-white/90 text-sm font-serif tracking-wide" style={{ transform: "translateZ(20px)" }}>
+                        {project.title.split(' - ')[0] || "Project Showcase"}
                     </div>
                 </div>
 
-                <div className="absolute top-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ArrowUpRight />
+                {/* Content Section (Bottom 45%) */}
+                <div className="relative flex-grow flex flex-col justify-between p-6 md:p-8 bg-[#121212] z-10">
+                    <div style={{ transform: "translateZ(40px)" }}>
+                        {/* Title using Serif font like reference */}
+                        <h3 className="text-2xl md:text-3xl font-serif text-white mb-2 leading-tight line-clamp-2">
+                            {project.title.includes(' - ') ? project.title.split(' - ')[1] : project.title}
+                        </h3>
+                        {/* Description */}
+                        <p className="text-sm text-zinc-400 line-clamp-2 mb-6">
+                            {project.description}
+                        </p>
+                        
+                        {/* "Send a message" style buttons for Live Demo / Source Code */}
+                        <div className="flex gap-3">
+                            {hasLiveDemo && (
+                                <a 
+                                    href={project.liveLink} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-zinc-700 hover:border-zinc-400 text-zinc-300 hover:text-white transition-all duration-300 text-xs tracking-wide"
+                                >
+                                    <span>Live Demo</span>
+                                </a>
+                            )}
+                            {hasSourceCode && (
+                                <a 
+                                    href={project.codeLink} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-zinc-700 hover:border-zinc-400 text-zinc-300 hover:text-white transition-all duration-300 text-xs tracking-wide"
+                                >
+                                    <span>Source Code</span>
+                                </a>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Footer / Tags row matching reference */}
+                    <div 
+                        className="flex items-center justify-between w-full mt-auto pt-4"
+                        style={{ transform: "translateZ(30px)" }}
+                    >
+                        <span className="text-xs text-zinc-500 font-medium">ryan.dev</span>
+                        <div className="flex items-center gap-2 text-[10px] sm:text-xs text-zinc-400 tracking-wider lowercase">
+                            {project.tags.slice(0, 3).map((tag: string, i: number) => (
+                                <span key={tag} className="flex items-center gap-2">
+                                    <span>{tag}</span>
+                                    {i < Math.min(project.tags.length, 3) - 1 && <span className="text-zinc-600">✦</span>}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </motion.div>
@@ -225,7 +224,30 @@ const ProjectCard = ({ project, index }: { project: any, index: number }) => {
 
 export function ProjectsSection() {
   const { language } = useLanguage();
-  const projects = getProjectsByLanguage(language);
+  const [projects, setProjects] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const data = await getProjects(language);
+        if (data && data.length > 0) {
+          // Map CMS fields to component fields
+          setProjects(data.map(p => ({
+            ...p,
+            imageUrl: p.image_url,
+            imageHint: p.image_hint,
+            liveLink: p.live_link,
+            codeLink: p.code_link
+          })));
+        } else {
+          setProjects(getProjectsByLanguage(language));
+        }
+      } catch (err) {
+        setProjects(getProjectsByLanguage(language));
+      }
+    }
+    load();
+  }, [language]);
 
   return (
     <AnimatedSection id="projects" className="py-16 md:py-24 bg-background relative overflow-hidden">
