@@ -10,7 +10,7 @@ import {
   SiReact, 
   SiNextdotjs,
   SiHtml5,
-  SiCss3,
+  SiCss,
   SiBootstrap,
   SiTailwindcss,
   SiJavascript,
@@ -153,7 +153,7 @@ export function HeroSection() {
               </div>
               <div className="group relative">
                 <div className="p-3 rounded-xl bg-[#1572B6]/10 hover:bg-[#1572B6]/20 transition-all cursor-pointer">
-                  <SiCss3 className="w-6 h-6 text-[#1572B6] group-hover:scale-110 transition-transform" />
+                  <SiCss className="w-6 h-6 text-[#1572B6] group-hover:scale-110 transition-transform" />
                 </div>
                 <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap">CSS3</span>
               </div>
