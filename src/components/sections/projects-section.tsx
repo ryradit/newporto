@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { AnimatedSection } from "@/components/animated-section";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
-import { getProjectsByLanguage } from "@/lib/project-data";
+import { getProjectsByLanguage, webBuilderProjects } from "@/lib/project-data";
 import { getProjects } from "@/lib/supabase-cms";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import Link from 'next/link';
@@ -179,12 +179,14 @@ const ProjectCard = ({ project, index }: { project: any, index: number }) => {
                         
                         {/* "Send a message" style buttons for Live Demo / Source Code */}
                         <div className="flex flex-wrap gap-3">
-                            <Link 
-                                href={`/projects/${project.id || project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
-                                className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-purple-500 hover:bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-all duration-300 text-xs tracking-wide"
-                            >
-                                <span>View Details</span>
-                            </Link>
+                            {!project.tags?.includes("Web Builder") && (
+                                <Link 
+                                    href={`/projects/${project.id || project.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
+                                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-purple-500 hover:bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-all duration-300 text-xs tracking-wide"
+                                >
+                                    <span>View Details</span>
+                                </Link>
+                            )}
                             {hasLiveDemo && (
                                 <a 
                                     href={project.liveLink} 
@@ -232,6 +234,7 @@ const ProjectCard = ({ project, index }: { project: any, index: number }) => {
 export function ProjectsSection() {
   const { language } = useLanguage();
   const [projects, setProjects] = useState<any[]>([]);
+  const [visibleWebBuilderCount, setVisibleWebBuilderCount] = useState(6);
 
   useEffect(() => {
     async function load() {
@@ -281,6 +284,43 @@ export function ProjectsSection() {
           {projects.map((project, index) => (
             <ProjectCard key={project.title} project={project} index={index} />
           ))}
+        </div>
+
+        {/* New Section for Web Builder Projects */}
+        <div className="mt-24">
+            <motion.h3 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.8, ease: "easeInOut" }}
+                className="font-headline text-2xl md:text-4xl font-bold text-center text-primary mb-4"
+            >
+                Fullstack Web Projects
+            </motion.h3>
+            <motion.p
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
+                className="text-md text-center text-muted-foreground max-w-2xl mx-auto mb-12"
+            >
+                As a fullstack web developer, I showcase my work for real clients from around the world, spanning UI/UX design, visual excellence, and multi-language support.
+            </motion.p>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {webBuilderProjects.slice(0, visibleWebBuilderCount).map((project, index) => (
+                <ProjectCard key={project.title} project={project} index={index} />
+              ))}
+            </div>
+
+            {visibleWebBuilderCount < webBuilderProjects.length && (
+                <div className="flex justify-center mt-12">
+                    <button
+                        onClick={() => setVisibleWebBuilderCount(prev => prev + 6)}
+                        className="px-6 py-3 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors duration-300 font-medium shadow-lg hover:shadow-purple-500/20"
+                    >
+                        Show More
+                    </button>
+                </div>
+            )}
         </div>
       </div>
     </AnimatedSection>
