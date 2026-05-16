@@ -28,28 +28,28 @@ export function ContactSection() {
         {/* Social Media Links */}
         <div className="flex justify-center gap-6 mb-12">
           <Link
-            href="https://linkedin.com/in/ryanradityatama"
+            href="https://www.linkedin.com/in/ryan-radityatama/"
             target="_blank"
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             <Linkedin className="h-6 w-6" />
           </Link>
           <Link
-            href="https://instagram.com/ryanradityatama"
+            href="https://www.instagram.com/ryradit/"
             target="_blank"
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             <Instagram className="h-6 w-6" />
           </Link>
           <Link
-            href="https://github.com/ryanradityatama"
+            href="https://github.com/ryradit"
             target="_blank"
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             <Github className="h-6 w-6" />
           </Link>
           <Link
-            href="mailto:ryanradityatama@gmail.com"
+            href="mailto:ryradit@gmail.com"
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             <Mail className="h-6 w-6" />

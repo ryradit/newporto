@@ -13,7 +13,7 @@ import { checkIfUserIsAuthor } from "@/lib/supabase-admin";
 import { redirect } from "next/navigation";
 
 export default function AdminPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, signOut } = useAuth();
   const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
@@ -50,8 +50,20 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
+    <div className="container mx-auto px-4 py-8 relative">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        <button 
+          onClick={async () => {
+            await signOut();
+            redirect("/");
+          }}
+          className="px-4 py-2 bg-red-500/10 text-red-500 hover:bg-red-500/20 border border-red-500/20 rounded-md transition-colors text-sm font-medium flex items-center gap-2"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          Logout
+        </button>
+      </div>
       
       <div className="flex border-b mb-6 overflow-x-auto">
         <button 

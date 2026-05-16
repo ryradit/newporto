@@ -112,25 +112,7 @@ const navigationItems = [
       </svg>
     ),
   },
-  {
-    name: "Chat Room",
-    href: "#room-chat",
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-5 h-5"
-      >
-        <path d="M14 9a2 2 0 0 1-2 2H6l-4 4V4c0-1.1.9-2 2-2h8a2 2 0 0 1 2 2v5Z" />
-        <path d="M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1" />
-      </svg>
-    ),
-  },
+
   {
     name: "Contact",
     href: "#contact",
@@ -180,12 +162,12 @@ export function MobileSidebar() {
           <div className="p-6 border-b border-border">
             <div className="flex items-center gap-4">
               <Avatar className="h-12 w-12 rounded-xl ring-2 ring-primary/20">
-                <AvatarImage src="/profile.jpg" alt="Satria Bahari" />
-                <AvatarFallback>SB</AvatarFallback>
+                <AvatarImage src="/imagess/foto2.jpg" alt="Ryan Radityatama" className="object-cover" />
+                <AvatarFallback>RR</AvatarFallback>
               </Avatar>
               <div>
-                <h2 className="font-semibold">Satria Bahari</h2>
-                <p className="text-sm text-muted-foreground">Based in Jambi, Indonesia</p>
+                <h2 className="font-semibold text-white/90">Ryan Radityatama</h2>
+                <p className="text-sm text-muted-foreground">@ryradit</p>
               </div>
             </div>
             <div className="mt-4 flex items-center gap-2">
@@ -222,6 +204,14 @@ export function MobileSidebar() {
               })}
             </div>
           </nav>
+
+          {/* Footer Info */}
+          <div className="p-6 border-t border-border flex flex-col items-center gap-2 text-xs text-muted-foreground/60 text-center">
+            <p>&copy; 2025 Ryan Radityatama. All rights reserved.</p>
+            <Link href="/terms" className="hover:text-primary transition-colors hover:underline">
+              Terms & Conditions
+            </Link>
+          </div>
         </div>
       </SheetContent>
     </Sheet>

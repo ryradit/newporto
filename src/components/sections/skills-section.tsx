@@ -101,16 +101,16 @@ export function SkillsSection() {
           My professional skills.
         </p>
 
-        <div className="flex flex-col space-y-4 w-full max-w-4xl mx-auto">
+        <div className="flex flex-col space-y-6 w-full max-w-5xl mx-auto">
           {/* Top Row - Scrolls Left */}
-          <div className="relative flex overflow-x-hidden group">
+          <div className="relative flex overflow-x-hidden group" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}>
             <div className="py-4 animate-marquee whitespace-nowrap flex flex-row">
               {duplicatedSkillsTop.map((skill, index) => (
                 <div
                   key={`skill-top-${index}-${skill.name}`}
-                  className="mx-3 inline-flex items-center gap-2 rounded-full bg-card text-card-foreground px-5 py-2.5 text-sm md:text-base font-medium shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-default"
+                  className="mx-3 inline-flex items-center gap-3 rounded-2xl bg-[#121212] border border-white/5 text-white/90 px-6 py-3 text-sm md:text-base font-medium shadow-xl hover:shadow-[0_10px_30px_rgba(124,58,237,0.2)] hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:scale-105 cursor-default group/badge"
                 >
-                  <skill.icon className="h-5 w-5 text-accent" />
+                  <skill.icon className="h-5 w-5 text-primary group-hover/badge:text-purple-400 transition-colors" />
                   <span>{skill.name}</span>
                 </div>
               ))}
@@ -118,14 +118,14 @@ export function SkillsSection() {
           </div>
 
           {/* Bottom Row - Scrolls Right */}
-          <div className="relative flex overflow-x-hidden group">
+          <div className="relative flex overflow-x-hidden group" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)', maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)' }}>
             <div className="py-4 animate-marquee-right whitespace-nowrap flex flex-row">
               {duplicatedSkillsBottom.map((skill, index) => (
                 <div
                   key={`skill-bottom-${index}-${skill.name}`}
-                  className="mx-3 inline-flex items-center gap-2 rounded-full bg-card text-card-foreground px-5 py-2.5 text-sm md:text-base font-medium shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-default"
+                  className="mx-3 inline-flex items-center gap-3 rounded-2xl bg-[#121212] border border-white/5 text-white/90 px-6 py-3 text-sm md:text-base font-medium shadow-xl hover:shadow-[0_10px_30px_rgba(124,58,237,0.2)] hover:border-primary/40 transition-all duration-500 hover:-translate-y-2 hover:scale-105 cursor-default group/badge"
                 >
-                  <skill.icon className="h-5 w-5 text-accent" />
+                  <skill.icon className="h-5 w-5 text-primary group-hover/badge:text-purple-400 transition-colors" />
                   <span>{skill.name}</span>
                 </div>
               ))}

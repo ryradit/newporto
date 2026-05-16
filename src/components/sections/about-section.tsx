@@ -10,6 +10,7 @@ import { translate } from "@/translations";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import { useState, useEffect } from "react";
 import { getExperiences, getEducation } from "@/lib/supabase-cms";
+import { motion } from "framer-motion";
 
 export function AboutSection() {
   const { language } = useLanguage();
@@ -40,168 +41,110 @@ export function AboutSection() {
     load();
   }, [language]);
   
-  const educationHistory = [
-    {
-      institution: "BEIJING INSTITUTE OF TECHNOLOGY",
-      location: "Beijing, China",
-      degree: "Master Degree of Computer Science and Technology",
-      period: "2022 - 2024",
-      institutionLogo: "/imagess/bit.png",
-      details: [
-        "Awards: Recipient of Chinese Government Scholarship",
-        "Thesis: Research on Indonesian Large Language Models Fine-Tuning for Mental Health",
-        "Participate as a Chair of Election Voting Section, Indonesian Embassy Beijing (Feb–Mar 2024): Oversaw overseas election operations, coordinated with Officials Indonesia Embassy and Election Commission."
-      ]
-    },
-    {
-      institution: "UNIVERSITAS MERCU BUANA",
-      location: "Jakarta, Indonesia",
-      degree: "Bachelor of Informatics Engineering",
-      period: "2015 - 2019",
-      institutionLogo: "/imagess/mercu.png",
-      details: [
-        "Awards: Nominated as Cum-laude Graduate in Faculty, Cumulative GPA: 3.88/4.0",
-        "Thesis: Android Based Mobile Application for Finding Nearby Sports Field and Online"
-      ]
-    },
-    {
-      institution: "BEIJING INSTITUTE OF TECHNOLOGY",
-      location: "Beijing, China",
-      degree: "Bachelor Degree of Computer Science and Technology",
-      period: "2015 - 2019",
-      institutionLogo: "/imagess/bit.png",
-      details: [
-        "Thesis: Android Based Mobile Application for Finding Nearby Sports Field and Online"
-      ]
-    }
-  ];
-  
-  const careerHistory = [
-    {
-      title: "AI ENGINEER",
-      company: "Trymerra AI Ltd.",
-      location: "London, United Kingdom (Remote)",
-      period: "March 2025 – July 2025",
-      companyLogo: "/imagess/merra (2).png",
-      responsibilities: [
-        "Developed a minimum viable product (MVP) for an AI-driven recruitment platform, handling the entire development process from UI/UX design to full-stack implementation. The goal was to create a seamless experience for both candidates and recruiters.",
-        "Built the frontend using React and developed backend APIs to handle core logic and data operations. Integrated Appwrite as the backend-as-a-service solution for authentication, database management, and cloud functions.",
-        "Integrated advanced conversational AI features, including CV parsing and automated interview simulations, to automate and personalize the candidate screening process. These features significantly reduced manual workload and improved efficiency.",
-        "Focused on optimizing system performance to ensure a responsive, real-time user experience. Applied best practices in frontend responsiveness and backend speed, while continuously testing for stability across user flows."
-      ]
-    },
-    {
-      title: "AI & ALGORITHM ENGINEER",
-      company: "PT. Digital SawitPRO",
-      location: "Jakarta, Indonesia",
-      period: "Jan 2025 – Feb 2025",
-      companyLogo: "/imagess/sawitpro2.png",
-      responsibilities: [
-        "Managed the development of an AI-based computer vision system to automatically detect palm trees from drone and satellite imagery. This helped eliminate manual counting, significantly increasing efficiency and accuracy in plantation monitoring.",
-        "Built and fine-tuned deep learning models using PyTorch, focusing on object detection and image segmentation methods suited for dense agricultural layouts. The algorithm was optimized to handle varying image quality and environmental conditions.",
-        "Worked closely with the engineering and product teams to integrate the detection system into a scalable pipeline, enabling real-time analysis and supporting decision-making in palm plantation management."
-      ]
-    },
-    {
-      title: "AI ENGINEER",
-      company: "BIT's NLPIR Research Lab",  
-      location: "Beijing, China",
-      period: "April 2023 - April 2024",
-      companyLogo: "/imagess/bit.png",
-      responsibilities: [
-        "Conducted research and development to fine-tune large language models (LLMs) for the Indonesian language, focusing on improving performance for low-resource NLP tasks such as sentiment analysis, intent classification, and text generation.",
-        "Preprocessed and curated large-scale Indonesian datasets, applying tokenization, cleaning, and annotation strategies to enhance model training quality and relevance. Evaluated model outputs using benchmarks and human feedback"
-      ]
-    },
-    {
-      title: "SENIOR INFORMATION TECHNOLOGY SOLUTIONS",
-      company: "Universitas Mercu Buana",
-      location: "Jakarta, Indonesia",
-      period: "Oct 2022 – Feb 2023", 
-      companyLogo: "/imagess/mercu.png",
-      responsibilities: [
-        "Led a small IT team to ensure the smooth operation and availability of campus-wide IT infrastructure, maintaining system reliability and addressing technical issues promptly to support academic and administrative activities.",
-        "Initiated and implemented several IT system optimizations, resulting in a 15% increase in operational efficiency through improved workflows, upgraded systems, and better integration of internal processes.",
-        "Oversaw key IT projects including system upgrades, cloud migration, and security protocol enhancements."
-      ]
-    },
-    {
-      title: "IT SOLUTIONS & INTERNATIONAL OPERATIONS OFFICER",
-      company: "Universitas Mercu Buana",
-      location: "Jakarta, Indonesia",
-      period: "Sep 2019 – Oct 2022",
-      companyLogo: "/imagess/mercu.png",
-      responsibilities: [
-        "Managed the development and integration of databases for international academic initiatives, ensuring accurate data management and smooth information flow across departments and global partners.",
-        "Provided technical support and hands-on training to administrative staff, improving system usage and productivity. System upgrades and automation processes contributed to a 20% increase in overall efficiency.",
-        "Coordinated international programs such as student exchanges and joint degrees, while maintaining and updating the international relations website to align with institutional branding and support cloud-based integration."
-      ]
-    }
-  ];
-
   return (
-    <AnimatedSection id="about" className="py-12 md:py-16 bg-background/50">
+    <AnimatedSection id="about" className="py-12 md:py-16 bg-background relative overflow-hidden">
       <MobileHeader />
-      <div className="container pl-8 pr-4 md:pl-12">
-        <h2 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8">
-          {translate('about.title', language)}
-        </h2>
-        <Card className="overflow-hidden mb-12 max-w-3xl bg-transparent border-0 shadow-none">
-          <div className="p-0">
-            <CardHeader className="p-0 mb-6">
-              <CardTitle className="font-headline text-2xl text-primary text-left">
-                {translate('about.role', language)}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6 p-0">
-              {translate<string[]>('about.paragraphs', language).map((paragraph: string, index: number) => (
-                <p key={index} className="text-sm text-foreground/80 leading-relaxed tracking-wide text-left max-w-3xl">
-                  {paragraph}
-                </p>
-              ))}
-              <div className="mt-6 flex justify-start">
-                <Button 
-                  className="group bg-gradient-to-r from-blue-600 to-violet-600 hover:from-violet-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 transform"
-                  asChild
-                >
-                  <a href="https://drive.google.com/drive/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 relative overflow-hidden">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="16" 
-                      height="16" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                      className="transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform duration-300"
-                    >
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    <span className="transform transition-transform duration-300 group-hover:translate-y-0.5">
-                      {translate('about.downloadCV', language)}
-                    </span>
-                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded-lg"></div>
-                  </a>
-                </Button>
-              </div>
-            </CardContent>
-          </div>
-        </Card>
-
-        <div className="max-w-3xl">
-          <h3 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8">
-            {translate('about.professionalExperience', language)}
-          </h3>
-          <Timeline items={experiences} />
+      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
           
-          <h3 className="font-headline text-2xl md:text-3xl font-bold text-left text-primary mb-8 mt-16">
-            {translate('about.education', language)}
-          </h3>
-          <EducationTimeline items={education} />
+          {/* Left Column (Sticky Bio) */}
+          <div className="lg:col-span-5 lg:sticky lg:top-32 self-start space-y-8 relative">
+            {/* Subtle background glow */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/10 to-violet-600/10 blur-2xl rounded-[3rem] -z-10"></div>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="font-headline text-4xl md:text-5xl lg:text-6xl font-bold text-left text-zinc-900 dark:text-white mb-4 tracking-tight drop-shadow-md">
+                {translate('about.title', language)}
+              </h2>
+              <div className="h-1.5 w-24 bg-gradient-to-r from-blue-600 to-violet-600 rounded-full mb-8"></div>
+            </motion.div>
+
+            <Card className="overflow-hidden bg-white dark:bg-[#121212] border border-border dark:border-white/5 shadow-2xl rounded-[2rem] relative group">
+              <div className="absolute inset-0 bg-gradient-to-br from-black/5 dark:from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="p-8 md:p-10 relative z-10">
+                <CardHeader className="p-0 mb-8">
+                  <CardTitle className="font-headline text-2xl text-purple-600 dark:text-purple-400 text-left flex items-center gap-3">
+                    <span className="w-8 h-[1px] bg-purple-500/50"></span>
+                    {translate('about.role', language)}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6 p-0">
+                  {translate<string[]>('about.paragraphs', language).map((paragraph: string, index: number) => (
+                    <p key={index} className="text-base md:text-lg text-zinc-700 dark:text-zinc-300 leading-relaxed tracking-wide text-left">
+                      {paragraph}
+                    </p>
+                  ))}
+                  <div className="mt-10 pt-8 border-t border-white/10 flex justify-start">
+                    <Button 
+                      className="group bg-gradient-to-r from-blue-600 to-violet-600 hover:from-violet-600 hover:to-blue-600 text-white font-semibold px-8 py-6 rounded-xl shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:-translate-y-1 transform w-full sm:w-auto"
+                      asChild
+                    >
+                      <a href="https://drive.google.com/drive/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 relative overflow-hidden">
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="20" 
+                          height="20" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                          className="transform group-hover:-translate-y-1 group-hover:text-blue-200 transition-all duration-300"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        <span className="text-base tracking-wide">
+                          {translate('about.downloadCV', language)}
+                        </span>
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </div>
+            </Card>
+          </div>
+
+          {/* Right Column (Timelines) */}
+          <div className="lg:col-span-7 space-y-16 lg:pl-4 mt-12 lg:mt-0">
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true, margin: "-100px" }}
+               transition={{ duration: 0.8 }}
+            >
+              <h3 className="font-headline text-3xl font-bold text-left text-zinc-900 dark:text-white/90 mb-10 flex items-center gap-4">
+                <span className="p-3 rounded-2xl bg-blue-500/10 text-blue-500 dark:text-blue-400 border border-blue-500/20 shadow-inner">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></svg>
+                </span>
+                {translate('about.professionalExperience', language)}
+              </h3>
+              <Timeline items={experiences} />
+            </motion.div>
+            
+            <motion.div
+               initial={{ opacity: 0, y: 20 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true, margin: "-100px" }}
+               transition={{ duration: 0.8 }}
+               className="pt-8"
+            >
+              <h3 className="font-headline text-3xl font-bold text-left text-zinc-900 dark:text-white/90 mb-10 flex items-center gap-4">
+                <span className="p-3 rounded-2xl bg-violet-500/10 text-violet-500 dark:text-violet-400 border border-violet-500/20 shadow-inner">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                </span>
+                {translate('about.education', language)}
+              </h3>
+              <EducationTimeline items={education} />
+            </motion.div>
+          </div>
+          
         </div>
       </div>
     </AnimatedSection>

@@ -68,63 +68,68 @@ export function ContactForm() {
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 max-w-lg mx-auto">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{translate('contact.name', language)}</FormLabel>
-              <FormControl>
-                <Input placeholder="Your Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{translate('contact.email', language)}</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="your.email@example.com" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{translate('contact.message', language)}</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Your message..."
-                  className="min-h-[120px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className="w-full" size="lg" disabled={form.formState.isSubmitting}>
-          {form.formState.isSubmitting ? (
-            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          ) : (
-            <Send className="mr-2 h-5 w-5" />
-          )}
-          {translate('contact.send', language)}
-        </Button>
-      </form>
-    </Form>
+    <div className="w-full max-w-lg mx-auto">
+      <div className="relative overflow-hidden rounded-[2rem] bg-white dark:bg-[#121212] hover:bg-zinc-50 dark:hover:bg-[#1a1a1a] border border-border dark:border-white/[0.05] hover:border-primary/30 transition-all duration-700 p-8 shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 opacity-50"></div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 relative z-10">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-zinc-700 dark:text-white/80">{translate('contact.name', language)}</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your Name" className="bg-zinc-100 dark:bg-zinc-800/30 border-zinc-200 dark:border-zinc-700/50 focus:border-primary/50 text-zinc-900 dark:text-white" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-zinc-700 dark:text-white/80">{translate('contact.email', language)}</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="your.email@example.com" className="bg-zinc-100 dark:bg-zinc-800/30 border-zinc-200 dark:border-zinc-700/50 focus:border-primary/50 text-zinc-900 dark:text-white" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-zinc-700 dark:text-white/80">{translate('contact.message', language)}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Your message..."
+                      className="min-h-[120px] bg-zinc-100 dark:bg-zinc-800/30 border-zinc-200 dark:border-zinc-700/50 focus:border-primary/50 text-zinc-900 dark:text-white resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full bg-primary hover:bg-primary/80 text-primary-foreground font-semibold transition-all shadow-lg hover:shadow-primary/20" size="lg" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? (
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              ) : (
+                <Send className="mr-2 h-5 w-5" />
+              )}
+              {translate('contact.send', language)}
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 }

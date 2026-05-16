@@ -3,12 +3,12 @@
 import { motion, animate, type TargetAndTransition } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const initialProps: TargetAndTransition = {
+const initialProps: any = {
   pathLength: 0,
   opacity: 0,
 };
 
-const animateProps: TargetAndTransition = {
+const animateProps: any = {
   pathLength: 1,
   opacity: 1,
 };
