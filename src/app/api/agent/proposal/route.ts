@@ -61,16 +61,34 @@ Return a JSON object with these exact fields:
 
 Be specific, reference actual skills and projects from Ryan's profile. Make it feel personalized, not generic.`;
 
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash-lite',
-      generationConfig: {
-        temperature: 0.8,
-        maxOutputTokens: 4096,
-      },
-    });
+    const MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-3.1-flash-lite", "gemini-3-flash"];
+    let text = "";
+    let success = false;
+    let lastError: any = null;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text().trim();
+    for (const modelName of MODELS) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          generationConfig: {
+            temperature: 0.8,
+            maxOutputTokens: 4096,
+          },
+        });
+
+        const result = await model.generateContent(prompt);
+        text = result.response.text().trim();
+        success = true;
+        break;
+      } catch (err) {
+        console.warn(`Proposal agent ${modelName} failed, trying next backup...`, err);
+        lastError = err;
+      }
+    }
+
+    if (!success) {
+      throw lastError || new Error("All backup models failed for proposal generation");
+    }
 
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {

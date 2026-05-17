@@ -80,23 +80,40 @@ export async function POST(req: NextRequest) {
     const { action, message, history, budget, projectDescription } = body;
 
     if (action === 'intent') {
-      // Intent classification via Gemini
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-2.5-flash-lite',
-        systemInstruction: `You are a warm, friendly AI assistant on Ryan Radityatama's portfolio.
-Classify the visitor's intent as "client" (wants to hire Ryan for a project), "recruiter" (wants to hire Ryan as an employee), or "unknown".
-Reply naturally and warmly — never mention "classifying" or "detecting".
-Return JSON: { "intent": "client"|"recruiter"|"unknown", "reply": "your warm response here" }`,
-      });
+      const MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-3.1-flash-lite", "gemini-3-flash"];
+      let text = "";
+      let success = false;
+      let lastError: any = null;
 
       const historyFormatted = (history || []).map((m: any) => ({
         role: m.role === 'assistant' ? 'model' : 'user',
         parts: [{ text: m.content }],
       }));
 
-      const chat = model.startChat({ history: historyFormatted });
-      const result = await chat.sendMessage(message);
-      const text = result.response.text().trim();
+      for (const modelName of MODELS) {
+        try {
+          const model = genAI.getGenerativeModel({
+            model: modelName,
+            systemInstruction: `You are a warm, friendly AI assistant on Ryan Radityatama's portfolio.
+Classify the visitor's intent as "client" (wants to hire Ryan for a project), "recruiter" (wants to hire Ryan as an employee), or "unknown".
+Reply naturally and warmly — never mention "classifying" or "detecting".
+Return JSON: { "intent": "client"|"recruiter"|"unknown", "reply": "your warm response here" }`,
+          });
+
+          const chat = model.startChat({ history: historyFormatted });
+          const result = await chat.sendMessage(message);
+          text = result.response.text().trim();
+          success = true;
+          break;
+        } catch (err) {
+          console.warn(`Qualify intent ${modelName} failed, trying next backup...`, err);
+          lastError = err;
+        }
+      }
+
+      if (!success) {
+        throw lastError || new Error("All backup models failed for intent classification");
+      }
 
       // Parse JSON from response
       const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -116,18 +133,36 @@ Return JSON: { "intent": "client"|"recruiter"|"unknown", "reply": "your warm res
       const tierKey = detectBudgetTier(budget || '');
       const tierData = BUDGET_TIERS[tierKey];
 
-      // Generate scope questions via Gemini
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-2.5-flash-lite',
-        systemInstruction: `You are a helpful assistant for Ryan Radityatama. 
+      const MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-3.1-flash-lite", "gemini-3-flash"];
+      let text = "";
+      let success = false;
+      let lastError: any = null;
+
+      for (const modelName of MODELS) {
+        try {
+          const model = genAI.getGenerativeModel({
+            model: modelName,
+            systemInstruction: `You are a helpful assistant for Ryan Radityatama. 
 Generate 3 specific, relevant scope questions for a ${tierData.tierLabel} web project.
 Project description: ${projectDescription || 'not specified yet'}.
 Return JSON: { "reply": "warm message about what's included", "scopeQuestions": ["question1", "question2", "question3"] }
 Make questions specific to this tier and project type. Be concise and friendly.`,
-      });
+          });
 
-      const result = await model.generateContent(`Budget: ${budget}. Tier: ${tierData.tierLabel}. ${projectDescription ? `Project: ${projectDescription}` : ''}`);
-      const text = result.response.text().trim();
+          const result = await model.generateContent(`Budget: ${budget}. Tier: ${tierData.tierLabel}. ${projectDescription ? `Project: ${projectDescription}` : ''}`);
+          text = result.response.text().trim();
+          success = true;
+          break;
+        } catch (err) {
+          console.warn(`Qualify budget questions ${modelName} failed, trying next backup...`, err);
+          lastError = err;
+        }
+      }
+
+      if (!success) {
+        throw lastError || new Error("All backup models failed for budget classification");
+      }
+
       const jsonMatch = text.match(/\{[\s\S]*\}/);
 
       let reply = `Great news! At the ${tierData.tierLabel} tier (${tierData.priceRange}), Ryan can absolutely deliver what you need. Let me ask a few quick questions to tailor the proposal.`;
