@@ -239,7 +239,7 @@ function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
           <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">R</div>
           <div>
             <div className="text-white text-sm font-semibold">Ryan Radityatama</div>
-            <div className="text-white/40 text-xs">Web Developer · ryradit@gmail.com</div>
+            <div className="text-white/40 text-xs">Fullstack Developer | AI & ML Engineer · ryradit@gmail.com</div>
           </div>
         </div>
       </div>
@@ -346,7 +346,7 @@ function ProposalCard({ proposal }: { proposal: Proposal }) {
           <div className="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs font-bold">R</div>
           <div>
             <div className="text-white text-sm font-semibold">Ryan Radityatama</div>
-            <div className="text-white/40 text-xs">Web Developer · ryradit@gmail.com</div>
+            <div className="text-white/40 text-xs">Fullstack Developer | AI & ML Engineer · ryradit@gmail.com</div>
           </div>
         </div>
       </div>
@@ -656,7 +656,7 @@ export default function TestAgentPage() {
             <Bot size={20} className="text-white" />
           </div>
           <h1 className="text-lg font-bold text-white">Proposal Agent</h1>
-          <p className="text-xs text-white/40 mt-1">Ryan Radityatama · Web Developer</p>
+          <p className="text-xs text-white/40 mt-1">Ryan Radityatama · Fullstack Developer | AI & ML Engineer</p>
         </div>
 
         <StageTracker current={stage} intent={detectedIntent} />
