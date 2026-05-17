@@ -11,9 +11,9 @@ const id = {
   hero: {
     title: 'Ryan Radityatama',
     taglines: {
-      aiEngineer: 'Insinyur AI',
+      aiEngineer: 'Machine Learning Engineer',
       nlpSpecialist: 'Spesialis NLP',
-      softwareEngineer: 'Insinyur Perangkat Lunak'
+      softwareEngineer: 'Fullstack Developer'
     },
     description: 'Membangun solusi cerdas yang menjembatani kesenjangan antara data dan dampak dunia nyata. Mengeksplorasi perbatasan Machine Learning dan Deep Learning.',
     skills: 'Keahlian Saya',
