@@ -794,17 +794,27 @@ export default function TestAgentPage() {
         setRoleAnswers(newAnswers);
 
         // Auto-extract name if not yet set or to override default
+        let extractedName = visitorName;
         if (currentRoleQIdx === 0) {
-          const nameMatch = text.match(/(?:i'?m|my name is|i am|this is|name is|i'm)\s+([a-zA-Z]+)/i) || text.match(/^([a-zA-Z]+)/);
+          const nameMatch = text.match(/(?:i'?m|my name is|i am|this is|name is|i'm|saya|nama saya|dengan|di sini)\s+([a-zA-Z\s]+)/i) || text.match(/^([a-zA-Z\s]+)/);
           if (nameMatch && nameMatch[1]) {
-            setVisitorName(nameMatch[1].trim());
+            const parsedName = nameMatch[1].trim().split(/\s+/)[0];
+            extractedName = parsedName;
+            setVisitorName(parsedName);
           }
         }
 
         if (currentRoleQIdx + 1 < selectedContract.questions.length) {
           setCurrentRoleQIdx(currentRoleQIdx + 1);
           await simulatedDelay(1000);
-          addMessage('assistant', selectedContract.questions[currentRoleQIdx + 1]);
+          
+          if (currentRoleQIdx === 0) {
+            const displayName = extractedName || "there";
+            const greeting = `Nice to meet you, ${displayName}! ` + selectedContract.questions[currentRoleQIdx + 1];
+            addMessage('assistant', greeting);
+          } else {
+            addMessage('assistant', selectedContract.questions[currentRoleQIdx + 1]);
+          }
         } else {
           await simulatedDelay(1000);
           addMessage('assistant', "Perfect! Let me generate a tailored candidate brief showing exactly why Ryan is the right fit for this role... ✨");
