@@ -267,27 +267,20 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
             );
           })}
           
-          {/* Portal Background Effect - Single circular ring with enhanced fire animation */}
+          {/* Portal Background Effect - Responsive circular ring with cinematic Doctor Strange fire animation */}
           <div 
             className={cn(
-              "flex items-center justify-center transition-all duration-1000",
+              "flex items-center justify-center transition-all duration-1000 w-[92vw] h-[92vw] max-w-[320px] max-h-[320px] sm:max-w-[480px] sm:max-h-[480px] md:max-w-[600px] md:max-h-[600px] lg:max-w-[700px] lg:max-h-[700px] rounded-full relative overflow-visible aspect-square",
               isAnimating ? "scale-100 opacity-100" : "scale-0 opacity-0"
             )}
             style={{
-              width: "800px", 
-              height: "800px",
-              borderRadius: "50%",
-              background: "transparent",
-              border: "20px solid rgba(255, 140, 0, 0.8)",
-              boxShadow: "0 0 60px 15px rgba(255, 165, 0, 0.8), 0 0 120px 30px rgba(255, 100, 0, 0.6), 0 0 180px 60px rgba(255, 80, 0, 0.3), inset 0 0 30px 5px rgba(255, 165, 0, 0.5)",
+              border: "12px solid rgba(255, 140, 0, 0.85)",
+              boxShadow: "0 0 45px 12px rgba(255, 165, 0, 0.85), 0 0 90px 22px rgba(255, 100, 0, 0.65), 0 0 140px 45px rgba(255, 80, 0, 0.35), inset 0 0 25px 4px rgba(255, 165, 0, 0.5)",
               transform: isAnimating 
                 ? "scale(1) rotate(360deg)" 
                 : "scale(0) rotate(0deg)",
-              transition: "transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease",
-              position: "relative",
-              overflow: "visible",
-              aspectRatio: "1 / 1",
-              filter: "drop-shadow(0 0 10px rgba(255, 140, 0, 0.5))"
+              transition: "transform 1.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 1.2s ease",
+              filter: "drop-shadow(0 0 12px rgba(255, 140, 0, 0.6))"
             }}
           >
             {/* Portal sparks - only shown when animating */}
@@ -491,30 +484,45 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 );
               })}
               
-              {/* Outward radiating sparks like in Dr. Strange */}
-              {isAnimating && Array(40).fill(0).map((_, i) => {
-                const angle = Math.random() * 360;
-                const distance = 48 + Math.random() * 30; // Sparks extend further outward
+              {/* 120 movie-grade Doctor Strange tangential sparks spraying in tangential paths */}
+              {isAnimating && Array(120).fill(0).map((_, i) => {
+                const angle = (i / 120) * 360; 
+                const randomOffset = Math.random() * 6 - 3;
+                const distance = 48 + randomOffset; 
                 const posX = 50 + distance * Math.cos(angle * Math.PI/180);
                 const posY = 50 + distance * Math.sin(angle * Math.PI/180);
-                const length = Math.random() * 60 + 30; // Much longer spark lines
                 
+                const tangentAngle = angle + 95 + (Math.random() * 24 - 12);
+                const velocity = Math.random() * 160 + 80;
+                const dx = Math.cos(tangentAngle * Math.PI / 180) * velocity;
+                const dy = Math.sin(tangentAngle * Math.PI / 180) * velocity;
+                const dr = Math.random() * 360 - 180;
+                const duration = Math.random() * 0.7 + 0.3;
+                const delay = Math.random() * 1.5;
+                const size = Math.random() * 3 + 2;
+
                 return (
                   <div
-                    key={`outward-${i}`}
-                    className="absolute"
+                    key={`strange-spark-${i}`}
+                    className="absolute rounded-full"
                     style={{
-                      width: `${Math.random() * 3 + 1}px`,
-                      height: `${length}px`,
+                      width: `${size}px`,
+                      height: `${size}px`,
                       left: `${posX}%`,
                       top: `${posY}%`,
-                      background: `linear-gradient(to ${angle > 180 ? 'bottom' : 'top'}, rgba(255, 165, 0, 0.9), rgba(255, 140, 0, 0.7), rgba(255, 69, 0, 0.4), transparent)`,
-                      transform: `rotate(${angle}deg)`,
+                      background: i % 3 === 0 
+                        ? 'rgba(255, 235, 120, 1)' 
+                        : i % 3 === 1 
+                        ? 'rgba(255, 145, 0, 1)'   
+                        : 'rgba(255, 65, 0, 1)',   
+                      boxShadow: '0 0 10px rgba(255, 165, 0, 1), 0 0 18px rgba(255, 69, 0, 0.8)',
                       filter: 'blur(0.5px)',
-                      opacity: Math.random() * 0.7 + 0.3,
-                      transformOrigin: 'bottom',
-                      animation: `spark ${Math.random() * 3 + 1}s ease-out infinite`,
-                      boxShadow: '0 0 8px rgba(255, 140, 0, 0.6)'
+                      opacity: 0,
+                      animation: `strangeSpark ${duration}s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite`,
+                      animationDelay: `${delay}s`,
+                      ['--dx' as string]: `${dx}px`,
+                      ['--dy' as string]: `${dy}px`,
+                      ['--dr' as string]: `${dr}deg`
                     }}
                   />
                 );
@@ -522,12 +530,10 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
               
               {/* Circular pattern of tiny sparkling dots */}
               {isAnimating && Array(60).fill(0).map((_, i) => {
-                // Create perfect circles of sparkling dots
-                const angle = (i / 60) * 360; // Evenly spaced around circle
-                const innerCircle = 45 + Math.random() * 2; // Inner circle of dots
-                const outerCircle = 51 + Math.random() * 2; // Outer circle of dots
+                const angle = (i / 60) * 360; 
+                const innerCircle = 45 + Math.random() * 2; 
+                const outerCircle = 51 + Math.random() * 2; 
                 
-                // Pick which circle this dot belongs to (inner or outer)
                 const distance = i % 2 === 0 ? innerCircle : outerCircle;
                 const posX = 50 + distance * Math.cos(angle * Math.PI/180);
                 const posY = 50 + distance * Math.sin(angle * Math.PI/180);
@@ -541,7 +547,7 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                       height: `${Math.random() * 3 + 2}px`,
                       left: `${posX}%`,
                       top: `${posY}%`,
-                      background: i % 3 === 0 ? 'rgba(255, 215, 0, 0.9)' : 'rgba(255, 165, 0, 0.9)', // Alternate colors
+                      background: i % 3 === 0 ? 'rgba(255, 215, 0, 0.9)' : 'rgba(255, 165, 0, 0.9)', 
                       borderRadius: '50%',
                       filter: 'blur(0.5px)',
                       boxShadow: '0 0 3px rgba(255, 165, 0, 0.8)',
@@ -552,19 +558,90 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
               })}
             </div>
             
-            {/* Black center - Perfect circle with fiery edge glow */}
+            {/* Fiery Dimensional Gateway Center - Perfect circular window showing the active planetary dimension! */}
             <div 
-              className="absolute inset-0 m-auto"
+              className="absolute inset-0 m-auto rounded-full overflow-hidden flex items-center justify-center bg-black transition-all duration-1000"
               style={{
                 width: "90%",
                 height: "90%",
-                borderRadius: "50%",
-                background: "black",
-                boxShadow: "inset 0 0 40px 10px rgba(255, 140, 0, 0.4)",
+                boxShadow: "inset 0 0 50px 15px rgba(255, 140, 0, 0.6)",
                 aspectRatio: "1 / 1",
-                border: "1px solid rgba(255, 140, 0, 0.3)"
+                border: "1px solid rgba(255, 140, 0, 0.4)"
               }}
-            ></div>
+            >
+              {/* Active planet globe fully large inside center gateway window */}
+              <div className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center">
+                {/* Space background layer */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center opacity-60"
+                  style={{
+                    backgroundImage: `radial-gradient(circle at center, rgba(13, 10, 36, 0.95) 0%, rgba(3, 2, 10, 1) 100%)`
+                  }}
+                />
+                
+                {/* 3D Rotating Planet Globe */}
+                <div 
+                  className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full transition-all duration-1000 animate-spin"
+                  style={{
+                    animation: "spin 35s linear infinite",
+                    background: themes[currentIndex].id === 'dark' 
+                      ? 'radial-gradient(circle at 30% 30%, #1e40af, #1e3a8a, #0f172a)' 
+                      : themes[currentIndex].id === 'earth-838'
+                      ? 'radial-gradient(circle at 30% 30%, #f3f4f6, #d1d5db, #6b7280)'
+                      : 'radial-gradient(circle at 30% 30%, #7c3aed, #4c1d95, #1e1b4b)',
+                    boxShadow: themes[currentIndex].id === 'dark' 
+                      ? '0 0 50px 5px rgba(59, 130, 246, 0.5), inset -20px -20px 40px rgba(0,0,0,0.8), inset 20px 20px 40px rgba(255,255,255,0.1)' 
+                      : themes[currentIndex].id === 'earth-838'
+                      ? '0 0 50px 5px rgba(156, 163, 175, 0.3), inset -20px -20px 40px rgba(0,0,0,0.2), inset 20px 20px 40px rgba(255,255,255,0.6)'
+                      : '0 0 50px 5px rgba(147, 51, 234, 0.5), inset -20px -20px 40px rgba(0,0,0,0.8), inset 20px 20px 40px rgba(255,255,255,0.1)',
+                    border: '1px solid rgba(255,255,255,0.05)'
+                  }}
+                >
+                  {/* Planet Continent Textures */}
+                  {themes[currentIndex].id === 'dark' && (
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      <div className="absolute top-[10%] left-[15%] w-[45%] h-[30%] bg-green-700/80 rounded-2xl transform rotate-12" />
+                      <div className="absolute top-[25%] right-[10%] w-[35%] h-[25%] bg-green-600/70 rounded-xl transform -rotate-45" />
+                      <div className="absolute bottom-[15%] left-[20%] w-[50%] h-[25%] bg-green-800/80 rounded-2xl transform rotate-6" />
+                      <div className="absolute bottom-[20%] right-[12%] w-[35%] h-[20%] bg-green-700/70 rounded-xl transform rotate-12" />
+                      <div className="absolute inset-0 rounded-full" style={{
+                        background: 'radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.3) 0%, transparent 40%), radial-gradient(ellipse at 75% 70%, rgba(255,255,255,0.2) 0%, transparent 30%)'
+                      }} />
+                    </div>
+                  )}
+                  
+                  {themes[currentIndex].id === 'earth-838' && (
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      <div className="absolute top-[10%] left-[15%] w-[45%] h-[30%] bg-gray-300/80 rounded-2xl transform rotate-12 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
+                      <div className="absolute top-[25%] right-[10%] w-[35%] h-[25%] bg-gray-300/70 rounded-xl transform -rotate-45 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
+                      <div className="absolute bottom-[15%] left-[20%] w-[50%] h-[25%] bg-gray-300/80 rounded-2xl transform rotate-6 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
+                      <div className="absolute bottom-[20%] right-[12%] w-[35%] h-[20%] bg-gray-300/70 rounded-xl transform rotate-12 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
+                    </div>
+                  )}
+                  
+                  {themes[currentIndex].id === 'Earth-X' && (
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      <div className="absolute top-[10%] left-[15%] w-[45%] h-[30%] bg-gradient-to-br from-pink-500/60 to-purple-600/60 rounded-2xl transform rotate-12 blur-[1px] shadow-[0_0_15px_rgba(236,72,153,0.5)]" />
+                      <div className="absolute top-[25%] right-[10%] w-[35%] h-[25%] bg-gradient-to-br from-cyan-500/50 to-purple-500/50 rounded-xl transform -rotate-45 blur-[1px] shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
+                      <div className="absolute bottom-[15%] left-[20%] w-[50%] h-[25%] bg-gradient-to-br from-purple-500/60 to-pink-600/60 rounded-2xl transform rotate-6 blur-[1px]" />
+                      <div className="absolute bottom-[20%] right-[12%] w-[35%] h-[20%] bg-gradient-to-br from-indigo-500/50 to-purple-600/50 rounded-xl transform rotate-12 blur-[1px]" />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Gateway Light Fog & Aura Overlay */}
+                <div 
+                  className="absolute inset-0 rounded-full pointer-events-none" 
+                  style={{
+                    background: themes[currentIndex].id === 'dark' 
+                      ? 'radial-gradient(circle, transparent 40%, rgba(59, 130, 246, 0.15) 70%, rgba(59, 130, 246, 0.4) 100%)' 
+                      : themes[currentIndex].id === 'earth-838'
+                      ? 'radial-gradient(circle, transparent 40%, rgba(156, 163, 175, 0.1) 70%, rgba(156, 163, 175, 0.3) 100%)'
+                      : 'radial-gradient(circle, transparent 40%, rgba(147, 51, 234, 0.15) 70%, rgba(147, 51, 234, 0.4) 100%)'
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           {/* 3D Carousel Theme Selection Cards */}
