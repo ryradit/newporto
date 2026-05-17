@@ -213,6 +213,14 @@ function CandidateBriefCard({
     }
   };
 
+  // Dynamically construct mailto URL based on the real-time form inputs
+  let emailBody = brief.emailDraft || '';
+  if (proposedDate && proposedTime) {
+    const slotText = `PROPOSED INTERVIEW TIME:\n• Date: ${proposedDate}\n• Time: ${proposedTime} WIB (Jakarta Time)\n${proposeNote ? `• Notes: ${proposeNote}\n` : ''}\n========================================\n\n`;
+    emailBody = slotText + emailBody;
+  }
+  const mailtoUrl = `mailto:ryradit@gmail.com?subject=${encodeURIComponent(brief.briefTitle || 'Contract Opportunity')}&body=${encodeURIComponent(emailBody)}`;
+
   return (
     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-5">
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6">
@@ -400,11 +408,20 @@ function CandidateBriefCard({
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Dynamic pre-filled email recruiter dispatch button */}
+      <a
+        href={mailtoUrl}
+        className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-lg shadow-blue-500/10 hover:shadow-blue-500/20"
+      >
+        <Mail size={14} />
+        Email Ryan About This Role (Pre-filled Draft)
+      </a>
+
       <a
         href="https://drive.google.com/drive/u/1/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing"
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl hover:bg-emerald-500/20 transition-all duration-300 text-sm font-semibold text-emerald-400"
+        className="w-full flex items-center justify-center gap-2 px-5 py-3 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl transition-all duration-300 text-sm font-semibold text-emerald-400"
       >
         <Download size={14} />
         Download Ryan's CV (PDF)
@@ -530,6 +547,15 @@ function ProposalCard({ proposal }: { proposal: Proposal }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Dynamic pre-filled email client dispatch button */}
+      <a
+        href={`mailto:ryradit@gmail.com?subject=${encodeURIComponent(proposal.proposalTitle || 'Project Inquiry')}&body=${encodeURIComponent(proposal.emailDraft || '')}`}
+        className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20"
+      >
+        <Mail size={14} />
+        Email Ryan to Get Started (Pre-filled Draft)
+      </a>
     </motion.div>
   );
 }
@@ -1772,21 +1798,6 @@ export default function TestAgentPage() {
           {candidateBrief && stage === 'brief' && (
             <div className="mt-6">
               <CandidateBriefCard brief={candidateBrief} recruiterName={visitorName} recruiterCompany={visitorCompany} />
-              <div className="mt-6 flex flex-col gap-3">
-                <a
-                  href="mailto:ryradit@gmail.com?subject=Contract Opportunity"
-                  className="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all"
-                >
-                  <Mail size={16} />
-                  Email Ryan About This Role
-                </a>
-                <a
-                  href="/contact"
-                  className="flex items-center justify-center gap-2 w-full py-3 border border-white/20 text-white/70 hover:text-white hover:border-white/40 rounded-xl transition-all text-sm"
-                >
-                  Go to Contact Page
-                </a>
-              </div>
             </div>
           )}
 
@@ -1794,21 +1805,6 @@ export default function TestAgentPage() {
           {proposal && stage === 'proposal' && (
             <div className="mt-6">
               <ProposalCard proposal={proposal} />
-              <div className="mt-6 flex flex-col gap-3">
-                <a
-                  href="mailto:ryradit@gmail.com?subject=Project Inquiry"
-                  className="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-semibold rounded-xl transition-all"
-                >
-                  <Mail size={16} />
-                  Email Ryan to Get Started
-                </a>
-                <a
-                  href="/contact"
-                  className="flex items-center justify-center gap-2 w-full py-3 border border-white/20 text-white/70 hover:text-white hover:border-white/40 rounded-xl transition-all text-sm"
-                >
-                  Go to Contact Page
-                </a>
-              </div>
             </div>
           )}
 
