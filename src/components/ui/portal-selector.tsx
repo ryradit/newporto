@@ -172,7 +172,7 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
           </button>
 
           {/* External particles that float around outside the portal */}
-          {isAnimating && Array(30).fill(0).map((_, i) => {
+          {isAnimating && Array(80).fill(0).map((_, i) => {
             const angle = Math.random() * 360;
             const distance = Math.random() * 200 + 420; // Position well outside the portal ring
             const posX = window.innerWidth / 2 + distance * Math.cos(angle * Math.PI/180);
@@ -202,12 +202,12 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
           })}
           
           {/* Larger energy orbs orbiting the portal */}
-          {isAnimating && Array(5).fill(0).map((_, i) => {
+          {isAnimating && Array(12).fill(0).map((_, i) => {
             // These orbs will orbit the portal
-            const orbitDistance = 500 + i * 50; // Different orbit distances
-            const orbitSpeed = 20 + i * 5; // Different orbit speeds
-            const size = Math.random() * 15 + 15; // Larger sizes for orbs
-            const startAngle = i * 72; // Evenly spaced around circle (360 / 5 = 72 degrees)
+            const orbitDistance = 500 + i * 35; // Different orbit distances
+            const orbitSpeed = 20 + i * 3; // Different orbit speeds
+            const size = Math.random() * 15 + 12; // Larger sizes for orbs
+            const startAngle = i * 30; // Evenly spaced around circle (360 / 12 = 30 degrees)
             
             return (
               <div
@@ -218,13 +218,13 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                   height: `${size}px`,
                   left: '50%',
                   top: '50%',
-                  background: `radial-gradient(circle, rgba(255,215,0,0.8) 0%, rgba(255,165,0,0.6) 60%, rgba(255,140,0,0.4) 80%, transparent 100%)`,
+                  background: `radial-gradient(circle, rgba(255,215,0,0.85) 0%, rgba(255,165,0,0.65) 60%, rgba(255,140,0,0.45) 80%, transparent 100%)`,
                   borderRadius: '50%',
-                  boxShadow: '0 0 20px rgba(255, 165, 0, 0.8)',
-                  filter: 'blur(2px)',
-                  opacity: 0.7,
+                  boxShadow: '0 0 22px rgba(255, 165, 0, 0.85)',
+                  filter: 'blur(1.5px)',
+                  opacity: 0.75,
                   animation: `orbitPortal ${orbitSpeed}s linear infinite`,
-                  animationDelay: `${-i * 2}s`,
+                  animationDelay: `${-i * 1.5}s`,
                   zIndex: 8,
                   transform: `rotate(${startAngle}deg)`,
                   ['--orbit-distance' as string]: `${orbitDistance}px`
@@ -234,11 +234,11 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
           })}
 
           {/* Random bursting particles from the portal */}
-          {isAnimating && Array(25).fill(0).map((_, i) => {
+          {isAnimating && Array(65).fill(0).map((_, i) => {
             // Particles burst from center of portal
             const angle = Math.random() * Math.PI * 2; // Random angle in radians
-            const burstX = Math.cos(angle) * (Math.random() * 600 + 200); // Random distance in direction of angle
-            const burstY = Math.sin(angle) * (Math.random() * 600 + 200);
+            const burstX = Math.cos(angle) * (Math.random() * 650 + 250); // Random distance in direction of angle
+            const burstY = Math.sin(angle) * (Math.random() * 650 + 250);
             
             return (
               <div
@@ -251,13 +251,13 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
                   background: i % 2 === 0 
-                    ? 'rgba(255, 215, 0, 0.8)' 
-                    : 'rgba(255, 140, 0, 0.8)',
+                    ? 'rgba(255, 215, 0, 0.85)' 
+                    : 'rgba(255, 140, 0, 0.85)',
                   borderRadius: '50%',
-                  boxShadow: '0 0 8px rgba(255, 165, 0, 0.7)',
+                  boxShadow: '0 0 9px rgba(255, 165, 0, 0.75)',
                   filter: 'blur(1px)',
                   opacity: 1,
-                  animation: `burstOutward ${Math.random() * 3 + 2}s ease-out infinite ${i * 0.3}s`,
+                  animation: `burstOutward ${Math.random() * 3 + 2}s ease-out infinite ${i * 0.15}s`,
                   zIndex: 15,
                   // Custom properties for the animation
                   ['--burst-x' as string]: `${burstX}px`,
