@@ -801,25 +801,40 @@ export default function TestAgentPage() {
 
         let updatedAnswers = [...scopeAnswers, { question: currentQ, answer: text }];
         
-        const prefilledMap: Record<number, string> = {};
+        // 1. Instantly register all extracted answers from the analyzer
         extracted.forEach((item) => {
           const absIdx = currentScopeIdx + 1 + item.questionIndex;
           if (absIdx < tierData.scopeQuestions.length) {
-            prefilledMap[absIdx] = item.answer;
+            const qText = tierData.scopeQuestions[absIdx];
+            if (!updatedAnswers.some(ans => ans.question === qText)) {
+              updatedAnswers.push({
+                question: qText,
+                answer: item.answer || "Pre-filled/Details provided in conversation"
+              });
+            }
           }
         });
 
+        // 2. Register any skipped indices that weren't explicitly extracted but flagged
+        skippedIndices.forEach((relativeIdx) => {
+          const absIdx = currentScopeIdx + 1 + relativeIdx;
+          if (absIdx < tierData.scopeQuestions.length) {
+            const qText = tierData.scopeQuestions[absIdx];
+            if (!updatedAnswers.some(ans => ans.question === qText)) {
+              updatedAnswers.push({
+                question: qText,
+                answer: "Pre-filled/Details provided in conversation"
+              });
+            }
+          }
+        });
+
+        // 3. Find the absolute next unanswered question in order
         let nextUnskippedIdx = currentScopeIdx + 1;
         while (nextUnskippedIdx < tierData.scopeQuestions.length) {
           const qText = tierData.scopeQuestions[nextUnskippedIdx];
           const isAlreadyAnswered = updatedAnswers.some(ans => ans.question === qText);
-          const relativeIdx = nextUnskippedIdx - (currentScopeIdx + 1);
-
-          if (isAlreadyAnswered || skippedIndices.includes(relativeIdx)) {
-            if (!isAlreadyAnswered) {
-              const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
-              updatedAnswers.push({ question: qText, answer: aText });
-            }
+          if (isAlreadyAnswered) {
             nextUnskippedIdx++;
           } else {
             break;
@@ -890,25 +905,40 @@ export default function TestAgentPage() {
 
         let updatedAnswers = [...roleAnswers, { question: currentQ, answer: text }];
 
-        const prefilledMap: Record<number, string> = {};
+        // 1. Instantly register all extracted answers from the analyzer
         extracted.forEach((item) => {
           const absIdx = currentRoleQIdx + 1 + item.questionIndex;
           if (absIdx < selectedContract.questions.length) {
-            prefilledMap[absIdx] = item.answer;
+            const qText = selectedContract.questions[absIdx];
+            if (!updatedAnswers.some(ans => ans.question === qText)) {
+              updatedAnswers.push({
+                question: qText,
+                answer: item.answer || "Pre-filled/Details provided in conversation"
+              });
+            }
           }
         });
 
+        // 2. Register any skipped indices that weren't explicitly extracted but flagged
+        skippedIndices.forEach((relativeIdx) => {
+          const absIdx = currentRoleQIdx + 1 + relativeIdx;
+          if (absIdx < selectedContract.questions.length) {
+            const qText = selectedContract.questions[absIdx];
+            if (!updatedAnswers.some(ans => ans.question === qText)) {
+              updatedAnswers.push({
+                question: qText,
+                answer: "Pre-filled/Details provided in conversation"
+              });
+            }
+          }
+        });
+
+        // 3. Find the absolute next unanswered question in order
         let nextUnskippedIdx = currentRoleQIdx + 1;
         while (nextUnskippedIdx < selectedContract.questions.length) {
           const qText = selectedContract.questions[nextUnskippedIdx];
           const isAlreadyAnswered = updatedAnswers.some(ans => ans.question === qText);
-          const relativeIdx = nextUnskippedIdx - (currentRoleQIdx + 1);
-
-          if (isAlreadyAnswered || skippedIndices.includes(relativeIdx)) {
-            if (!isAlreadyAnswered) {
-              const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
-              updatedAnswers.push({ question: qText, answer: aText });
-            }
+          if (isAlreadyAnswered) {
             nextUnskippedIdx++;
           } else {
             break;
