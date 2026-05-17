@@ -137,10 +137,20 @@ export function HeroSection() {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="font-headline text-4xl sm:text-5xl md:text-7xl font-bold mb-4 leading-tight"
+              className="font-headline text-4xl sm:text-5xl md:text-7xl font-bold mb-3 leading-tight"
             >
               <GradientText variant="name">Ryan Radityatama</GradientText>
             </motion.h1>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-base sm:text-lg md:text-xl font-bold tracking-widest uppercase mb-6"
+            >
+              <span className="bg-gradient-to-r from-purple-400 via-indigo-400 to-blue-400 bg-clip-text text-transparent">Machine Learning Engineer</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-primary/40 hidden sm:inline-block" />
+              <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">Fullstack Developer</span>
+            </motion.div>
             <div className="font-headline text-xl sm:text-2xl md:text-4xl text-primary mb-6 min-h-[32px] sm:min-h-[40px] md:min-h-[56px] flex items-center justify-center">
               <span>{displayedText}</span>
               <span className="inline-block border-r-2 border-primary h-6 sm:h-8 md:h-10 animate-blink align-middle ml-1"></span>
