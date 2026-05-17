@@ -92,22 +92,35 @@ export function Sidebar() {
             <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-400 drop-shadow-sm">Ryan Radityatama</h2>
             <p className="text-sm text-muted-foreground font-medium mt-1">@ryradit</p>
           </div>
-          <div className="flex items-center gap-2 mt-4 bg-accent/30 p-1.5 rounded-xl border border-border/50">
-            {(['en', 'id', 'zh'] as Language[]).map((lang) => (
-              <button
-                key={lang}
-                className={cn(
-                  "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-300",
-                  language === lang 
-                    ? 'bg-background text-primary shadow-sm ring-1 ring-border/50' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-                )}
-                onClick={() => setLanguage(lang)}
-              >
-                {lang === 'en' && <Languages className="h-3.5 w-3.5" />}
-                <span>{getLanguageLabel(lang)}</span>
-              </button>
-            ))}
+          <div className="relative flex items-center justify-between gap-1 mt-4 bg-accent/40 backdrop-blur-md p-1 rounded-xl border border-border/40 w-full">
+            {(['en', 'id', 'zh'] as Language[]).map((lang) => {
+              const isActive = language === lang;
+              const flags: Record<Language, string> = {
+                en: '🇺🇸',
+                id: '🇮🇩',
+                zh: '🇨🇳'
+              };
+              return (
+                <button
+                  key={lang}
+                  onClick={() => setLanguage(lang)}
+                  className={cn(
+                    "relative flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-2 px-1 text-[11px] font-bold tracking-wide uppercase transition-colors duration-300 focus:outline-none z-10",
+                    isActive ? "text-primary font-black" : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-lang-pill"
+                      className="absolute inset-0 bg-background border border-border/50 rounded-lg shadow-sm -z-10"
+                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                    />
+                  )}
+                  <span className="text-xs shrink-0">{flags[lang]}</span>
+                  <span>{getLanguageLabel(lang)}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
