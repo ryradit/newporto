@@ -320,7 +320,7 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
               />
               
               {/* Spark ring effects - multiple layers for enhanced circular effect */}
-              <div className="absolute w-full h-full" style={{
+              <div className="absolute w-full h-full rounded-full" style={{
                 background: "conic-gradient(from 0deg, transparent, rgba(255, 140, 0, 0.8), rgba(255, 100, 0, 0.6), transparent)",
                 animation: "spin 8s linear infinite"
               }}></div>
