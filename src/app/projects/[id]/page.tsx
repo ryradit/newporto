@@ -232,7 +232,7 @@ export default function ProjectDetail() {
                 href="/agent"
                 className="flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all group"
               >
-                ⚡ Qualify with AI Twin
+                ⚡ AI Hiring Agent
               </a>
               <a
                 href="/contact"
