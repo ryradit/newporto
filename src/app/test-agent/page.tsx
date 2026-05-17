@@ -811,11 +811,15 @@ export default function TestAgentPage() {
 
         let nextUnskippedIdx = currentScopeIdx + 1;
         while (nextUnskippedIdx < tierData.scopeQuestions.length) {
+          const qText = tierData.scopeQuestions[nextUnskippedIdx];
+          const isAlreadyAnswered = updatedAnswers.some(ans => ans.question === qText);
           const relativeIdx = nextUnskippedIdx - (currentScopeIdx + 1);
-          if (skippedIndices.includes(relativeIdx)) {
-            const qText = tierData.scopeQuestions[nextUnskippedIdx];
-            const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
-            updatedAnswers.push({ question: qText, answer: aText });
+
+          if (isAlreadyAnswered || skippedIndices.includes(relativeIdx)) {
+            if (!isAlreadyAnswered) {
+              const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
+              updatedAnswers.push({ question: qText, answer: aText });
+            }
             nextUnskippedIdx++;
           } else {
             break;
@@ -844,14 +848,17 @@ export default function TestAgentPage() {
         if (!selectedContract) return;
         const currentQ = selectedContract.questions[currentRoleQIdx];
         
-        // Auto-extract name if not yet set or to override default
+        // Auto-extract name if not yet set or to override default (normalizing smart curly quotes)
         let extractedName = visitorName;
         if (currentRoleQIdx === 0) {
-          const nameMatch = text.match(/(?:i'?m|my name is|i am|this is|name is|i'm|saya|nama saya|dengan|di sini)\s+([a-zA-Z\s]+)/i) || text.match(/^([a-zA-Z\s]+)/);
+          const normalizedText = text.replace(/[’‘`´]/g, "'");
+          const nameMatch = normalizedText.match(/(?:i'?m|my name is|i am|this is|name is|saya|nama saya|dengan|di sini)\s+([a-zA-Z\s]+)/i) || normalizedText.match(/^([a-zA-Z\s]+)/);
           if (nameMatch && nameMatch[1]) {
             const parsedName = nameMatch[1].trim().split(/\s+/)[0];
-            extractedName = parsedName;
-            setVisitorName(parsedName);
+            if (parsedName.toLowerCase() !== 'i' && parsedName.length > 1) {
+              extractedName = parsedName;
+              setVisitorName(parsedName);
+            }
           }
         }
 
@@ -893,11 +900,15 @@ export default function TestAgentPage() {
 
         let nextUnskippedIdx = currentRoleQIdx + 1;
         while (nextUnskippedIdx < selectedContract.questions.length) {
+          const qText = selectedContract.questions[nextUnskippedIdx];
+          const isAlreadyAnswered = updatedAnswers.some(ans => ans.question === qText);
           const relativeIdx = nextUnskippedIdx - (currentRoleQIdx + 1);
-          if (skippedIndices.includes(relativeIdx)) {
-            const qText = selectedContract.questions[nextUnskippedIdx];
-            const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
-            updatedAnswers.push({ question: qText, answer: aText });
+
+          if (isAlreadyAnswered || skippedIndices.includes(relativeIdx)) {
+            if (!isAlreadyAnswered) {
+              const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
+              updatedAnswers.push({ question: qText, answer: aText });
+            }
             nextUnskippedIdx++;
           } else {
             break;
