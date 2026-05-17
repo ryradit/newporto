@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles, User, RotateCcw } from 'lucide-react';
+import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles, User, RotateCcw, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1573,16 +1574,24 @@ export default function TestAgentPage() {
       {/* Right Panel — Chat */}
       <div className="flex-1 flex flex-col min-h-screen relative z-10">
         {/* Header */}
-        <div className="border-b border-white/10 bg-black/20 backdrop-blur-xl px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="lg:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+        <div className="border-b border-white/10 bg-black/20 backdrop-blur-xl px-4 md:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 md:gap-3">
+            <Link
+              href="/"
+              className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white/60 hover:text-white transition-all duration-300 active:scale-95 group shrink-0"
+              title="Back to Home"
+            >
+              <ArrowLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+            </Link>
+
+            <div className="lg:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shrink-0">
               <Bot size={16} className="text-white" />
             </div>
             <div>
-              <h1 className="text-sm font-semibold text-white">Ryan's Proposal Agent</h1>
+              <h1 className="text-xs md:text-sm font-semibold text-white">Ryan's Proposal Agent</h1>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-white/40">Live · Agentic AI Pipeline</span>
+                <span className="text-[10px] md:text-xs text-white/40">Live · Agentic AI Pipeline</span>
               </div>
             </div>
           </div>
