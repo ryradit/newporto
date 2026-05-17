@@ -554,6 +554,19 @@ export default function TestAgentPage() {
         if (data.roleAnswers) setRoleAnswers(data.roleAnswers);
         if (data.currentRoleQIdx !== undefined) setCurrentRoleQIdx(data.currentRoleQIdx);
         if (data.candidateBrief) setCandidateBrief(data.candidateBrief);
+      } else {
+        // No saved session: parse query parameter ?project=...
+        const params = new URLSearchParams(window.location.search);
+        const projectParam = params.get('project');
+        if (projectParam) {
+          const cleanProjectName = projectParam.includes(' - ') ? projectParam.split(' - ')[1] : projectParam;
+          setMessages([
+            {
+              role: 'assistant',
+              content: `Hi! 👋 I'm Ryan's AI assistant. I noticed you were just looking at my "${cleanProjectName}" project! Would you like to build a similar high-performance platform or qualify a custom project of your own? Let's make it happen!`,
+            },
+          ]);
+        }
       }
     } catch (err) {
       console.warn("Failed to load saved agent session:", err);
@@ -612,10 +625,19 @@ export default function TestAgentPage() {
     if (confirm("Are you sure you want to restart the conversation? This will clear your current progress.")) {
       sessionStorage.removeItem('hiring_agent_session');
       setShowWelcome(true);
+
+      let initialGreeting = "Hi! 👋 I'm Ryan's AI assistant. Before we get started — quick question: are you here to commission a project, or are you a recruiter looking to hire Ryan?";
+      const params = new URLSearchParams(window.location.search);
+      const projectParam = params.get('project');
+      if (projectParam) {
+        const cleanProjectName = projectParam.includes(' - ') ? projectParam.split(' - ')[1] : projectParam;
+        initialGreeting = `Hi! 👋 I'm Ryan's AI assistant. I noticed you were just looking at my "${cleanProjectName}" project! Would you like to build a similar high-performance platform or qualify a custom project of your own? Let's make it happen!`;
+      }
+
       setMessages([
         {
           role: 'assistant',
-          content: "Hi! 👋 I'm Ryan's AI assistant. Before we get started — quick question: are you here to commission a project, or are you a recruiter looking to hire Ryan?",
+          content: initialGreeting,
         },
       ]);
       setStage('who_are_you');

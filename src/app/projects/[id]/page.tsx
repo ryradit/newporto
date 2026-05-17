@@ -217,7 +217,7 @@ export default function ProjectDetail() {
               
               <div className="flex flex-col gap-3">
                 <a
-                  href="/agent"
+                  href={`/agent?project=${encodeURIComponent(project.title)}`}
                   className="flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-semibold rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
                   ⚡ AI Hiring Agent
