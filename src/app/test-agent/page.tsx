@@ -13,6 +13,10 @@ type Stage =
   | 'scope'
   | 'generating'
   | 'proposal'
+  | 'contract_type'
+  | 'role_details'
+  | 'generating_brief'
+  | 'brief'
   | 'followup';
 
 type Message = { role: 'user' | 'assistant'; content: string };
@@ -39,15 +43,27 @@ type Proposal = {
   emailDraft: string;
 };
 
-const STAGES: { id: Stage; label: string }[] = [
-  { id: 'greeting', label: 'Welcome' },
-  { id: 'intent', label: 'Your Goal' },
-  { id: 'budget', label: 'Budget' },
-  { id: 'scope', label: 'Scope' },
-  { id: 'generating', label: 'Proposal' },
-  { id: 'proposal', label: 'Proposal' },
-  { id: 'followup', label: 'Follow-Up' },
-];
+type CandidateBrief = {
+  briefTitle: string;
+  executiveSummary: string;
+  skillsMatch: { requirement: string; ryanHas: string }[];
+  relevantExperience: { role: string; company: string; relevance: string }[];
+  compensationNote: string;
+  availability: string;
+  nextSteps: string[];
+  closingMessage: string;
+  emailDraft: string;
+};
+
+type ContractOption = {
+  type: string;
+  label: string;
+  description: string;
+  questions: string[];
+};
+
+const CLIENT_STAGES: Stage[] = ['greeting', 'intent', 'budget', 'scope', 'proposal', 'followup'];
+const RECRUITER_STAGES: Stage[] = ['greeting', 'intent', 'contract_type', 'role_details', 'brief', 'followup'];
 
 const BUDGET_OPTIONS = [
   { label: '🌱 Starter', sublabel: 'Under $300', value: 'under 300', color: 'from-emerald-500 to-teal-500' },
@@ -73,16 +89,22 @@ function TypingIndicator() {
   );
 }
 
-function StageTracker({ current }: { current: Stage }) {
-  const stageIds: Stage[] = ['greeting', 'intent', 'budget', 'scope', 'proposal', 'followup'];
-  const currentIdx = stageIds.indexOf(current === 'generating' ? 'proposal' : current);
+function StageTracker({ current, intent }: { current: Stage; intent: 'client' | 'recruiter' | 'unknown' }) {
+  const stageIds = intent === 'recruiter' ? RECRUITER_STAGES : CLIENT_STAGES;
+  const normalizedCurrent: Stage = current === 'generating' ? 'proposal' : current === 'generating_brief' ? 'brief' : current;
+  const currentIdx = stageIds.indexOf(normalizedCurrent);
 
   return (
     <div className="flex flex-col gap-2">
       {stageIds.map((s, i) => {
         const done = i < currentIdx;
         const active = i === currentIdx;
-        const label = STAGES.find((st) => st.id === s)?.label || s;
+        const STAGE_LABELS: Partial<Record<Stage, string>> = {
+          greeting: 'Welcome', intent: 'Your Goal', budget: 'Budget', scope: 'Scope',
+          proposal: 'Proposal', contract_type: 'Contract Type', role_details: 'Role Details',
+          brief: 'Candidate Brief', followup: 'Follow-Up',
+        };
+        const label = STAGE_LABELS[s] || s;
         return (
           <div key={s} className="flex items-center gap-3">
             <motion.div
@@ -110,6 +132,91 @@ function StageTracker({ current }: { current: Stage }) {
         );
       })}
     </div>
+  );
+}
+
+function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
+  const [showEmail, setShowEmail] = useState(false);
+  return (
+    <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-5">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6">
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles size={18} className="text-yellow-300" />
+          <span className="text-xs font-semibold text-blue-200 uppercase tracking-widest">Candidate Brief</span>
+        </div>
+        <h2 className="text-xl font-bold text-white leading-tight">{brief.briefTitle}</h2>
+        <p className="text-blue-100 text-sm mt-2 leading-relaxed">{brief.executiveSummary}</p>
+      </div>
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-blue-300 mb-3 uppercase tracking-wide">Skills Match</h3>
+        <div className="space-y-3">
+          {brief.skillsMatch?.map((s, i) => (
+            <div key={i} className="border border-white/10 rounded-lg p-3">
+              <div className="text-xs text-white/40 uppercase tracking-wide mb-1">Requirement</div>
+              <div className="text-white/80 text-sm">{s.requirement}</div>
+              <div className="text-xs text-blue-400 mt-2 flex items-start gap-1.5">
+                <CheckCircle size={12} className="mt-0.5 shrink-0" />
+                {s.ryanHas}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-blue-300 mb-3 uppercase tracking-wide">Relevant Experience</h3>
+        <div className="space-y-3">
+          {brief.relevantExperience?.map((e, i) => (
+            <div key={i} className="border border-white/10 rounded-lg p-3">
+              <div className="text-white font-medium text-sm">{e.role}</div>
+              <div className="text-white/40 text-xs">{e.company}</div>
+              <div className="text-white/60 text-xs mt-1">{e.relevance}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
+          <div className="text-xs text-emerald-400 font-semibold uppercase tracking-wide mb-1">Availability</div>
+          <div className="text-white text-sm font-medium">{brief.availability}</div>
+        </div>
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+          <div className="text-xs text-blue-400 font-semibold uppercase tracking-wide mb-1">Compensation</div>
+          <div className="text-white text-sm font-medium">{brief.compensationNote}</div>
+        </div>
+      </div>
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+        <h3 className="text-sm font-semibold text-blue-300 mb-3 uppercase tracking-wide">Next Steps</h3>
+        <ol className="space-y-2">
+          {brief.nextSteps?.map((s, i) => (
+            <li key={i} className="flex items-start gap-3 text-sm text-white/80">
+              <span className="w-5 h-5 rounded-full bg-blue-500/30 text-blue-300 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+              {s}
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="bg-gradient-to-br from-blue-900/40 to-indigo-900/40 border border-blue-500/20 rounded-2xl p-5">
+        <p className="text-white/80 text-sm leading-relaxed italic">{brief.closingMessage}</p>
+        <div className="mt-3 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-bold">R</div>
+          <div>
+            <div className="text-white text-sm font-semibold">Ryan Radityatama</div>
+            <div className="text-white/40 text-xs">Web Developer · ryradit@gmail.com</div>
+          </div>
+        </div>
+      </div>
+      <button onClick={() => setShowEmail(!showEmail)} className="w-full flex items-center justify-between px-5 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
+        <div className="flex items-center gap-2 text-sm text-white/70"><Mail size={14} />{showEmail ? 'Hide email draft' : 'View follow-up email draft'}</div>
+        <ChevronRight size={14} className={`text-white/40 transition-transform ${showEmail ? 'rotate-90' : ''}`} />
+      </button>
+      <AnimatePresence>
+        {showEmail && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="bg-zinc-900 border border-white/10 rounded-xl p-5 text-sm text-white/70 whitespace-pre-wrap font-mono leading-relaxed">
+            {brief.emailDraft}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -255,6 +362,12 @@ export default function TestAgentPage() {
   const [currentScopeIdx, setCurrentScopeIdx] = useState(0);
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [projectDescription, setProjectDescription] = useState('');
+  // Recruiter state
+  const [contractOptions, setContractOptions] = useState<ContractOption[]>([]);
+  const [selectedContract, setSelectedContract] = useState<ContractOption | null>(null);
+  const [roleAnswers, setRoleAnswers] = useState<{ question: string; answer: string }[]>([]);
+  const [currentRoleQIdx, setCurrentRoleQIdx] = useState(0);
+  const [candidateBrief, setCandidateBrief] = useState<CandidateBrief | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -293,11 +406,21 @@ export default function TestAgentPage() {
         setDetectedIntent(data.intent);
 
         if (data.intent === 'recruiter') {
+          setDetectedIntent('recruiter');
+          // Fetch contract type options and move to contract_type stage
+          const ctRes = await fetch('/api/agent/recruiter', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'contract_types' }),
+          });
+          const ctData = await ctRes.json();
+          setContractOptions(ctData.contractTypes || []);
           setTimeout(() => {
-            addMessage('assistant', "Since you're a recruiter, let me redirect you to Ryan's interview scheduler where you can book a time that works for you! 📅");
-            setStage('followup');
-          }, 1500);
+            addMessage('assistant', "Great! Since you're looking to hire Ryan, what type of engagement works best for you?");
+            setStage('contract_type');
+          }, 800);
         } else {
+          setDetectedIntent('client');
           setStage('intent');
         }
 
@@ -325,11 +448,75 @@ export default function TestAgentPage() {
           setStage('generating');
           await generateProposal(newAnswers);
         }
+      } else if (stage === 'role_details') {
+        if (!selectedContract) return;
+        const currentQ = selectedContract.questions[currentRoleQIdx];
+        const newAnswers = [...roleAnswers, { question: currentQ, answer: text }];
+        setRoleAnswers(newAnswers);
+
+        if (currentRoleQIdx + 1 < selectedContract.questions.length) {
+          setCurrentRoleQIdx(currentRoleQIdx + 1);
+          addMessage('assistant', selectedContract.questions[currentRoleQIdx + 1]);
+        } else {
+          addMessage('assistant', "Perfect! Let me generate a tailored candidate brief showing exactly why Ryan is the right fit for this role... ✨");
+          setStage('generating_brief');
+          await generateCandidateBrief(newAnswers);
+        }
       }
     } catch (err) {
       addMessage('assistant', "Sorry, something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleContractSelection = async (contractType: string) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/agent/recruiter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'contract_questions', contractType }),
+      });
+      const data = await res.json();
+      setSelectedContract(data);
+      addMessage('assistant', data.reply);
+      setTimeout(() => {
+        addMessage('assistant', data.questions[0]);
+        setCurrentRoleQIdx(0);
+        setRoleAnswers([]);
+        setStage('role_details');
+      }, 800);
+    } catch {
+      addMessage('assistant', 'Got it! Let me ask a few questions about the role.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const generateCandidateBrief = async (answers: { question: string; answer: string }[]) => {
+    try {
+      const res = await fetch('/api/agent/recruiter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'generate_brief',
+          recruiterName: visitorName,
+          recruiterCompany: visitorCompany,
+          contractType: selectedContract?.type,
+          contractLabel: selectedContract?.label,
+          roleAnswers: answers,
+        }),
+      });
+      const data = await res.json();
+      if (data.brief) {
+        setCandidateBrief(data.brief);
+        setStage('brief');
+        addMessage('assistant', "Ryan's candidate brief is ready! 🎉 It shows exactly how his experience and skills match your role requirements.");
+      } else throw new Error('No brief returned');
+    } catch {
+      addMessage('assistant', 'I had trouble generating the brief. Please contact Ryan at ryradit@gmail.com');
+      setStage('followup');
     }
   };
 
@@ -422,7 +609,7 @@ export default function TestAgentPage() {
           <p className="text-xs text-white/40 mt-1">Ryan Radityatama · Web Developer</p>
         </div>
 
-        <StageTracker current={stage} />
+        <StageTracker current={stage} intent={detectedIntent} />
 
         <div className="mt-auto pt-8 border-t border-white/10">
           <div className="text-xs text-white/30 leading-relaxed">
@@ -497,7 +684,35 @@ export default function TestAgentPage() {
             </div>
           )}
 
-          {/* Budget Selection UI */}
+          {/* Contract Type Selection UI — Recruiter */}
+          <AnimatePresence>
+            {stage === 'contract_type' && !isLoading && contractOptions.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-2 gap-3 my-4"
+              >
+                {contractOptions.map((opt) => (
+                  <button
+                    key={opt.type}
+                    onClick={() => {
+                      addMessage('user', opt.label);
+                      handleContractSelection(opt.type);
+                    }}
+                    className="bg-gradient-to-br from-blue-500 to-indigo-500 p-0.5 rounded-xl hover:scale-105 transition-transform"
+                  >
+                    <div className="bg-[#0A0A0F] rounded-[11px] p-4 h-full text-left">
+                      <div className="text-base font-bold text-white">{opt.label}</div>
+                      <div className="text-xs text-white/50 mt-1">{opt.description}</div>
+                    </div>
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Budget Selection UI — Client */}
           <AnimatePresence>
             {stage === 'budget' && !isLoading && (
               <motion.div
@@ -525,7 +740,29 @@ export default function TestAgentPage() {
             )}
           </AnimatePresence>
 
-          {/* Proposal Display */}
+          {/* Candidate Brief Display — Recruiter */}
+          {candidateBrief && stage === 'brief' && (
+            <div className="mt-6">
+              <CandidateBriefCard brief={candidateBrief} />
+              <div className="mt-6 flex flex-col gap-3">
+                <a
+                  href="mailto:ryradit@gmail.com?subject=Contract Opportunity"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-xl transition-all"
+                >
+                  <Mail size={16} />
+                  Email Ryan About This Role
+                </a>
+                <a
+                  href="/contact"
+                  className="flex items-center justify-center gap-2 w-full py-3 border border-white/20 text-white/70 hover:text-white hover:border-white/40 rounded-xl transition-all text-sm"
+                >
+                  Go to Contact Page
+                </a>
+              </div>
+            </div>
+          )}
+
+          {/* Proposal Display — Client */}
           {proposal && stage === 'proposal' && (
             <div className="mt-6">
               <ProposalCard proposal={proposal} />
