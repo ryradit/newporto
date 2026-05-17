@@ -569,75 +569,78 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 border: "1px solid rgba(255, 140, 0, 0.4)"
               }}
             >
-              {/* Active planet globe fully large inside center gateway window */}
+              {/* Fiery Dimensional Gateway Center - Perfect circular window showing the active planetary dimension! */}
               <div className="relative w-full h-full rounded-full overflow-hidden flex items-center justify-center">
                 {/* Space background layer */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center opacity-60"
+                  className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
                   style={{
-                    backgroundImage: `radial-gradient(circle at center, rgba(13, 10, 36, 0.95) 0%, rgba(3, 2, 10, 1) 100%)`
+                    backgroundImage: `radial-gradient(circle at center, rgba(10, 8, 28, 0.95) 0%, rgba(2, 1, 6, 1) 100%)`
                   }}
                 />
                 
-                {/* 3D Rotating Planet Globe */}
+                {/* Swirling Cosmic Nebula - A beautiful slowly rotating blurred conic gradient */}
                 <div 
-                  className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 rounded-full transition-all duration-1000 animate-spin"
+                  className="absolute w-full h-full rounded-full transition-all duration-1000 animate-spin"
                   style={{
-                    animation: "spin 35s linear infinite",
+                    animation: "spin 120s linear infinite",
                     background: themes[currentIndex].id === 'dark' 
-                      ? 'radial-gradient(circle at 30% 30%, #1e40af, #1e3a8a, #0f172a)' 
+                      ? 'conic-gradient(from 0deg, rgba(30, 64, 175, 0.25), rgba(16, 185, 129, 0.15), rgba(30, 64, 175, 0.25))' 
                       : themes[currentIndex].id === 'earth-838'
-                      ? 'radial-gradient(circle at 30% 30%, #f3f4f6, #d1d5db, #6b7280)'
-                      : 'radial-gradient(circle at 30% 30%, #7c3aed, #4c1d95, #1e1b4b)',
-                    boxShadow: themes[currentIndex].id === 'dark' 
-                      ? '0 0 50px 5px rgba(59, 130, 246, 0.5), inset -20px -20px 40px rgba(0,0,0,0.8), inset 20px 20px 40px rgba(255,255,255,0.1)' 
-                      : themes[currentIndex].id === 'earth-838'
-                      ? '0 0 50px 5px rgba(156, 163, 175, 0.3), inset -20px -20px 40px rgba(0,0,0,0.2), inset 20px 20px 40px rgba(255,255,255,0.6)'
-                      : '0 0 50px 5px rgba(147, 51, 234, 0.5), inset -20px -20px 40px rgba(0,0,0,0.8), inset 20px 20px 40px rgba(255,255,255,0.1)',
-                    border: '1px solid rgba(255,255,255,0.05)'
+                      ? 'radial-gradient(circle, rgba(209, 213, 219, 0.1) 0%, transparent 80%)'
+                      : 'conic-gradient(from 180deg, rgba(147, 51, 234, 0.25), rgba(236, 72, 153, 0.15), rgba(147, 51, 234, 0.25))',
+                    filter: "blur(45px)"
                   }}
-                >
-                  {/* Planet Continent Textures */}
-                  {themes[currentIndex].id === 'dark' && (
-                    <div className="absolute inset-0 rounded-full overflow-hidden">
-                      <div className="absolute top-[10%] left-[15%] w-[45%] h-[30%] bg-green-700/80 rounded-2xl transform rotate-12" />
-                      <div className="absolute top-[25%] right-[10%] w-[35%] h-[25%] bg-green-600/70 rounded-xl transform -rotate-45" />
-                      <div className="absolute bottom-[15%] left-[20%] w-[50%] h-[25%] bg-green-800/80 rounded-2xl transform rotate-6" />
-                      <div className="absolute bottom-[20%] right-[12%] w-[35%] h-[20%] bg-green-700/70 rounded-xl transform rotate-12" />
-                      <div className="absolute inset-0 rounded-full" style={{
-                        background: 'radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.3) 0%, transparent 40%), radial-gradient(ellipse at 75% 70%, rgba(255,255,255,0.2) 0%, transparent 30%)'
-                      }} />
-                    </div>
-                  )}
+                />
+
+                {/* 30 Tiny Sparkling Cosmic Stars */}
+                {isAnimating && Array(30).fill(0).map((_, i) => {
+                  const starSize = Math.random() * 2 + 1;
+                  const starX = Math.random() * 80 + 10;
+                  const starY = Math.random() * 80 + 10;
+                  const starDelay = Math.random() * 3;
+                  const starDuration = Math.random() * 3 + 2;
                   
-                  {themes[currentIndex].id === 'earth-838' && (
-                    <div className="absolute inset-0 rounded-full overflow-hidden">
-                      <div className="absolute top-[10%] left-[15%] w-[45%] h-[30%] bg-gray-300/80 rounded-2xl transform rotate-12 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
-                      <div className="absolute top-[25%] right-[10%] w-[35%] h-[25%] bg-gray-300/70 rounded-xl transform -rotate-45 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
-                      <div className="absolute bottom-[15%] left-[20%] w-[50%] h-[25%] bg-gray-300/80 rounded-2xl transform rotate-6 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
-                      <div className="absolute bottom-[20%] right-[12%] w-[35%] h-[20%] bg-gray-300/70 rounded-xl transform rotate-12 shadow-[inset_2px_2px_5px_rgba(0,0,0,0.15)]" />
-                    </div>
-                  )}
-                  
-                  {themes[currentIndex].id === 'Earth-X' && (
-                    <div className="absolute inset-0 rounded-full overflow-hidden">
-                      <div className="absolute top-[10%] left-[15%] w-[45%] h-[30%] bg-gradient-to-br from-pink-500/60 to-purple-600/60 rounded-2xl transform rotate-12 blur-[1px] shadow-[0_0_15px_rgba(236,72,153,0.5)]" />
-                      <div className="absolute top-[25%] right-[10%] w-[35%] h-[25%] bg-gradient-to-br from-cyan-500/50 to-purple-500/50 rounded-xl transform -rotate-45 blur-[1px] shadow-[0_0_15px_rgba(6,182,212,0.5)]" />
-                      <div className="absolute bottom-[15%] left-[20%] w-[50%] h-[25%] bg-gradient-to-br from-purple-500/60 to-pink-600/60 rounded-2xl transform rotate-6 blur-[1px]" />
-                      <div className="absolute bottom-[20%] right-[12%] w-[35%] h-[20%] bg-gradient-to-br from-indigo-500/50 to-purple-600/50 rounded-xl transform rotate-12 blur-[1px]" />
-                    </div>
-                  )}
-                </div>
+                  return (
+                    <div
+                      key={`portal-star-${i}`}
+                      className="absolute rounded-full bg-white/70"
+                      style={{
+                        width: `${starSize}px`,
+                        height: `${starSize}px`,
+                        left: `${starX}%`,
+                        top: `${starY}%`,
+                        boxShadow: '0 0 4px rgba(255, 255, 255, 0.8)',
+                        animation: `flicker ${starDuration}s ease-in-out infinite alternate`,
+                        animationDelay: `${starDelay}s`
+                      }}
+                    />
+                  );
+                })}
+                
+                {/* Cybernetic High-Tech Grid overlay for Earth-X */}
+                {themes[currentIndex].id === 'Earth-X' && (
+                  <div 
+                    className="absolute inset-0 rounded-full opacity-35 transition-opacity duration-1000"
+                    style={{
+                      backgroundImage: 'linear-gradient(rgba(147, 51, 234, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(147, 51, 234, 0.12) 1px, transparent 1px)',
+                      backgroundSize: '24px 24px',
+                      backgroundPosition: 'center',
+                      maskImage: 'radial-gradient(circle, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%)',
+                      WebkitMaskImage: 'radial-gradient(circle, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%)'
+                    }}
+                  />
+                )}
                 
                 {/* Gateway Light Fog & Aura Overlay */}
                 <div 
                   className="absolute inset-0 rounded-full pointer-events-none" 
                   style={{
                     background: themes[currentIndex].id === 'dark' 
-                      ? 'radial-gradient(circle, transparent 40%, rgba(59, 130, 246, 0.15) 70%, rgba(59, 130, 246, 0.4) 100%)' 
+                      ? 'radial-gradient(circle, transparent 40%, rgba(59, 130, 246, 0.15) 70%, rgba(59, 130, 246, 0.35) 100%)' 
                       : themes[currentIndex].id === 'earth-838'
-                      ? 'radial-gradient(circle, transparent 40%, rgba(156, 163, 175, 0.1) 70%, rgba(156, 163, 175, 0.3) 100%)'
-                      : 'radial-gradient(circle, transparent 40%, rgba(147, 51, 234, 0.15) 70%, rgba(147, 51, 234, 0.4) 100%)'
+                      ? 'radial-gradient(circle, transparent 40%, rgba(156, 163, 175, 0.08) 70%, rgba(156, 163, 175, 0.2) 100%)'
+                      : 'radial-gradient(circle, transparent 40%, rgba(147, 51, 234, 0.15) 70%, rgba(147, 51, 234, 0.35) 100%)'
                   }}
                 />
               </div>
