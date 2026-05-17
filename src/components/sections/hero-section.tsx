@@ -62,8 +62,10 @@ const gridItemVariants = {
 export function HeroSection() {
   const { language } = useLanguage();
   const TAGLINES = [
+    translate('hero.taglines.softwareEngineer', language),
     translate('hero.taglines.aiEngineer', language),
-    translate('hero.taglines.softwareEngineer', language)
+    translate('hero.taglines.mlEngineer', language),
+    translate('hero.taglines.fullstackDeveloper', language)
   ];
   const [taglineIndex, setTaglineIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");

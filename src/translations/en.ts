@@ -9,9 +9,10 @@ const en = {
   hero: {
     title: 'Ryan Radityatama',
     taglines: {
-      aiEngineer: 'Machine Learning Engineer',
-      nlpSpecialist: 'NLP Specialist',
-      softwareEngineer: 'Fullstack Developer'
+      softwareEngineer: 'Software Engineer',
+      aiEngineer: 'AI Engineer',
+      mlEngineer: 'Machine Learning Engineer',
+      fullstackDeveloper: 'Fullstack Developer'
     },
     description: 'Welcome to my portfolio! I\'m glad you\'re here. I specialize in building intelligent solutions that make technology more human-friendly. Let\'s explore how we can create something amazing together.',
     skills: 'My Skills',

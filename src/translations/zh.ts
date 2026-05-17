@@ -11,9 +11,10 @@ const zh = {
   hero: {
     title: 'Ryan Radityatama',
     taglines: {
-      aiEngineer: '机器学习工程师',
-      nlpSpecialist: '自然语言处理专家',
-      softwareEngineer: '全栈开发人员'
+      softwareEngineer: '软件工程师',
+      aiEngineer: 'AI工程师',
+      mlEngineer: '机器学习工程师',
+      fullstackDeveloper: '全栈开发人员'
     },
     description: '构建智能解决方案，连接数据与现实世界的影响。探索机器学习和深度学习的前沿。',
     skills: '我的技能',
