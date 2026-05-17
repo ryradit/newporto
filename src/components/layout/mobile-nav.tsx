@@ -85,34 +85,6 @@ const getNavigationItems = (pathname: string, lang: 'en' | 'id' | 'zh'): Navigat
   },
  
   {
-    name: lang === 'id' ? 'Pilih Dimensi 🌀' : lang === 'zh' ? '选择维度 🌀' : 'Choose Dimension 🌀',
-    href: '#dimensions',
-    section: 'dimensions',
-    icon: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-5 h-5 text-orange-500 animate-spin-slow"
-      >
-        <path d="M12 2v2" />
-        <path d="M12 20v2" />
-        <path d="M4.93 4.93l1.41 1.41" />
-        <path d="M17.66 17.66l1.41 1.41" />
-        <path d="M2 12h2" />
-        <path d="M20 12h2" />
-        <path d="M6.34 17.66l-1.41 1.41" />
-        <path d="M19.07 4.93l-1.41 1.41" />
-        <circle cx="12" cy="12" r="4" fill="rgba(255,140,0,0.15)" stroke="rgba(255,140,0,0.8)" />
-      </svg>
-    ),
-  },
- 
-  {
     name: translate('menu.contact', lang),
     href: '/contact',
     section: 'contact',
@@ -243,11 +215,7 @@ export function MobileNav() {
                     onClick={async (e) => {
                       e.preventDefault();
                       setIsOpen(false);
-                      if (item.section === 'dimensions') {
-                        setIsPortalOpen(true);
-                      } else {
-                        await router.push(item.href);
-                      }
+                      await router.push(item.href);
                     }}
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all mb-1",
@@ -262,6 +230,41 @@ export function MobileNav() {
                 );
               })}
             </nav>
+ 
+            {/* Bottom Action Section */}
+            <div className="mt-auto p-4 border-t border-border bg-accent/20 flex flex-col gap-4">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                  setIsPortalOpen(true);
+                }}
+                className="w-full flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold border border-orange-500/30 hover:border-orange-500 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 hover:text-orange-300 shadow-[0_4px_20px_rgba(234,88,12,0.1)] transition-all duration-300 active:scale-98 group"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4.5 h-4.5 text-orange-500 animate-spin-slow group-hover:scale-110 transition-transform duration-300"
+                >
+                  <path d="M12 2v2" />
+                  <path d="M12 20v2" />
+                  <path d="M4.93 4.93l1.41 1.41" />
+                  <path d="M17.66 17.66l1.41 1.41" />
+                  <path d="M2 12h2" />
+                  <path d="M20 12h2" />
+                  <path d="M6.34 17.66l-1.41 1.41" />
+                  <path d="M19.07 4.93l-1.41 1.41" />
+                  <circle cx="12" cy="12" r="4" fill="rgba(255,140,0,0.15)" stroke="currentColor" />
+                </svg>
+                <span className="tracking-wide">
+                  {language === 'id' ? 'Pilih Dimensi 🌀' : language === 'zh' ? '选择维度 🌀' : 'Choose Dimension 🌀'}
+                </span>
+              </button>
+            </div>
           </div>
         </SheetContent>
       </Sheet>
