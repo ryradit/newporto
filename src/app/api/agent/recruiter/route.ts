@@ -4,6 +4,16 @@ import { RYAN_PROFILE_DATA } from '@/lib/profile-data';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
+// Ryan's minimum compensation expectations
+const RYAN_COMPENSATION = `
+Ryan's Minimum Compensation Requirements:
+- Indonesia (IDR): Rp 15,000,000 per month minimum
+- International (USD Salary): $80,000 per year minimum (annualized)
+- International (USD Hourly): $40 per hour minimum
+- Actual rate may be higher depending on job responsibilities, scope of work, and required expertise.
+- Ryan is open to negotiation above these minimums based on role complexity and company size.
+`;
+
 const CONTRACT_TYPES = {
   freelance: {
     type: 'freelance',
@@ -94,6 +104,8 @@ Generate a compelling candidate brief showing why Ryan is the perfect fit for th
 Ryan's Full Profile:
 ${RYAN_PROFILE_DATA}
 
+${RYAN_COMPENSATION}
+
 Recruiter Details:
 - Name: ${recruiterName || 'Recruiter'}
 - Company: ${recruiterCompany || 'Not specified'}
@@ -114,14 +126,14 @@ Generate a JSON object with these fields:
     {"role": "Ryan's past role", "company": "Company", "relevance": "Why this is relevant to this position"},
     ...
   ],
-  "compensationNote": "Brief note about Ryan's flexibility/expectations for this contract type",
+  "compensationNote": "State Ryan's minimum expected compensation clearly for this contract type. For IDR roles: minimum Rp 15,000,000/month. For USD roles: minimum $80K/year (salary) or $40/hour. Mention that the final rate depends on job responsibilities and scope.",
   "availability": "Ryan's general availability note",
   "nextSteps": ["Step 1", "Step 2", "Step 3"],
   "closingMessage": "Professional closing note from Ryan to the recruiter",
-  "emailDraft": "Full professional email from Ryan to the recruiter expressing interest and summarizing his fit"
+  "emailDraft": "Full professional email from Ryan to the recruiter expressing interest, summarizing his fit, and stating his minimum compensation expectations clearly"
 }
 
-Be specific, reference actual experience from Ryan's profile. Show concrete skill matches. Be persuasive but honest.`;
+Be specific, reference actual experience from Ryan's profile. Show concrete skill matches. Be persuasive but honest. Always include the compensation expectations in the compensationNote field.`;
 
       const model = genAI.getGenerativeModel({
         model: 'gemini-2.5-flash-lite',
