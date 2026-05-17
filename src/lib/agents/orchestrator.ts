@@ -190,7 +190,7 @@ Ensure the output is clean JSON. Do not include markdown wraps or anything else 
  * Connects directly to Google Calendar API using standard fetch query to parse live free slots.
  */
 export async function schedulerAgent(): Promise<{ bookingLink: string; flexibleSlots: string[] }> {
-  const fallbackLink = "https://drive.google.com/drive/u/1/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing";
+  const fallbackLink = process.env.GOOGLE_CALENDAR_BOOKING_LINK || "https://drive.google.com/drive/u/1/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing";
   const fallbackSlots = [
     "Mondays: 2:00 PM - 5:00 PM WIB (Jakarta Time)",
     "Wednesdays: 10:00 AM - 1:00 PM WIB (Jakarta Time)",
@@ -212,6 +212,14 @@ export async function schedulerAgent(): Promise<{ bookingLink: string; flexibleS
 
     const res = await fetch(endpoint);
     if (!res.ok) {
+      if (res.status === 403 || res.status === 404) {
+        console.warn(`[Google Calendar API Info] Calendar query returned status ${res.status}.
+This usually means your Google Calendar is private or cannot be accessed without OAuth. 
+To resolve this using an API Key:
+1. Go to Google Calendar > Settings > Settings for my calendars > Access permissions.
+2. Check "Make available to public" and choose "See only free/busy (hide details)" so your events remain secure but the API can check your availability.
+Using graceful default fallback list.`);
+      }
       throw new Error(`Google Calendar API responded with status ${res.status}`);
     }
 
@@ -286,7 +294,7 @@ export async function schedulerAgent(): Promise<{ bookingLink: string; flexibleS
 
     if (freeSlots.length > 0) {
       return {
-        bookingLink: `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(calendarId)}`,
+        bookingLink: process.env.GOOGLE_CALENDAR_BOOKING_LINK || `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(calendarId)}`,
         flexibleSlots: freeSlots
       };
     }
