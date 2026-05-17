@@ -214,12 +214,35 @@ function CandidateBriefCard({
   };
 
   // Dynamically construct mailto URL based on the real-time form inputs
-  let emailBody = brief.emailDraft || '';
+  const recruiterSubject = `Interview Request: Ryan Radityatama for ${brief.briefTitle || 'Contract Opportunity'}`;
+  
+  let recruiterEmailBody = `Hi Ryan,\n\n`;
+  recruiterEmailBody += `I'm reaching out regarding the opportunity for the role: ${brief.briefTitle}.\n\n`;
+  recruiterEmailBody += `I reviewed your AI candidate brief on your portfolio, and your experience looks like an excellent fit for our team.\n\n`;
+  
   if (proposedDate && proposedTime) {
-    const slotText = `PROPOSED INTERVIEW TIME:\n• Date: ${proposedDate}\n• Time: ${proposedTime} WIB (Jakarta Time)\n${proposeNote ? `• Notes: ${proposeNote}\n` : ''}\n========================================\n\n`;
-    emailBody = slotText + emailBody;
+    recruiterEmailBody += `We would love to schedule a discussion. Here is our proposed interview slot:\n`;
+    recruiterEmailBody += `• Date: ${proposedDate}\n`;
+    recruiterEmailBody += `• Time: ${proposedTime} WIB (Jakarta Time)\n`;
+    if (proposeNote) {
+      recruiterEmailBody += `• Notes: ${proposeNote}\n`;
+    }
+    recruiterEmailBody += `\n`;
+  } else {
+    recruiterEmailBody += `We would love to schedule a discussion. Please let us know if any of your standard availability slots work for you.\n\n`;
   }
-  const mailtoUrl = `mailto:ryradit@gmail.com?subject=${encodeURIComponent(brief.briefTitle || 'Contract Opportunity')}&body=${encodeURIComponent(emailBody)}`;
+
+  recruiterEmailBody += `Here are the position details we entered:\n`;
+  recruiterEmailBody += `- Company: ${recruiterCompany || 'Not specified'}\n`;
+  recruiterEmailBody += `- Recruiter Name: ${recruiterName || 'Hiring Manager'}\n`;
+  recruiterEmailBody += `- Your Compensation Note: ${brief.compensationNote || 'Not specified'}\n\n`;
+  
+  recruiterEmailBody += `Looking forward to hearing from you!\n\n`;
+  recruiterEmailBody += `Best regards,\n`;
+  recruiterEmailBody += `${recruiterName || 'Hiring Manager'}\n`;
+  recruiterEmailBody += `${recruiterCompany || ''}\n`;
+
+  const mailtoUrl = `mailto:ryradit@gmail.com?subject=${encodeURIComponent(recruiterSubject)}&body=${encodeURIComponent(recruiterEmailBody)}`;
 
   return (
     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-5">
@@ -551,7 +574,9 @@ function ProposalCard({ proposal }: { proposal: Proposal }) {
 
       {/* Dynamic pre-filled email client dispatch button */}
       <a
-        href={`mailto:ryradit@gmail.com?subject=${encodeURIComponent(proposal.proposalTitle || 'Project Inquiry')}&body=${encodeURIComponent(proposal.emailDraft || '')}`}
+        href={`mailto:ryradit@gmail.com?subject=${encodeURIComponent(`Project Inquiry: ${proposal.proposalTitle || 'Development Project'}`)}&body=${encodeURIComponent(
+          `Hi Ryan,\n\nI'm reaching out regarding a project collaboration: ${proposal.proposalTitle || 'Development Project'}.\n\nI reviewed your custom AI proposal on your portfolio and I'm highly impressed by your recommended roadmap.\n\nHere are the project parameters we reviewed:\n- Estimated Cost: ${proposal.estimatedCost || 'Not specified'}\n- Timeline: ${proposal.timeline || 'Not specified'}\n\nI'd love to schedule a brief call to discuss getting started and finalizing the scope!\n\nBest regards,\n[Your Name]`
+        )}`}
         className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-semibold rounded-xl transition-all duration-300 text-sm shadow-lg shadow-purple-500/10 hover:shadow-purple-500/20"
       >
         <Mail size={14} />
