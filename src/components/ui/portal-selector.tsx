@@ -489,7 +489,7 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 );
               })}
               
-              {/* 120 movie-grade Doctor Strange tangential sparks spraying in tangential paths */}
+              {/* 120 movie-grade Doctor Strange radial sparks spraying outward from the portal ring */}
               {isAnimating && Array(120).fill(0).map((_, i) => {
                 const angle = (i / 120) * 360; 
                 const randomOffset = Math.random() * 6 - 3;
@@ -497,10 +497,11 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 const posX = 50 + distance * Math.cos(angle * Math.PI/180);
                 const posY = 50 + distance * Math.sin(angle * Math.PI/180);
                 
-                const tangentAngle = angle + 95 + (Math.random() * 24 - 12);
+                // Radial outward direction (directly away from center)
+                const radialAngle = angle + (Math.random() * 24 - 12);
                 const velocity = Math.random() * 160 + 80;
-                const dx = Math.cos(tangentAngle * Math.PI / 180) * velocity;
-                const dy = Math.sin(tangentAngle * Math.PI / 180) * velocity;
+                const dx = Math.cos(radialAngle * Math.PI / 180) * velocity;
+                const dy = Math.sin(radialAngle * Math.PI / 180) * velocity;
                 const dr = Math.random() * 360 - 180;
                 const duration = Math.random() * 0.7 + 0.3;
                 const delay = Math.random() * 1.5;
@@ -725,13 +726,13 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                       <div className="absolute inset-0 rounded-full overflow-hidden">
                         {/* Ocean base */}
                         <div className="absolute inset-0 bg-gradient-radial from-blue-600 via-blue-700 to-blue-900 rounded-full" />
-                        {/* Continent patterns */}
-                        <div className="absolute top-6 left-8 w-12 h-8 bg-green-700/90 rounded-2xl transform rotate-12" />
-                        <div className="absolute top-12 right-6 w-8 h-6 bg-green-600/80 rounded-xl transform -rotate-45" />
-                        <div className="absolute bottom-8 left-10 w-14 h-7 bg-green-800/90 rounded-2xl transform rotate-6" />
-                        <div className="absolute bottom-12 right-4 w-10 h-6 bg-green-700/80 rounded-xl transform rotate-12" />
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-12 bg-green-600/70 rounded-3xl rotate-45" />
-                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-8 h-5 bg-green-500/60 rounded-xl" />
+                        {/* Continent patterns - strictly circular shapes for organic beauty without rectangles */}
+                        <div className="absolute top-6 left-8 w-8 h-8 bg-green-700/90 rounded-full" />
+                        <div className="absolute top-12 right-12 w-6 h-6 bg-green-600/80 rounded-full" />
+                        <div className="absolute bottom-8 left-10 w-10 h-10 bg-green-800/90 rounded-full" />
+                        <div className="absolute bottom-12 right-8 w-7 h-7 bg-green-700/80 rounded-full" />
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-green-600/70 rounded-full" />
+                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-green-500/60 rounded-full" />
                         {/* Cloud patterns */}
                         <div className="absolute inset-0 rounded-full" style={{
                           background: 'radial-gradient(ellipse at 25% 25%, rgba(255,255,255,0.3) 0%, transparent 40%), radial-gradient(ellipse at 75% 70%, rgba(255,255,255,0.2) 0%, transparent 30%)'
@@ -749,23 +750,23 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                         <div className="absolute inset-0 rounded-full" style={{
                           background: 'radial-gradient(circle at 30% 30%, #f3f4f6, #e5e7eb, #d1d5db)'
                         }} />
-                        {/* Soft relief continents */}
-                        <div className="absolute top-6 left-8 w-12 h-8 rounded-2xl transform rotate-12"
+                        {/* Soft relief continents - strictly circular shapes for organic beauty without rectangles */}
+                        <div className="absolute top-6 left-8 w-8 h-8 rounded-full"
                           style={{
                             background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.8), rgba(107, 114, 128, 0.6))',
                             boxShadow: 'inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.8)'
                           }} />
-                        <div className="absolute top-12 right-6 w-8 h-6 rounded-xl transform -rotate-45"
+                        <div className="absolute top-12 right-12 w-6 h-6 rounded-full"
                           style={{
                             background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.7), rgba(107, 114, 128, 0.5))',
                             boxShadow: 'inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.8)'
                           }} />
-                        <div className="absolute bottom-8 left-10 w-14 h-7 rounded-2xl transform rotate-6"
+                        <div className="absolute bottom-8 left-10 w-10 h-10 rounded-full"
                           style={{
                             background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.8), rgba(107, 114, 128, 0.6))',
                             boxShadow: 'inset 3px 3px 6px rgba(0,0,0,0.1), inset -3px -3px 6px rgba(255,255,255,0.8)'
                           }} />
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-12 rounded-3xl rotate-45"
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full"
                           style={{
                             background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.6), rgba(107, 114, 128, 0.4))',
                             boxShadow: 'inset 4px 4px 8px rgba(0,0,0,0.1), inset -4px -4px 8px rgba(255,255,255,0.8)'
@@ -777,22 +778,22 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                       </div>
                     )}
                     
-                    {theme.id === 'Earth-199999' && (
+                    {theme.id === 'Earth-X' && (
                       <div className="absolute inset-0 rounded-full overflow-hidden">
                         {/* Mystical future Earth base */}
                         <div className="absolute inset-0 rounded-full" style={{
                           background: 'radial-gradient(circle at 30% 30%, #7c3aed, #5b21b6, #312e81)'
                         }} />
-                        {/* Glowing mystical continents */}
-                        <div className="absolute top-6 left-8 w-12 h-8 bg-gradient-to-br from-pink-500/80 to-purple-600/80 rounded-2xl transform rotate-12 blur-[1px]" 
+                        {/* Glowing mystical continents - strictly circular shapes for organic beauty without rectangles */}
+                        <div className="absolute top-6 left-8 w-8 h-8 bg-gradient-to-br from-pink-500/80 to-purple-600/80 rounded-full blur-[1px]" 
                           style={{ filter: 'blur(1px) drop-shadow(0 0 8px rgba(236, 72, 153, 0.6))' }} />
-                        <div className="absolute top-12 right-6 w-8 h-6 bg-gradient-to-br from-cyan-500/70 to-purple-500/70 rounded-xl transform -rotate-45 blur-[1px]"
+                        <div className="absolute top-12 right-12 w-6 h-6 bg-gradient-to-br from-cyan-500/70 to-purple-500/70 rounded-full blur-[1px]"
                           style={{ filter: 'blur(1px) drop-shadow(0 0 6px rgba(6, 182, 212, 0.6))' }} />
-                        <div className="absolute bottom-8 left-10 w-14 h-7 bg-gradient-to-br from-purple-500/80 to-pink-600/80 rounded-2xl transform rotate-6 blur-[1px]"
+                        <div className="absolute bottom-8 left-10 w-10 h-10 bg-gradient-to-br from-purple-500/80 to-pink-600/80 rounded-full blur-[1px]"
                           style={{ filter: 'blur(1px) drop-shadow(0 0 8px rgba(147, 51, 234, 0.6))' }} />
-                        <div className="absolute bottom-12 right-4 w-10 h-6 bg-gradient-to-br from-indigo-500/70 to-purple-600/70 rounded-xl transform rotate-12 blur-[1px]"
+                        <div className="absolute bottom-12 right-8 w-7 h-7 bg-gradient-to-br from-indigo-500/70 to-purple-600/70 rounded-full blur-[1px]"
                           style={{ filter: 'blur(1px) drop-shadow(0 0 6px rgba(99, 102, 241, 0.6))' }} />
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-12 bg-gradient-to-br from-purple-400/60 to-pink-500/60 rounded-3xl rotate-45 blur-[1px]"
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-br from-purple-400/60 to-pink-500/60 rounded-full blur-[1px]"
                           style={{ filter: 'blur(1px) drop-shadow(0 0 10px rgba(168, 85, 247, 0.6))' }} />
                         {/* Mystical energy swirls */}
                         <div className="absolute inset-0 rounded-full" style={{
