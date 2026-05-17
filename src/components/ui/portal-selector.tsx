@@ -274,17 +274,17 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
               isAnimating ? "scale-100 opacity-100" : "scale-0 opacity-0"
             )}
             style={{
-              border: "12px solid rgba(255, 140, 0, 0.85)",
-              boxShadow: "0 0 45px 12px rgba(255, 165, 0, 0.85), 0 0 90px 22px rgba(255, 100, 0, 0.65), 0 0 140px 45px rgba(255, 80, 0, 0.35), inset 0 0 25px 4px rgba(255, 165, 0, 0.5)",
+              background: "transparent",
+              boxShadow: "0 0 55px 15px rgba(255, 165, 0, 0.85), 0 0 110px 25px rgba(255, 100, 0, 0.55), inset 0 0 45px 12px rgba(255, 140, 0, 0.65)",
               transform: isAnimating 
                 ? "scale(1) rotate(360deg)" 
                 : "scale(0) rotate(0deg)",
               transition: "transform 1.8s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 1.2s ease",
-              filter: "drop-shadow(0 0 12px rgba(255, 140, 0, 0.6))"
+              filter: "drop-shadow(0 0 16px rgba(255, 140, 0, 0.75))"
             }}
           >
-            {/* Portal sparks - only shown when animating */}
-            <div className="absolute w-full h-full rounded-full overflow-hidden">
+            {/* Portal sparks - overflow-visible to let sparks shoot far outside the ring! */}
+            <div className="absolute w-full h-full rounded-full overflow-visible">
               {/* Fire effect layers - enhanced with more dynamic gradients */}
               <div className="absolute inset-0 rounded-full" 
                 style={{
@@ -325,20 +325,25 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 animation: "spin 8s linear infinite"
               }}></div>
               
-              {/* Additional circular particle rings */}
+              {/* Golden Plasma Ring Layer 1 (Outer - clockwise fast) */}
+              <div className="absolute w-[101%] h-[101%] top-[-0.5%] left-[-0.5%] rounded-full" style={{
+                border: "8px dashed rgba(255, 140, 0, 0.95)",
+                animation: "spin 5s linear infinite",
+                filter: "blur(1px) drop-shadow(0 0 8px rgba(255,140,0,0.8))"
+              }}></div>
+
+              {/* Golden Plasma Ring Layer 2 (Middle - counter-clockwise super fast) */}
               <div className="absolute w-full h-full rounded-full" style={{
-                border: "2px dotted rgba(255, 165, 0, 0.5)",
-                animation: "spin 15s linear infinite"
+                border: "6px dotted rgba(255, 215, 0, 0.95)",
+                animation: "spin-reverse 3s linear infinite",
+                filter: "blur(0.5px) drop-shadow(0 0 10px rgba(255,215,0,0.9))"
               }}></div>
-              
-              <div className="absolute w-[102%] h-[102%] top-[-1%] left-[-1%] rounded-full" style={{
-                border: "1px solid rgba(255, 215, 0, 0.3)",
-                animation: "spin-reverse 20s linear infinite"
-              }}></div>
-              
-              <div className="absolute w-[98%] h-[98%] top-[1%] left-[1%] rounded-full" style={{
-                border: "1px dashed rgba(255, 165, 0, 0.4)",
-                animation: "spin 12s linear infinite"
+
+              {/* Golden Plasma Ring Layer 3 (Inner - clockwise medium) */}
+              <div className="absolute w-[99%] h-[99%] top-[0.5%] left-[0.5%] rounded-full" style={{
+                border: "4px dashed rgba(255, 69, 0, 0.85)",
+                animation: "spin 8s linear infinite",
+                filter: "drop-shadow(0 0 6px rgba(255,69,0,0.8))"
               }}></div>
               
               {/* Running particles animation around circle */}
