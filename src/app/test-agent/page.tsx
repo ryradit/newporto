@@ -690,11 +690,6 @@ export default function TestAgentPage() {
               <span className="text-xs text-white/40">Live · Agentic AI Pipeline</span>
             </div>
           </div>
-          <div className="ml-auto">
-            <span className="text-xs bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2.5 py-1 rounded-full font-medium">
-              🧪 Test Mode
-            </span>
-          </div>
         </div>
 
         {/* Messages */}
