@@ -7,8 +7,12 @@ export async function POST(req: NextRequest) {
   try {
     const { text, targetLanguage } = await req.json();
     
-    if (!text || !targetLanguage) {
-      return NextResponse.json({ error: 'Missing text or targetLanguage' }, { status: 400 });
+    if (!targetLanguage) {
+      return NextResponse.json({ error: 'Missing targetLanguage' }, { status: 400 });
+    }
+
+    if (text === undefined || text === null || String(text).trim() === '') {
+      return NextResponse.json({ translation: '' });
     }
 
     const prompt = `Translate the following text exactly into ${targetLanguage}. Do not add any extra commentary, conversational text, or markdown formatting. Just provide the direct translation. Keep all names and technical terms appropriately formatted.\n\nText to translate:\n"${text}"`;

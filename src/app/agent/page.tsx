@@ -665,6 +665,7 @@ export default function TestAgentPage() {
   };
 
   const addMessage = async (role: 'user' | 'assistant', content: string) => {
+    if (!content || !content.trim()) return;
     if (role === 'user') {
       setMessages((prev) => [...prev, { role, content }]);
     } else {
