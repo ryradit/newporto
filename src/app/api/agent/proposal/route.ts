@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RYAN_PROFILE_DATA } from '@/lib/profile-data';
 import { supabase } from '@/lib/supabase';
 import { sendLeadEmailNotification } from '@/lib/email';
+import { researchAgent, estimatorAgent, schedulerAgent } from '@/lib/agents/orchestrator';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
@@ -28,12 +29,19 @@ export async function POST(req: NextRequest) {
 
     const deliverablesText = (deliverables || []).map((d: string) => `- ${d}`).join('\n');
 
+    // Run specialized sub-agents in parallel
+    const [matchedProjects, phaseEstimates, scheduleInfo] = await Promise.all([
+      researchAgent(projectDescription || '', language || 'en'),
+      estimatorAgent(tierLabel || '', priceRange || '', scopeAnswers || []),
+      schedulerAgent()
+    ]);
+
     const prompt = `You are a professional proposal writer for Ryan Radityatama.
 
 Ryan's Profile & Background:
 ${RYAN_PROFILE_DATA}
 
-Generate a detailed, compelling project proposal for this client.
+Generate a detailed, compelling project proposal for this client incorporating the verified sub-agent inputs below:
 
 Client: ${visitorName || 'Valued Client'}${visitorCompany ? ` from ${visitorCompany}` : ''}
 Service Tier: ${tierLabel} (${priceRange})
@@ -45,6 +53,23 @@ ${deliverablesText}
 Client's Scope Answers:
 ${scopeText || 'No additional scope details provided'}
 
+=======================================================
+VERIFIED SUB-AGENT INPUTS (YOU MUST INCORPORATE THESE EXACTLY):
+
+1. Portfolio Matching (Source: Research Agent):
+Use these real portfolio projects and relevance explanations in your response:
+${JSON.stringify(matchedProjects, null, 2)}
+
+2. Technical Phase Estimates & Hours (Source: Pricing Agent):
+Incorporate this cost and time phase breakdown in your roadmap:
+${JSON.stringify(phaseEstimates, null, 2)}
+
+3. Consultation Scheduling (Source: Scheduler Agent):
+Ryan's calendar booking link is: "${scheduleInfo.bookingLink}"
+Offer these flexible slots:
+${scheduleInfo.flexibleSlots.join('\n')}
+=======================================================
+
 Return a JSON object with these exact fields:
 {
   "proposalTitle": "Specific exciting title for this proposal",
@@ -55,14 +80,13 @@ Return a JSON object with these exact fields:
   "estimatedCost": "Specific cost within their tier range",
   "nextSteps": ["step1", "step2", "step3"],
   "relevantProjects": [
-    {"name": "Project Name", "relevance": "Why this project is relevant to their needs"},
-    {"name": "Project Name 2", "relevance": "Why this is relevant"}
+    {"name": "Project Name", "relevance": "Why this project is relevant to their needs"}
   ],
-  "closingMessage": "Warm professional closing paragraph from Ryan",
+  "closingMessage": "Warm professional closing paragraph from Ryan, mentioning the booking link: ${scheduleInfo.bookingLink}",
   "emailDraft": "Full follow-up email Ryan would send to the client. Address the email to the client using their name (visitorName) if provided, otherwise 'Team'. The email MUST be signed off as coming from 'Ryan Radityatama' (NEVER use placeholders like '[Your Name]', '[Name]', '[Nama Anda]', or '[Recruiter Liaison]'). Include Ryan's email (ryradit@gmail.com) and portfolio website (https://ryanraditya.com)."
 }
 
-Be specific, reference actual skills and projects from Ryan's profile. Make it feel personalized, not generic.`;
+Be specific, reference the matching projects exactly. Make it feel highly tailored.`;
 
     const MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-3.1-flash-lite", "gemini-3-flash"];
     let text = "";
