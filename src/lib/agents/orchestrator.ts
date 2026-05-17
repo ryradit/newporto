@@ -209,9 +209,10 @@ export async function schedulerAgent(): Promise<{ bookingLink: string; flexibleS
     const timeMin = new Date().toISOString();
     const timeMax = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     const endpoint = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${apiKey}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`;
+    const mockReferer = process.env.GOOGLE_CALENDAR_REFERER || "https://ryradit.my.id/";
     const res = await fetch(endpoint, {
       headers: {
-        "Referer": "https://ryradit.my.id/"
+        "Referer": mockReferer
       }
     });
     if (!res.ok) {
