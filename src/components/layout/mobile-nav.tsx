@@ -153,9 +153,22 @@ export function MobileNav() {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden relative w-10 h-10 hover:bg-transparent"
+          className="md:hidden relative w-10 h-10 hover:bg-white/[0.06] border border-white/[0.08] hover:border-white/15 active:scale-95 rounded-xl flex flex-col items-center justify-center transition-all duration-300 shadow-md"
         >
-          <Menu className="h-6 w-6" />
+          <div className="flex flex-col items-center justify-center gap-1.5 w-5 h-5 relative">
+            <span className={cn(
+              "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
+              isOpen ? "rotate-45" : "-translate-y-1.5"
+            )} />
+            <span className={cn(
+              "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
+              isOpen && "opacity-0 scale-x-0"
+            )} />
+            <span className={cn(
+              "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
+              isOpen ? "-rotate-45" : "translate-y-1.5"
+            )} />
+          </div>
           <span className="sr-only">Toggle navigation menu</span>
         </Button>
       </SheetTrigger>
