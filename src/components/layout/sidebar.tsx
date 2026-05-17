@@ -85,13 +85,6 @@ export function Sidebar() {
 
           <Dialog open={isGalleryOpen} onOpenChange={setIsGalleryOpen}>
             <DialogContent className="max-w-3xl p-0 bg-transparent border-none">
-              <button 
-                onClick={() => setIsGalleryOpen(false)}
-                className="absolute right-4 top-4 z-50 rounded-full bg-black/50 p-2 opacity-70 transition-opacity hover:opacity-100 hover:bg-black/80 backdrop-blur-md focus:outline-none"
-              >
-                <X className="h-4 w-4 text-white" />
-                <span className="sr-only">Close</span>
-              </button>
               <FlipGallery />
             </DialogContent>
           </Dialog>

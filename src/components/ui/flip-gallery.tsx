@@ -1,23 +1,20 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Play, Pause, Compass } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ImageItem {
   title: string;
   url: string;
 }
 
-interface CustomStyles extends React.CSSProperties {
-  [key: `--${string}`]: string | number;
-}
-
 const images: ImageItem[] = [
-  { title: 'Photo 1', url: '/imagess/foto2.jpg' },
-  { title: 'Photo 2', url: '/myphoto2.jpg' },
-  { title: 'Photo 3', url: '/myphoto3.jpg' },
-  { title: 'Photo 4', url: '/myphoto4.jpg' },
-  { title: 'Photo 5', url: '/myphoto5.jpg' }
+  { title: 'Focus & Technical Execution', url: '/imagess/foto2.jpg' },
+  { title: 'System Architecture Design', url: '/myphoto2.jpg' },
+  { title: 'Exploring Creative Innovations', url: '/myphoto3.jpg' },
+  { title: 'Interactive User Interface R&D', url: '/myphoto4.jpg' },
+  { title: 'Continuous Growth & Learning', url: '/myphoto5.jpg' }
 ];
 
 const FLIP_SPEED = 750;
@@ -51,6 +48,9 @@ export function FlipGallery() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const uniteRef = useRef<HTMLElement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   // initialise first image once
   useEffect(() => {
@@ -60,23 +60,32 @@ export function FlipGallery() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Autoplay functionality
+  useEffect(() => {
+    if (isPlaying && !isHovered) {
+      timerRef.current = setInterval(() => {
+        updateIndex(1);
+      }, 5000);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [isPlaying, isHovered, currentIndex]);
+
   const defineFirstImg = () => {
     if (!containerRef.current) return;
     uniteRef.current = Array.from(containerRef.current.querySelectorAll<HTMLElement>('.unite'));
     uniteRef.current.forEach(setActiveImage);
-    setImageTitle();
   };
 
   const setActiveImage = (el: HTMLElement) => {
     el.style.backgroundImage = `url('${images[currentIndex].url}')`;
-  };
-
-  const setImageTitle = () => {
-    const gallery = containerRef.current;
-    if (!gallery) return;
-    gallery.setAttribute('data-title', images[currentIndex].title);
-    gallery.style.setProperty('--title-y', '0');
-    gallery.style.setProperty('--title-opacity', '1');
   };
 
   const updateGallery = (nextIndex: number, isReverse = false) => {
@@ -97,11 +106,6 @@ export function FlipGallery() {
       bottomElement.animate(bottomAnim, flipTiming);
     }
 
-    // hide title
-    gallery.style.setProperty('--title-y', '-1rem');
-    gallery.style.setProperty('--title-opacity', '0');
-    gallery.setAttribute('data-title', '');
-
     // update images with slight delay so animation looks continuous
     uniteRef.current.forEach((el, idx) => {
       const delay =
@@ -110,11 +114,10 @@ export function FlipGallery() {
           ? FLIP_SPEED - 200
           : 0;
 
-      setTimeout(() => setActiveImage(el), delay);
+      setTimeout(() => {
+        el.style.backgroundImage = `url('${images[nextIndex].url}')`;
+      }, delay);
     });
-
-    // reveal new title roughly half‑way through animation
-    setTimeout(setImageTitle, FLIP_SPEED * 0.5);
   };
 
   const updateIndex = (increment: number) => {
@@ -125,18 +128,37 @@ export function FlipGallery() {
     updateGallery(newIndex, isReverse);
   };
 
+  const jumpToIndex = (targetIndex: number) => {
+    if (targetIndex === currentIndex) return;
+    const isReverse = targetIndex < currentIndex;
+    setCurrentIndex(targetIndex);
+    updateGallery(targetIndex, isReverse);
+  };
+
   return (
-    <div className='min-h-[500px] flex items-center justify-center bg-background/95'>
-      <div
-        className='relative bg-white/10 border border-white/25 p-2'
-        style={{ ['--gallery-bg-color' as string]: 'rgba(255 255 255 / 0.075)' }}
-      >
-        {/* flip gallery */}
+    <div 
+      className='min-h-[560px] flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#0D0D15]/95 to-[#05050A]/98 rounded-3xl border border-white/10 shadow-[0_24px_50px_rgba(0,0,0,0.8)] backdrop-blur-2xl relative overflow-hidden select-none'
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Decorative tech background grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+      {/* Title Header */}
+      <div className="flex items-center gap-2 mb-6 z-10">
+        <Compass className={cn("text-purple-400 h-4 w-4", isPlaying && !isHovered && "animate-spin-slow")} />
+        <span className="text-[11px] font-bold text-purple-400 tracking-[0.25em] uppercase">Visual Chronicle</span>
+      </div>
+
+      {/* Main Flip Container */}
+      <div className='relative bg-black/40 border border-white/10 rounded-2xl p-3 shadow-inner shadow-black/80 z-10 group/gallery'>
         <div
           id='flip-gallery'
           ref={containerRef}
-          className='relative w-[240px] h-[400px] md:w-[300px] md:h-[500px] text-center'
-          style={{ perspective: '800px' }}
+          className='relative w-[260px] h-[360px] md:w-[300px] md:h-[420px] text-center rounded-xl overflow-hidden'
+          style={{ perspective: '1000px' }}
         >
           <div className='top unite bg-cover bg-no-repeat'></div>
           <div className='bottom unite bg-cover bg-no-repeat'></div>
@@ -144,25 +166,67 @@ export function FlipGallery() {
           <div className='overlay-bottom unite bg-cover bg-no-repeat'></div>
         </div>
 
-        {/* navigation */}
-        <div className='absolute top-full right-0 mt-2 flex gap-2'>
-          <button
-            type='button'
-            onClick={() => updateIndex(-1)}
-            title='Previous'
-            className='text-white opacity-75 hover:opacity-100 hover:scale-125 transition'
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            type='button'
-            onClick={() => updateIndex(1)}
-            title='Next'
-            className='text-white opacity-75 hover:opacity-100 hover:scale-125 transition'
-          >
-            <ChevronRight size={20} />
-          </button>
+        {/* Floating Quick Action Overlay */}
+        <div className="absolute inset-x-0 bottom-6 flex justify-center opacity-0 group-hover/gallery:opacity-100 transition-opacity duration-300 pointer-events-none">
+          <div className="bg-black/60 backdrop-blur-md border border-white/10 rounded-full px-4 py-1.5 flex items-center gap-1 shadow-lg pointer-events-auto">
+            {images.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => jumpToIndex(idx)}
+                className="p-1 focus:outline-none"
+              >
+                <div 
+                  className={cn(
+                    "h-1.5 rounded-full transition-all duration-300",
+                    idx === currentIndex 
+                      ? "w-4 bg-purple-400" 
+                      : "w-1.5 bg-white/30 hover:bg-white/60"
+                  )}
+                />
+              </button>
+            ))}
+          </div>
         </div>
+      </div>
+
+      {/* Title & Index Display */}
+      <div className="text-center mt-6 min-h-[50px] z-10 px-4 max-w-[320px]">
+        <h4 className="text-white text-sm font-semibold tracking-wide animate-fade-in transition-all duration-300">
+          {images[currentIndex].title}
+        </h4>
+        <p className="text-white/40 text-[11px] font-mono mt-1">
+          {currentIndex + 1} <span className="text-purple-500/50">/</span> {images.length}
+        </p>
+      </div>
+
+      {/* Controller Controls Bar */}
+      <div className="mt-4 flex items-center gap-4 bg-white/5 border border-white/10 rounded-full px-6 py-2.5 shadow-lg z-10 backdrop-blur-md">
+        <button
+          type='button'
+          onClick={() => updateIndex(-1)}
+          title='Previous'
+          className='text-white/60 hover:text-white hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none'
+        >
+          <ChevronLeft size={20} />
+        </button>
+
+        <button
+          type='button'
+          onClick={() => setIsPlaying(!isPlaying)}
+          title={isPlaying ? 'Pause Autoplay' : 'Start Autoplay'}
+          className='text-purple-400 hover:text-purple-300 hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none'
+        >
+          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+        </button>
+
+        <button
+          type='button'
+          onClick={() => updateIndex(1)}
+          title='Next'
+          className='text-white/60 hover:text-white hover:scale-110 active:scale-95 transition-all duration-200 focus:outline-none'
+        >
+          <ChevronRight size={20} />
+        </button>
       </div>
 
       {/* component-scoped styles that Tailwind cannot express */}
@@ -170,25 +234,15 @@ export function FlipGallery() {
         #flip-gallery::after {
           content: '';
           position: absolute;
-          background-color: black;
+          background-color: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(1px);
           width: 100%;
-          height: 4px;
+          height: 2px;
           top: 50%;
           left: 0;
           transform: translateY(-50%);
-        }
-
-        #flip-gallery::before {
-          content: attr(data-title);
-          color: rgba(255 255 255 / 0.75);
-          font-size: 0.75rem;
-          left: -0.5rem;
-          position: absolute;
-          top: calc(100% + 1rem);
-          line-height: 2;
-          opacity: var(--title-opacity, 0);
-          transform: translateY(var(--title-y, 0));
-          transition: opacity 500ms ease-in-out, transform 500ms ease-in-out;
+          z-index: 30;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         #flip-gallery > * {
@@ -196,12 +250,13 @@ export function FlipGallery() {
           width: 100%;
           height: 50%;
           overflow: hidden;
-          background-size: 240px 400px;
+          background-size: 260px 360px;
+          border-radius: 4px;
         }
 
-        @media (min-width: 600px) {
+        @media (min-width: 768px) {
           #flip-gallery > * {
-            background-size: 300px 500px;
+            background-size: 300px 420px;
           }
         }
 
@@ -210,6 +265,7 @@ export function FlipGallery() {
           top: 0;
           transform-origin: bottom;
           background-position: top;
+          border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
         }
 
         .bottom,
@@ -217,6 +273,11 @@ export function FlipGallery() {
           bottom: 0;
           transform-origin: top;
           background-position: bottom;
+          border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .unite {
+          transition: filter 0.3s ease;
         }
       `}</style>
     </div>
