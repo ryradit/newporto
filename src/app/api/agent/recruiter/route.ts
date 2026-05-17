@@ -20,7 +20,7 @@ const CONTRACT_TYPES = {
     label: '🛠️ Freelance Contract',
     description: 'Project-based, hourly or fixed rate',
     questions: [
-      'What is the job title or role you need filled?',
+      "What is your name (recruiter or hiring manager) and the job position title you'd like to discuss?",
       'What is the expected duration of the contract? (e.g. 1 month, 3 months, ongoing)',
       'What is your budget — hourly rate or fixed project fee?',
       'What tech stack or specific skills are required for this role?',
@@ -32,7 +32,7 @@ const CONTRACT_TYPES = {
     label: '⏱️ Part-Time Contract',
     description: 'Regular ongoing work, part-time commitment',
     questions: [
-      'What is the position and main responsibilities?',
+      "What is your name (recruiter or hiring manager) and the job position title you'd like to discuss?",
       'How many hours per week are you expecting?',
       'What is the monthly or hourly compensation?',
       'What technologies or expertise are most critical for this role?',
@@ -44,7 +44,7 @@ const CONTRACT_TYPES = {
     label: '💼 Full-Time Contract',
     description: 'Full-time but fixed-term or contract basis',
     questions: [
-      'What is the role title and key responsibilities?',
+      "What is your name (recruiter or hiring manager) and the job position title you'd like to discuss?",
       'How long is the contract term? (e.g. 6 months, 1 year)',
       'What is the monthly compensation or salary range?',
       'What is the primary tech stack and any must-have skills?',
@@ -56,7 +56,7 @@ const CONTRACT_TYPES = {
     label: '🏢 Permanent Hire',
     description: 'Full-time permanent employment',
     questions: [
-      'What is the job title and team Ryan would be joining?',
+      "What is your name (recruiter or hiring manager) and the job position title you'd like to discuss?",
       'What is the offered salary range?',
       'What are the most important skills and technologies for this role?',
       'Is this role remote, hybrid, or on-site? If on-site, in which city and country? If outside Indonesia, will you provide visa sponsorship for Ryan?',

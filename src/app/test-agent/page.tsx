@@ -471,6 +471,14 @@ export default function TestAgentPage() {
         const newAnswers = [...roleAnswers, { question: currentQ, answer: text }];
         setRoleAnswers(newAnswers);
 
+        // Auto-extract name if not yet set or to override default
+        if (currentRoleQIdx === 0) {
+          const nameMatch = text.match(/(?:i'?m|my name is|i am|this is|name is|i'm)\s+([a-zA-Z]+)/i) || text.match(/^([a-zA-Z]+)/);
+          if (nameMatch && nameMatch[1]) {
+            setVisitorName(nameMatch[1].trim());
+          }
+        }
+
         if (currentRoleQIdx + 1 < selectedContract.questions.length) {
           setCurrentRoleQIdx(currentRoleQIdx + 1);
           await simulatedDelay(1000);
