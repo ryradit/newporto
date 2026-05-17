@@ -191,14 +191,20 @@ export function MobileNav() {
                       />
                     </svg>
                   </div>
-                  <p className="text-sm text-muted-foreground">Software Engineer & AI Engineer</p>
+                  <p className="text-sm text-muted-foreground">AI, ML, & Full-Stack Specialist</p>
                 </div>
               </div>
-              <div className="flex gap-2 mt-4">
-                <span className="bg-primary/10 text-primary px-2.5 py-0.5 rounded-md text-xs font-medium">
+              <div className="flex flex-wrap gap-1.5 mt-4">
+                <span className="bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide">
                   AI Engineer
                 </span>
-                <span className="bg-secondary/10 text-secondary-foreground px-2.5 py-0.5 rounded-md text-xs font-medium">
+                <span className="bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide">
+                  Machine Learning
+                </span>
+                <span className="bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide">
+                  Fullstack Developer
+                </span>
+                <span className="bg-zinc-500/10 text-zinc-400 border border-zinc-500/20 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wide">
                   Software Engineer
                 </span>
               </div>
