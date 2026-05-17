@@ -942,6 +942,138 @@ export default function TestAgentPage() {
     }
   };
 
+  const translateCandidateBrief = async (brief: CandidateBrief, targetLang: string): Promise<CandidateBrief> => {
+    try {
+      const translateText = async (text: string) => {
+        if (!text) return "";
+        const res = await fetch('/api/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, targetLanguage: targetLang }),
+        });
+        const data = await res.json();
+        return data.translation || text;
+      };
+
+      const [
+        translatedTitle,
+        translatedExec,
+        translatedCompensation,
+        translatedVisa,
+        translatedAvailability,
+        translatedClosing,
+        translatedEmail,
+      ] = await Promise.all([
+        translateText(brief.briefTitle),
+        translateText(brief.executiveSummary),
+        translateText(brief.compensationNote),
+        translateText(brief.visaSponsorshipNote),
+        translateText(brief.availability),
+        translateText(brief.closingMessage),
+        translateText(brief.emailDraft),
+      ]);
+
+      const translatedSkills = await Promise.all(
+        (brief.skillsMatch || []).map(async (item) => ({
+          requirement: await translateText(item.requirement),
+          ryanHas: await translateText(item.ryanHas),
+        }))
+      );
+
+      const translatedExperience = await Promise.all(
+        (brief.relevantExperience || []).map(async (item) => ({
+          role: await translateText(item.role),
+          company: item.company,
+          relevance: await translateText(item.relevance),
+        }))
+      );
+
+      const translatedNextSteps = await Promise.all(
+        (brief.nextSteps || []).map(async (step) => await translateText(step))
+      );
+
+      return {
+        briefTitle: translatedTitle,
+        executiveSummary: translatedExec,
+        skillsMatch: translatedSkills,
+        relevantExperience: translatedExperience,
+        compensationNote: translatedCompensation,
+        visaSponsorshipNote: translatedVisa,
+        availability: translatedAvailability,
+        nextSteps: translatedNextSteps,
+        closingMessage: translatedClosing,
+        emailDraft: translatedEmail,
+      };
+    } catch (err) {
+      console.warn("Failed to translate candidate brief:", err);
+      return brief;
+    }
+  };
+
+  const translateProposal = async (prop: Proposal, targetLang: string): Promise<Proposal> => {
+    try {
+      const translateText = async (text: string) => {
+        if (!text) return "";
+        const res = await fetch('/api/translate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, targetLanguage: targetLang }),
+        });
+        const data = await res.json();
+        return data.translation || text;
+      };
+
+      const [
+        translatedTitle,
+        translatedExec,
+        translatedWhy,
+        translatedTimeline,
+        translatedCost,
+        translatedClosing,
+        translatedEmail,
+      ] = await Promise.all([
+        translateText(prop.proposalTitle),
+        translateText(prop.executiveSummary),
+        translateText(prop.whyRyan),
+        translateText(prop.timeline),
+        translateText(prop.estimatedCost),
+        translateText(prop.closingMessage),
+        translateText(prop.emailDraft),
+      ]);
+
+      const translatedFeatures = await Promise.all(
+        (prop.includedFeatures || []).map(async (f) => await translateText(f))
+      );
+
+      const translatedNext = await Promise.all(
+        (prop.nextSteps || []).map(async (step) => await translateText(step))
+      );
+
+      const translatedProjects = await Promise.all(
+        (prop.relevantProjects || []).map(async (proj) => ({
+          name: proj.name,
+          relevance: await translateText(proj.relevance),
+        }))
+      );
+
+      return {
+        proposalTitle: translatedTitle,
+        executiveSummary: translatedExec,
+        whyRyan: translatedWhy,
+        includedFeatures: translatedFeatures,
+        timeline: translatedTimeline,
+        estimatedCost: translatedCost,
+        nextSteps: translatedNext,
+        relevantProjects: translatedProjects,
+        closingMessage: translatedClosing,
+        emailDraft: translatedEmail,
+      };
+    } catch (err) {
+      console.warn("Failed to translate proposal:", err);
+      return prop;
+    }
+  };
+
   const generateCandidateBrief = async (answers: { question: string; answer: string }[]) => {
     try {
       const res = await fetch('/api/agent/recruiter', {
@@ -958,7 +1090,12 @@ export default function TestAgentPage() {
       });
       const data = await res.json();
       if (data.brief) {
-        setCandidateBrief(data.brief);
+        let briefToSet = data.brief;
+        if (preferredLanguage && preferredLanguage.toLowerCase() !== 'english') {
+          addMessage('assistant', "I have everything! Let me translate and polish your custom candidate brief... ✨");
+          briefToSet = await translateCandidateBrief(data.brief, preferredLanguage);
+        }
+        setCandidateBrief(briefToSet);
         setStage('brief');
         addMessage('assistant', "Ryan's candidate brief is ready! 🎉 It shows exactly how his experience and skills match your role requirements.");
       } else throw new Error('No brief returned');
@@ -1019,7 +1156,12 @@ export default function TestAgentPage() {
       });
       const data = await res.json();
       if (data.proposal) {
-        setProposal(data.proposal);
+        let proposalToSet = data.proposal;
+        if (preferredLanguage && preferredLanguage.toLowerCase() !== 'english') {
+          addMessage('assistant', "I have everything! Let me translate and polish your custom proposal... ✨");
+          proposalToSet = await translateProposal(data.proposal, preferredLanguage);
+        }
+        setProposal(proposalToSet);
         setStage('proposal');
         addMessage('assistant', "Your custom proposal is ready! 🎉 Scroll down to review everything. If it looks good, I can help you take the next step.");
       } else {
