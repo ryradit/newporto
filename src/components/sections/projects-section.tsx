@@ -302,7 +302,7 @@ export function ProjectsSection() {
                 transition={{ delay: 0.4, duration: 0.8, ease: "easeInOut" }}
                 className="text-md text-center text-muted-foreground max-w-2xl mx-auto mb-12"
             >
-                As a fullstack web developer, I showcase my work for real clients from around the world, spanning UI/UX design, visual excellence, and multi-language support.
+                As a web developer, I showcase my work for real clients from around the world, spanning UI/UX design, visual excellence, and multi-language support.
             </motion.p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
