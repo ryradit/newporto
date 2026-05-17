@@ -254,6 +254,14 @@ function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
           </motion.div>
         )}
       </AnimatePresence>
+      <a
+        href="/Ryan Radityatama - Software Engineer.pdf"
+        download="Ryan Radityatama - Software Engineer.pdf"
+        className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl hover:bg-emerald-500/20 transition-all duration-300 text-sm font-semibold text-emerald-400"
+      >
+        <Download size={14} />
+        Download Ryan's CV (PDF)
+      </a>
     </motion.div>
   );
 }
