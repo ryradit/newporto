@@ -36,13 +36,7 @@ const menuItems = [
     gradientFrom: '#FF9966',
     gradientTo: '#FF5E62',
   },
-  {
-    title: 'Room Chat',
-    href: '/chat-room',
-    icon: <MessageSquarePlus size={20} />,
-    gradientFrom: '#80FF72',
-    gradientTo: '#7EE8FA',
-  },
+
   {
     title: 'Contact',
     href: '/contact',
