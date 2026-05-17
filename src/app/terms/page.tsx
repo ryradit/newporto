@@ -1,14 +1,24 @@
 import { AnimatedSection } from "@/components/animated-section";
-
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+ 
 export const metadata = {
   title: "Terms and Conditions | Ryan Radityatama",
   description: "Terms and conditions regarding the use of the AI Chatbot and portfolio website.",
 };
-
+ 
 export default function TermsPage() {
   return (
     <div className="min-h-screen py-16 px-4 sm:px-6 lg:px-8">
-      <AnimatedSection className="max-w-3xl mx-auto bg-[#121212]/80 backdrop-blur-md border border-white/5 p-8 md:p-12 rounded-3xl shadow-2xl">
+      <div className="max-w-3xl mx-auto">
+        <Link 
+          href="/" 
+          className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white mb-6 transition-colors group font-medium"
+        >
+          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform duration-300 text-primary" />
+          Back to Home
+        </Link>
+        <AnimatedSection className="bg-[#121212]/80 backdrop-blur-md border border-white/5 p-8 md:p-12 rounded-3xl shadow-2xl">
         <h1 className="font-headline text-3xl md:text-4xl font-bold mb-6 text-white">Terms and Conditions</h1>
         <div className="space-y-6 text-white/70 leading-relaxed text-sm md:text-base">
           <p>
@@ -45,6 +55,7 @@ export default function TermsPage() {
           </div>
         </div>
       </AnimatedSection>
+      </div>
     </div>
   );
 }
