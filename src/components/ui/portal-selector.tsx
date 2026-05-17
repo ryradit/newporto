@@ -536,6 +536,42 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 );
               })}
               
+              {/* Dense sparkling halo of 150 small orange circles hugging and surrounding the outer edge of the portal */}
+              {isAnimating && Array(150).fill(0).map((_, i) => {
+                const angle = (i / 150) * 360; 
+                const randomOffset = Math.random() * 10 - 5; // Slight organic fluctuation
+                const distance = 54 + randomOffset; // Hugging immediately outside the portal ring
+                const posX = 50 + distance * Math.cos(angle * Math.PI/180);
+                const posY = 50 + distance * Math.sin(angle * Math.PI/180);
+                const size = Math.random() * 5 + 3; // Small orange circles
+                const duration = Math.random() * 1.5 + 0.8;
+                const delay = Math.random() * 1.5;
+                
+                return (
+                  <div
+                    key={`halo-dot-${i}`}
+                    className="absolute rounded-full"
+                    style={{
+                      width: `${size}px`,
+                      height: `${size}px`,
+                      left: `${posX}%`,
+                      top: `${posY}%`,
+                      background: i % 3 === 0 
+                        ? 'rgba(255, 220, 80, 0.95)' 
+                        : i % 3 === 1 
+                        ? 'rgba(255, 140, 0, 0.95)' 
+                        : 'rgba(255, 69, 0, 0.85)',
+                      boxShadow: '0 0 8px rgba(255, 140, 0, 0.85), 0 0 15px rgba(255, 69, 0, 0.6)',
+                      filter: 'blur(0.5px)',
+                      opacity: Math.random() * 0.4 + 0.6,
+                      animation: `spark ${duration}s ease-in-out infinite alternate`,
+                      animationDelay: `${delay}s`,
+                      zIndex: 14
+                    }}
+                  />
+                );
+              })}
+              
               {/* Circular pattern of tiny sparkling dots */}
               {isAnimating && Array(60).fill(0).map((_, i) => {
                 const angle = (i / 60) * 360; 
