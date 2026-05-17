@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
-
+import { PortalSelector } from "@/components/ui/portal-selector";
+ 
 interface NavigationItem {
   name: string;
   href: string;
@@ -82,8 +83,35 @@ const getNavigationItems = (pathname: string, lang: 'en' | 'id' | 'zh'): Navigat
       </svg>
     ),
   },
-
-
+ 
+  {
+    name: lang === 'id' ? 'Pilih Dimensi 🌀' : lang === 'zh' ? '选择维度 🌀' : 'Choose Dimension 🌀',
+    href: '#dimensions',
+    section: 'dimensions',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-5 h-5 text-orange-500 animate-spin-slow"
+      >
+        <path d="M12 2v2" />
+        <path d="M12 20v2" />
+        <path d="M4.93 4.93l1.41 1.41" />
+        <path d="M17.66 17.66l1.41 1.41" />
+        <path d="M2 12h2" />
+        <path d="M20 12h2" />
+        <path d="M6.34 17.66l-1.41 1.41" />
+        <path d="M19.07 4.93l-1.41 1.41" />
+        <circle cx="12" cy="12" r="4" fill="rgba(255,140,0,0.15)" stroke="rgba(255,140,0,0.8)" />
+      </svg>
+    ),
+  },
+ 
   {
     name: translate('menu.contact', lang),
     href: '/contact',
@@ -108,6 +136,7 @@ const getNavigationItems = (pathname: string, lang: 'en' | 'id' | 'zh'): Navigat
 export function MobileNav() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isPortalOpen, setIsPortalOpen] = useState(false);
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState('#hero');
@@ -129,108 +158,117 @@ export function MobileNav() {
   if (!mounted) return null;
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="md:hidden relative w-10 h-10 hover:bg-white/[0.06] border border-white/[0.08] hover:border-white/15 active:scale-95 rounded-xl flex flex-col items-center justify-center transition-all duration-300 shadow-md"
+    <>
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden relative w-10 h-10 hover:bg-white/[0.06] border border-white/[0.08] hover:border-white/15 active:scale-95 rounded-xl flex flex-col items-center justify-center transition-all duration-300 shadow-md"
+          >
+            <div className="flex flex-col items-center justify-center gap-1.5 w-5 h-5 relative">
+              <span className={cn(
+                "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
+                isOpen ? "rotate-45" : "-translate-y-1.5"
+              )} />
+              <span className={cn(
+                "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
+                isOpen && "opacity-0 scale-x-0"
+              )} />
+              <span className={cn(
+                "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
+                isOpen ? "-rotate-45" : "translate-y-1.5"
+              )} />
+            </div>
+            <span className="sr-only">Toggle navigation menu</span>
+          </Button>
+        </SheetTrigger>
+        <SheetContent 
+          side="left" 
+          className="w-full max-w-[300px] p-0 bg-background/95 backdrop-blur-md border-r border-r-border"
         >
-          <div className="flex flex-col items-center justify-center gap-1.5 w-5 h-5 relative">
-            <span className={cn(
-              "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
-              isOpen ? "rotate-45" : "-translate-y-1.5"
-            )} />
-            <span className={cn(
-              "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
-              isOpen && "opacity-0 scale-x-0"
-            )} />
-            <span className={cn(
-              "w-5 h-[2px] bg-white/80 rounded-full transition-all duration-300 absolute",
-              isOpen ? "-rotate-45" : "translate-y-1.5"
-            )} />
-          </div>
-          <span className="sr-only">Toggle navigation menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent 
-        side="left" 
-        className="w-full max-w-[300px] p-0 bg-background/95 backdrop-blur-md border-r border-r-border"
-      >
-        <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-        <SheetDescription className="sr-only">
-          Navigation menu for accessing different sections of the website
-        </SheetDescription>
-        <div className="flex flex-col h-full">
-          {/* Profile Section */}
-          <div className="relative p-6 pb-8 border-b border-border">
-            <div className="flex items-center gap-4">
-              <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-primary/20">
-                <Image
-                  src="/imagess/foto2.jpg"
-                  alt="Ryan Radityatama"
-                  fill
-                  sizes="(max-width: 768px) 64px, 64px"
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="font-semibold text-lg">Ryan Radityatama</h2>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-5 h-5 text-primary"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+          <SheetDescription className="sr-only">
+            Navigation menu for accessing different sections of the website
+          </SheetDescription>
+          <div className="flex flex-col h-full">
+            {/* Profile Section */}
+            <div className="relative p-6 pb-8 border-b border-border">
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-primary/20">
+                  <Image
+                    src="/imagess/foto2.jpg"
+                    alt="Ryan Radityatama"
+                    fill
+                    sizes="(max-width: 768px) 64px, 64px"
+                    className="object-cover"
+                  />
                 </div>
-                <p className="text-sm text-muted-foreground">Software Engineer & AI Engineer</p>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-semibold text-lg">Ryan Radityatama</h2>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-5 h-5 text-primary"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z"
+                      />
+                    </svg>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Software Engineer & AI Engineer</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-4">
+                <span className="bg-primary/10 text-primary px-2.5 py-0.5 rounded-md text-xs font-medium">
+                  AI Engineer
+                </span>
+                <span className="bg-secondary/10 text-secondary-foreground px-2.5 py-0.5 rounded-md text-xs font-medium">
+                  Software Engineer
+                </span>
               </div>
             </div>
-            <div className="flex gap-2 mt-4">
-              <span className="bg-primary/10 text-primary px-2.5 py-0.5 rounded-md text-xs font-medium">
-                AI Engineer
-              </span>
-              <span className="bg-secondary/10 text-secondary-foreground px-2.5 py-0.5 rounded-md text-xs font-medium">
-                Software Engineer
-              </span>
-            </div>
-          </div>
 
-          {/* Navigation */}
-          <nav className="flex-1 overflow-y-auto p-4">
-            {navigationItems.map((item) => {
-              const isActive = activeSection === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={async (e) => {
-                    e.preventDefault();
-                    setIsOpen(false);
-                    await router.push(item.href);
-                  }}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all mb-1",
-                    isActive 
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
-                  )}
-                >
-                  {item.icon}
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-        </div>
-      </SheetContent>
-    </Sheet>
+            {/* Navigation */}
+            <nav className="flex-1 overflow-y-auto p-4">
+              {navigationItems.map((item) => {
+                const isActive = activeSection === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      setIsOpen(false);
+                      if (item.section === 'dimensions') {
+                        setIsPortalOpen(true);
+                      } else {
+                        await router.push(item.href);
+                      }
+                    }}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all mb-1",
+                      isActive 
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
+                    )}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </SheetContent>
+      </Sheet>
+      <PortalSelector 
+        open={isPortalOpen} 
+        onOpenChange={setIsPortalOpen} 
+      />
+    </>
   );
 }
