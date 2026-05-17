@@ -10,11 +10,11 @@ interface ImageItem {
 }
 
 const images: ImageItem[] = [
-  { title: 'Focus & Technical Execution', url: '/imagess/foto2.jpg' },
-  { title: 'System Architecture Design', url: '/myphoto2.jpg' },
-  { title: 'Exploring Creative Innovations', url: '/myphoto3.jpg' },
-  { title: 'Interactive User Interface R&D', url: '/myphoto4.jpg' },
-  { title: 'Continuous Growth & Learning', url: '/myphoto5.jpg' }
+  { title: 'Photo 1', url: '/imagess/foto2.jpg' },
+  { title: 'Photo 2', url: '/myphoto2.jpg' },
+  { title: 'Photo 3', url: '/myphoto3.jpg' },
+  { title: 'Photo 4', url: '/myphoto4.jpg' },
+  { title: 'Photo 5', url: '/myphoto5.jpg' }
 ];
 
 const FLIP_SPEED = 750;
