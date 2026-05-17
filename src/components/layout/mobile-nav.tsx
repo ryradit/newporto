@@ -238,7 +238,7 @@ export function MobileNav() {
             </nav>
 
             {/* Bottom Action Section */}
-            <div className="mt-auto p-4 border-t border-border bg-accent/20 flex items-center justify-center">
+            <div className="mt-auto p-4 border-t border-border bg-accent/20 flex flex-col items-center gap-3">
               <button
                 onClick={() => {
                   setIsOpen(false);
@@ -270,6 +270,18 @@ export function MobileNav() {
                   {language === 'id' ? 'Dimensi 🌀' : language === 'zh' ? '维度 🌀' : 'Dimensions 🌀'}
                 </span>
               </button>
+
+              {/* Footer Info */}
+              <div className="flex flex-col items-center gap-1 text-[10px] text-muted-foreground/60 text-center">
+                <p>&copy; 2025 Ryan Radityatama. All rights reserved.</p>
+                <Link 
+                  href="/terms" 
+                  onClick={() => setIsOpen(false)}
+                  className="hover:text-primary transition-colors hover:underline"
+                >
+                  Terms & Conditions
+                </Link>
+              </div>
             </div>
           </div>
         </SheetContent>
