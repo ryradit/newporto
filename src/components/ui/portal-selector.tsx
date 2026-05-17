@@ -16,6 +16,27 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
   const { setTheme } = useTheme();
   const [isAnimating, setIsAnimating] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diffX = touchEndX - touchStartX;
+
+    // Minimum swipe distance threshold (50px) to prevent accidental swipes
+    if (Math.abs(diffX) > 50) {
+      if (diffX > 0) {
+        navigateCarousel('prev');
+      } else {
+        navigateCarousel('next');
+      }
+    }
+    setTouchStartX(null);
+  };
   
   const themes = [
     {
@@ -269,6 +290,8 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
           
           {/* Portal Background Effect - Responsive circular ring with cinematic Doctor Strange fire animation */}
           <div 
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             className={cn(
               "flex items-center justify-center transition-all duration-1000 w-[92vw] h-[92vw] max-w-[320px] max-h-[320px] sm:max-w-[480px] sm:max-h-[480px] md:max-w-[600px] md:max-h-[600px] lg:max-w-[700px] lg:max-h-[700px] rounded-full relative overflow-visible aspect-square",
               isAnimating ? "scale-100 opacity-100" : "scale-0 opacity-0"
@@ -693,6 +716,8 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
 
           {/* 3D Carousel Theme Selection Cards */}
           <div 
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
             className={cn(
               "absolute carousel-container z-20",
               isAnimating ? "opacity-100 scale-100" : "opacity-0 scale-95",
