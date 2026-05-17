@@ -209,8 +209,11 @@ export async function schedulerAgent(): Promise<{ bookingLink: string; flexibleS
     const timeMin = new Date().toISOString();
     const timeMax = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     const endpoint = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${apiKey}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`;
-
-    const res = await fetch(endpoint);
+    const res = await fetch(endpoint, {
+      headers: {
+        "Referer": "https://ryradit.my.id/"
+      }
+    });
     if (!res.ok) {
       if (res.status === 403 || res.status === 404) {
         console.warn(`[Google Calendar API Info] Calendar query returned status ${res.status}.
