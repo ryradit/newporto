@@ -37,7 +37,8 @@ import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
 import Link from "next/link";
 import { GradientText } from "@/components/ui/gradient-text";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const TYPING_SPEED = 120;
 const DELETING_SPEED = 70;
@@ -102,31 +103,41 @@ export function HeroSection() {
   }, [displayedText, isDeleting, taglineIndex, TAGLINES]);
 
   const techStack = [
-    { name: "Python", icon: SiPython, color: "#3776AB" },
-    { name: "scikit-learn", icon: SiScikitlearn, color: "#F7931E" },
-    { name: "PyTorch", icon: SiPytorch, color: "#EE4C2C" },
-    { name: "Hugging Face", icon: SiHuggingface, color: "#FFD21E" },
-    { name: "NumPy", icon: SiNumpy, color: "#013243" },
-    { name: "Matplotlib", icon: BarChart, color: "#11557C" },
-    { name: "HTML5", icon: SiHtml5, color: "#E34F26" },
-    { name: "CSS3", icon: SiCss, color: "#1572B6" },
-    { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E" },
-    { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
-    { name: "React", icon: SiReact, color: "#61DAFB" },
-    { name: "Next.js", icon: SiNextdotjs, color: "#ffffff" },
-    { name: "Vite", icon: SiVite, color: "#646CFF" },
-    { name: "Bootstrap", icon: SiBootstrap, color: "#7952B3" },
-    { name: "Tailwind", icon: SiTailwindcss, color: "#06B6D4" },
-    { name: "Framer", icon: SiFramer, color: "#0055FF" },
-    { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
-    { name: "PHP", icon: SiPhp, color: "#777BB4" },
-    { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1" },
-    { name: "MySQL", icon: SiMysql, color: "#4479A1" },
-    { name: "Supabase", icon: SiSupabase, color: "#3FCF8E" },
-    { name: "Firebase", icon: SiFirebase, color: "#FFCA28" },
-    { name: "NPM", icon: SiNpm, color: "#CB3837" },
-    { name: "GitHub", icon: SiGithub, color: "#ffffff" },
+    // AI / ML
+    { name: "Python", icon: SiPython, color: "#3776AB", category: "ai", level: "Expert" },
+    { name: "scikit-learn", icon: SiScikitlearn, color: "#F7931E", category: "ai", level: "Expert" },
+    { name: "PyTorch", icon: SiPytorch, color: "#EE4C2C", category: "ai", level: "Expert" },
+    { name: "Hugging Face", icon: SiHuggingface, color: "#FFD21E", category: "ai", level: "Expert" },
+    { name: "NumPy", icon: SiNumpy, color: "#013243", category: "ai", level: "Expert" },
+    { name: "Matplotlib", icon: BarChart, color: "#11557C", category: "ai", level: "Proficient" },
+
+    // Frontend
+    { name: "TypeScript", icon: SiTypescript, color: "#3178C6", category: "frontend", level: "Expert" },
+    { name: "React", icon: SiReact, color: "#61DAFB", category: "frontend", level: "Expert" },
+    { name: "Next.js", icon: SiNextdotjs, color: "#ffffff", category: "frontend", level: "Expert" },
+    { name: "JavaScript", icon: SiJavascript, color: "#F7DF1E", category: "frontend", level: "Expert" },
+    { name: "Tailwind", icon: SiTailwindcss, color: "#06B6D4", category: "frontend", level: "Expert" },
+    { name: "Vite", icon: SiVite, color: "#646CFF", category: "frontend", level: "Proficient" },
+    { name: "Framer", icon: SiFramer, color: "#0055FF", category: "frontend", level: "Proficient" },
+    { name: "HTML5", icon: SiHtml5, color: "#E34F26", category: "frontend", level: "Expert" },
+    { name: "CSS3", icon: SiCss, color: "#1572B6", category: "frontend", level: "Expert" },
+    { name: "Bootstrap", icon: SiBootstrap, color: "#7952B3", category: "frontend", level: "Proficient" },
+
+    // Backend / Tools
+    { name: "Node.js", icon: SiNodedotjs, color: "#339933", category: "backend", level: "Expert" },
+    { name: "PHP", icon: SiPhp, color: "#777BB4", category: "backend", level: "Proficient" },
+    { name: "PostgreSQL", icon: SiPostgresql, color: "#4169E1", category: "backend", level: "Expert" },
+    { name: "MySQL", icon: SiMysql, color: "#4479A1", category: "backend", level: "Expert" },
+    { name: "Supabase", icon: SiSupabase, color: "#3FCF8E", category: "backend", level: "Expert" },
+    { name: "Firebase", icon: SiFirebase, color: "#FFCA28", category: "backend", level: "Proficient" },
+    { name: "NPM", icon: SiNpm, color: "#CB3837", category: "backend", level: "Proficient" },
+    { name: "GitHub", icon: SiGithub, color: "#ffffff", category: "backend", level: "Expert" },
   ];
+
+  const [activeCategory, setActiveCategory] = useState<'all' | 'ai' | 'frontend' | 'backend'>('all');
+  const filteredTech = activeCategory === 'all' 
+    ? techStack 
+    : techStack.filter(t => t.category === activeCategory);
 
   return (
     <AnimatedSection id="hero" className="flex flex-col relative overflow-hidden">
@@ -165,34 +176,88 @@ export function HeroSection() {
               <div className="h-[1px] w-8 md:w-12 bg-primary/20"></div>
             </motion.div>
             
+            {/* Category Selector Tabs */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-8 bg-zinc-900/40 border border-white/[0.08] rounded-2xl p-1.5 backdrop-blur-md max-w-lg mx-auto shadow-inner shadow-black/40">
+              {(['all', 'ai', 'frontend', 'backend'] as const).map((cat) => {
+                const labelMap = {
+                  all: 'All',
+                  ai: 'AI & ML',
+                  frontend: 'Frontend',
+                  backend: 'Backend & Cloud'
+                };
+                const isActive = activeCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={cn(
+                      "relative flex-1 inline-flex items-center justify-center rounded-xl py-2 px-3 text-xs font-bold tracking-wide uppercase transition-colors duration-300 focus:outline-none z-10 whitespace-nowrap",
+                      isActive ? "text-purple-400 font-extrabold" : "text-white/60 hover:text-white"
+                    )}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="active-skill-tab"
+                        className="absolute inset-0 bg-white/[0.05] border border-white/[0.08] rounded-xl shadow-md -z-10"
+                        transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                      />
+                    )}
+                    {labelMap[cat]}
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Tech Stack Grid */}
             <motion.div 
-              variants={gridContainerVariants}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-50px" }}
-              className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2 md:gap-4 mb-12 md:mb-16"
+              layout
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 mb-12 md:mb-16 max-w-5xl mx-auto"
             >
-              {techStack.map((tech) => (
-                <motion.div key={tech.name} variants={gridItemVariants} className="group relative">
-                  <div 
-                    className="p-3 rounded-xl transition-all cursor-pointer border border-transparent hover:border-white/10"
-                    style={{ backgroundColor: `${tech.color}15` }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${tech.color}30`}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = `${tech.color}15`}
+              <AnimatePresence mode="popLayout">
+                {filteredTech.map((tech) => (
+                  <motion.div 
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                    key={tech.name} 
+                    className="group relative"
                   >
-                    <tech.icon 
-                      className="w-6 h-6 group-hover:scale-110 transition-transform" 
-                      style={{ color: tech.color }} 
-                    />
-                  </div>
-                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity text-xs whitespace-nowrap bg-background border border-border px-2 py-1 rounded-md z-20 shadow-xl">
-                    {tech.name}
-                  </span>
-                </motion.div>
-              ))}
+                    <div 
+                      className="flex flex-col items-center justify-center p-4 rounded-2xl bg-zinc-900/30 border border-white/[0.05] hover:border-white/15 hover:bg-zinc-900/50 transition-all duration-300 shadow-lg cursor-pointer"
+                      style={{ 
+                        boxShadow: `0 4px 20px rgba(0,0,0,0.4)`
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.boxShadow = `0 10px 25px -5px ${tech.color}15, 0 8px 10px -6px ${tech.color}10`;
+                        e.currentTarget.style.borderColor = `${tech.color}30`;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.boxShadow = `0 4px 20px rgba(0,0,0,0.4)`;
+                        e.currentTarget.style.borderColor = `rgba(255,255,255,0.05)`;
+                      }}
+                    >
+                      <div 
+                        className="p-3 rounded-xl mb-3 flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                        style={{ backgroundColor: `${tech.color}15` }}
+                      >
+                        <tech.icon 
+                          className="w-6 h-6 transition-colors" 
+                          style={{ color: tech.color }} 
+                        />
+                      </div>
+                      <span className="text-xs font-bold tracking-wide text-white/90 group-hover:text-white transition-colors text-center truncate w-full max-w-[120px]">
+                        {tech.name}
+                      </span>
+                      <span className="text-[9px] font-semibold text-purple-400/70 tracking-widest uppercase mt-1">
+                        {tech.level}
+                      </span>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </motion.div>
-
             {/* Feature Cards Section */}
             <div className="relative max-w-5xl mx-auto w-full mt-8">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/20 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
