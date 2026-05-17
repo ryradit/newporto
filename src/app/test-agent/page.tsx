@@ -8,6 +8,7 @@ import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles
 
 type Stage =
   | 'greeting'
+  | 'who_are_you'
   | 'intent'
   | 'budget'
   | 'scope'
@@ -62,8 +63,8 @@ type ContractOption = {
   questions: string[];
 };
 
-const CLIENT_STAGES: Stage[] = ['greeting', 'intent', 'budget', 'scope', 'proposal', 'followup'];
-const RECRUITER_STAGES: Stage[] = ['greeting', 'intent', 'contract_type', 'role_details', 'brief', 'followup'];
+const CLIENT_STAGES: Stage[] = ['greeting', 'who_are_you', 'intent', 'budget', 'scope', 'proposal', 'followup'];
+const RECRUITER_STAGES: Stage[] = ['greeting', 'who_are_you', 'contract_type', 'role_details', 'brief', 'followup'];
 
 const BUDGET_OPTIONS = [
   { label: '🌱 Starter', sublabel: 'Under $300', value: 'under 300', color: 'from-emerald-500 to-teal-500' },
@@ -91,7 +92,7 @@ function TypingIndicator() {
 
 function StageTracker({ current, intent }: { current: Stage; intent: 'client' | 'recruiter' | 'unknown' }) {
   const stageIds = intent === 'recruiter' ? RECRUITER_STAGES : CLIENT_STAGES;
-  const normalizedCurrent: Stage = current === 'generating' ? 'proposal' : current === 'generating_brief' ? 'brief' : current;
+  const normalizedCurrent: Stage = current === 'generating' ? 'proposal' : current === 'generating_brief' ? 'brief' : current === 'greeting' ? 'who_are_you' : current;
   const currentIdx = stageIds.indexOf(normalizedCurrent);
 
   return (
@@ -100,7 +101,7 @@ function StageTracker({ current, intent }: { current: Stage; intent: 'client' | 
         const done = i < currentIdx;
         const active = i === currentIdx;
         const STAGE_LABELS: Partial<Record<Stage, string>> = {
-          greeting: 'Welcome', intent: 'Your Goal', budget: 'Budget', scope: 'Scope',
+          greeting: 'Welcome', who_are_you: 'Who Are You?', intent: 'Your Goal', budget: 'Budget', scope: 'Scope',
           proposal: 'Proposal', contract_type: 'Contract Type', role_details: 'Role Details',
           brief: 'Candidate Brief', followup: 'Follow-Up',
         };
@@ -344,13 +345,13 @@ function ProposalCard({ proposal }: { proposal: Proposal }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function TestAgentPage() {
-  const [stage, setStage] = useState<Stage>('greeting');
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! 👋 I'm Ryan's AI assistant — I'm here to help figure out exactly how Ryan can help you, and build a custom proposal tailored to your needs and budget. What brings you here today?",
+      content: "Hi! 👋 I'm Ryan's AI assistant. Before we get started — quick question: are you here to commission a project, or are you a recruiter looking to hire Ryan?",
     },
   ]);
+  const [stage, setStage] = useState<Stage>('who_are_you');
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [visitorName, setVisitorName] = useState('');
@@ -386,43 +387,16 @@ export default function TestAgentPage() {
     setIsLoading(true);
 
     try {
-      if (stage === 'greeting') {
-        // Extract name/company from greeting message
+      if (stage === 'greeting' || stage === 'who_are_you') {
+        // Just capture name/company, then show the choice buttons
         const nameMatch = text.match(/(?:i'?m|my name is|i am)\s+([a-zA-Z]+)/i);
         if (nameMatch) setVisitorName(nameMatch[1]);
         if (text.toLowerCase().includes('from ')) {
           const compMatch = text.match(/from\s+([\w\s]+?)(?:\.|,|$)/i);
           if (compMatch) setVisitorCompany(compMatch[1].trim());
         }
-
-        // Move to intent classification
-        const res = await fetch('/api/agent/qualify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'intent', message: text, history: messages }),
-        });
-        const data = await res.json();
-        addMessage('assistant', data.reply || "Thanks! Are you looking to hire Ryan for a project, or do you have a job opportunity?");
-        setDetectedIntent(data.intent);
-
-        if (data.intent === 'recruiter') {
-          setDetectedIntent('recruiter');
-          // Fetch contract type options and move to contract_type stage
-          const ctRes = await fetch('/api/agent/recruiter', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'contract_types' }),
-          });
-          const ctData = await ctRes.json();
-          setContractOptions(ctData.contractTypes || []);
-          setTimeout(() => {
-            addMessage('assistant', "Great! Since you're looking to hire Ryan, what type of engagement works best for you?");
-            setStage('contract_type');
-          }, 800);
-        } else {
-          setDetectedIntent('client');
-          setStage('intent');
-        }
+        addMessage('assistant', `Thanks! Now, which best describes you?`);
+        setStage('who_are_you');
 
       } else if (stage === 'intent') {
         setProjectDescription(text);
@@ -467,6 +441,35 @@ export default function TestAgentPage() {
       addMessage('assistant', "Sorry, something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleIntentChoice = async (intent: 'client' | 'recruiter') => {
+    setDetectedIntent(intent);
+    setIsLoading(true);
+    if (intent === 'client') {
+      addMessage('user', "I have a project for Ryan 💼");
+      addMessage('assistant', "Awesome! Tell me a bit about what you're looking to build — what's the project idea or goal?");
+      setStage('intent');
+      setIsLoading(false);
+    } else {
+      addMessage('user', "I want to hire Ryan 🤝");
+      addMessage('assistant', "Great! Let's find the right engagement type. What kind of contract are you offering?");
+      try {
+        const res = await fetch('/api/agent/recruiter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'contract_types' }),
+        });
+        const data = await res.json();
+        setContractOptions(data.contractTypes || []);
+        setStage('contract_type');
+      } catch {
+        addMessage('assistant', 'Let me ask you a few questions about the role.');
+        setStage('contract_type');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -708,6 +711,43 @@ export default function TestAgentPage() {
                     </div>
                   </button>
                 ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Who Are You? — Initial Choice */}
+          <AnimatePresence>
+            {stage === 'who_are_you' && !isLoading && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-1 gap-3 my-4"
+              >
+                <button
+                  onClick={() => handleIntentChoice('client')}
+                  className="bg-gradient-to-br from-purple-500 to-violet-600 p-0.5 rounded-xl hover:scale-[1.02] transition-transform"
+                >
+                  <div className="bg-[#0A0A0F] rounded-[11px] px-5 py-4 text-left flex items-center gap-4">
+                    <span className="text-3xl">💼</span>
+                    <div>
+                      <div className="text-base font-bold text-white">I have a project for Ryan</div>
+                      <div className="text-xs text-white/50 mt-0.5">I need a website, web app, or other development work</div>
+                    </div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => handleIntentChoice('recruiter')}
+                  className="bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5 rounded-xl hover:scale-[1.02] transition-transform"
+                >
+                  <div className="bg-[#0A0A0F] rounded-[11px] px-5 py-4 text-left flex items-center gap-4">
+                    <span className="text-3xl">🤝</span>
+                    <div>
+                      <div className="text-base font-bold text-white">I want to hire Ryan</div>
+                      <div className="text-xs text-white/50 mt-0.5">Full-time, part-time, freelance contract, or permanent role</div>
+                    </div>
+                  </div>
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
