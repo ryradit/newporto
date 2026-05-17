@@ -56,7 +56,7 @@ Return a JSON object with these exact fields:
     {"name": "Project Name 2", "relevance": "Why this is relevant"}
   ],
   "closingMessage": "Warm professional closing paragraph from Ryan",
-  "emailDraft": "Full follow-up email Ryan would send to the client"
+  "emailDraft": "Full follow-up email Ryan would send to the client. Address the email to the client using their name (visitorName) if provided, otherwise 'Team'. The email MUST be signed off as coming from 'Ryan Radityatama' (NEVER use placeholders like '[Your Name]', '[Name]', '[Nama Anda]', or '[Recruiter Liaison]'). Include Ryan's email (ryradit@gmail.com) and portfolio website (https://ryanraditya.com)."
 }
 
 Be specific, reference actual skills and projects from Ryan's profile. Make it feel personalized, not generic.`;
