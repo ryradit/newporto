@@ -38,9 +38,9 @@ const GREETINGS = {
 };
 
 const QUICK_PROMPTS = {
-  en: ["What is his tech stack?", "Schedule an interview", "Why hire him?", "Download his CV?"],
-  id: ["Apa tech stack utamanya?", "Jadwalkan wawancara", "Mengapa harus mempekerjakannya?", "Unduh CV-nya?"],
-  zh: ["他的技术栈是什么？", "预约面试", "为什么要雇佣他？", "下载他的简历？"]
+  en: ["⚡ Hire Ryan (AI Agent)", "What is his tech stack?", "Schedule an interview", "Why hire him?", "Download his CV?"],
+  id: ["⚡ Rekrut Ryan (AI Agent)", "Apa tech stack utamanya?", "Jadwalkan wawancara", "Mengapa harus mempekerjakannya?", "Unduh CV-nya?"],
+  zh: ["⚡ 录用 Ryan (AI 代理)", "他的技术栈是什么？", "预约面试", "为什么要雇佣他？", "下载他的简历？"]
 };
 
 export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
@@ -175,6 +175,15 @@ export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
     return cvKeywords.some(keyword => text.toLowerCase().includes(keyword));
   };
 
+  const isAgentRequest = (text: string): boolean => {
+    const agentKeywords = [
+      'hire ryan', 'rekrut', '录用', 'hiring ryan', 'want to hire', 'hire me',
+      'proposal', 'budget', 'contract', 'freelance', 'agent', 'agency',
+      'wanna hire', 'looking to hire', 'relocation', 'sponsorship'
+    ];
+    return agentKeywords.some(keyword => text.toLowerCase().includes(keyword));
+  };
+
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
 
@@ -184,6 +193,28 @@ export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
     setIsLoading(true);
 
     try {
+      // Check if this is an Agent request
+      if (isAgentRequest(content)) {
+        await new Promise(resolve => setTimeout(resolve, 1200)); // Simulate thinking
+        
+        const agentMessage: Message = {
+          role: "assistant",
+          content: "I would love to help you! To offer you the absolute best and most personalized experience (including automatic IDR/USD budget tier matching, custom timeline calculations, and interactive relocation Relocation and Compensation analysis), I can open my dedicated Agentic AI Proposal & Hiring Sandbox.",
+          action: {
+            type: "launch-agent",
+            label: "⚡ Launch AI Proposal & Hiring Agent",
+            onClick: () => {
+              if (typeof window !== "undefined") {
+                window.open("/agent", "_blank");
+              }
+            }
+          }
+        };
+        setMessages((prev) => [...prev, agentMessage]);
+        setIsLoading(false);
+        return;
+      }
+
       // Check if this is a CV download request
       if (isCVRequest(content)) {
         await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate thinking

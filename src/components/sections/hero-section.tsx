@@ -273,39 +273,36 @@ export function HeroSection() {
                 </div>
               </Link>
 
-              {/* Live Chat Card */}
-              <div onClick={() => window.dispatchEvent(new CustomEvent('open-chatbot'))} className="cursor-pointer group relative overflow-hidden rounded-[2rem] bg-white dark:bg-[#121212] hover:bg-zinc-50 dark:hover:bg-[#1a1a1a] border border-border dark:border-white/[0.05] hover:border-primary/30 transition-all duration-700 p-6 md:p-8 text-center transform hover:-translate-y-2 shadow-2xl hover:shadow-[0_20px_40px_rgba(124,58,237,0.2)]">
+              {/* AI Agent Card */}
+              <Link href="/agent" className="group relative overflow-hidden rounded-[2rem] bg-white dark:bg-[#121212] hover:bg-zinc-50 dark:hover:bg-[#1a1a1a] border border-border dark:border-white/[0.05] hover:border-primary/30 transition-all duration-700 p-6 md:p-8 text-center transform hover:-translate-y-2 shadow-2xl hover:shadow-[0_20px_40px_rgba(124,58,237,0.2)]">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/0 z-0 group-hover:from-primary/20 group-hover:to-primary/5 transition-colors duration-500"></div>
                 <div className="relative z-10">
-                  <div className="relative mb-4 h-24 flex flex-col justify-end">
-                    <div className="flex flex-col gap-2 mb-2 mx-auto w-full max-w-[160px]">
-                      <div className="flex items-start gap-2">
-                        <div className="w-6 h-6 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center">
-                          <Bot className="w-3 h-3 text-primary dark:text-white" />
-                        </div>
-                        <div className="bg-primary/10 rounded-lg p-2 text-[9px] text-zinc-800 dark:text-white text-left group-hover:bg-primary/20 transition-colors w-full border border-border dark:border-white/5">How can I help?</div>
+                  <div className="relative mb-4 h-24 flex items-center justify-center">
+                    <div className="flex flex-col items-center justify-center gap-2 w-full max-w-[160px] mx-auto bg-primary/5 rounded-xl p-3 border border-border dark:border-white/5 group-hover:bg-primary/10 group-hover:border-primary/20 transition-all duration-500 shadow-inner">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                        <Bot className="w-5 h-5 text-white" />
                       </div>
-                      <div className="flex items-start gap-2 justify-end">
-                        <div className="bg-primary/20 rounded-lg p-2 text-[9px] text-zinc-800 dark:text-white text-left group-hover:bg-primary/30 transition-colors border border-border dark:border-white/5">Tell me about you</div>
-                        <div className="w-6 h-6 rounded-full bg-accent flex-shrink-0"></div>
+                      <div className="w-full flex flex-col items-center gap-1.5">
+                        <div className="h-1.5 w-16 bg-purple-500/40 rounded-full"></div>
+                        <div className="h-1 w-20 bg-indigo-300 dark:bg-indigo-900/40 rounded-full"></div>
                       </div>
                     </div>
                   </div>
-                  <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{translate('menu.chatRoom', language)}</h3>
-                  <p className="text-sm text-muted-foreground mb-4 group-hover:text-zinc-700 dark:group-hover:text-white/80 transition-colors">{translate('hero.chatDescription', language) || "Chat room to express and share more."}</p>
+                  <h3 className="font-headline text-xl font-medium mb-2 text-primary/90 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">AI Hiring Agent</h3>
+                  <p className="text-sm text-muted-foreground mb-4 group-hover:text-zinc-700 dark:group-hover:text-white/80 transition-colors">Qualify project budgets, estimate custom timelines, or analyze recruiter salary fits.</p>
                   <div className="h-0 group-hover:h-[4.5rem] opacity-0 group-hover:opacity-100 transition-all duration-500 overflow-hidden text-left pl-4">
-                    <p className="text-xs text-zinc-600 dark:text-white/80">• Ask About Experience</p>
-                    <p className="text-xs text-zinc-600 dark:text-white/80">• Project Inquiries</p>
-                    <p className="text-xs text-zinc-600 dark:text-white/80">• Real-time Responses</p>
+                    <p className="text-xs text-zinc-600 dark:text-white/80">• Multi-Tier Client Proposals</p>
+                    <p className="text-xs text-zinc-600 dark:text-white/80">• Salary & Location Alignment</p>
+                    <p className="text-xs text-zinc-600 dark:text-white/80">• Professional Follow-up Drafts</p>
                   </div>
                   <div className="mt-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
                     <span className="inline-flex items-center text-xs font-medium text-primary gap-1 group-hover:text-zinc-900 dark:group-hover:text-white">
-                      {translate('hero.startChat', language) || "Start chatting"}
+                      Launch AI Agent
                       <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path></svg>
                     </span>
                   </div>
                 </div>
-              </div>
+              </Link>
 
               {/* Contact Card */}
               <Link href="/contact" className="group relative overflow-hidden rounded-[2rem] bg-white dark:bg-[#121212] hover:bg-zinc-50 dark:hover:bg-[#1a1a1a] border border-border dark:border-white/[0.05] hover:border-primary/30 transition-all duration-700 p-6 md:p-8 text-center transform hover:-translate-y-2 shadow-2xl hover:shadow-[0_20px_40px_rgba(124,58,237,0.2)]">

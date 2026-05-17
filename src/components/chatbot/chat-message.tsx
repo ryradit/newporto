@@ -30,7 +30,7 @@ function formatTimeAgo(date: Date) {
 }
 
 interface MessageAction {
-  type: "download-cv";
+  type: "download-cv" | "launch-agent";
   label: string;
   onClick: () => void;
 }
