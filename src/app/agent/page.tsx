@@ -663,7 +663,7 @@ export default function TestAgentPage() {
         setCurrentRoleQIdx(0);
         setRoleAnswers([]);
         setStage('role_details');
-      }, 800);
+      }, 3000);
     } catch {
       addMessage('assistant', 'Got it! Let me ask a few questions about the role.');
     } finally {
@@ -720,7 +720,7 @@ export default function TestAgentPage() {
         setCurrentScopeIdx(0);
         setScopeAnswers([]);
         setStage('scope');
-      }, 1000);
+      }, 3200);
     } catch {
       addMessage('assistant', "Got it! Let me ask a few questions about your project.");
     } finally {
