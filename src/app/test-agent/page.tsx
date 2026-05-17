@@ -50,6 +50,7 @@ type CandidateBrief = {
   skillsMatch: { requirement: string; ryanHas: string }[];
   relevantExperience: { role: string; company: string; relevance: string }[];
   compensationNote: string;
+  visaSponsorshipNote: string;
   availability: string;
   nextSteps: string[];
   closingMessage: string;
@@ -185,6 +186,12 @@ function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
           <div className="text-white text-sm font-medium">{brief.compensationNote}</div>
         </div>
       </div>
+      {brief.visaSponsorshipNote && (
+        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
+          <div className="text-xs text-amber-400 font-semibold uppercase tracking-wide mb-1">🚫 Visa Sponsorship</div>
+          <div className="text-white/80 text-sm">{brief.visaSponsorshipNote}</div>
+        </div>
+      )}
       <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
         <h3 className="text-sm font-semibold text-blue-300 mb-3 uppercase tracking-wide">Next Steps</h3>
         <ol className="space-y-2">

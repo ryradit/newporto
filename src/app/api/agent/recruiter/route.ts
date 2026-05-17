@@ -24,6 +24,7 @@ const CONTRACT_TYPES = {
       'What is the expected duration of the contract? (e.g. 1 month, 3 months, ongoing)',
       'What is your budget — hourly rate or fixed project fee?',
       'What tech stack or specific skills are required for this role?',
+      'Is this role fully remote, or does it require on-site presence? If on-site, in which city and country?',
     ],
   },
   parttime: {
@@ -35,6 +36,7 @@ const CONTRACT_TYPES = {
       'How many hours per week are you expecting?',
       'What is the monthly or hourly compensation?',
       'What technologies or expertise are most critical for this role?',
+      'Is this role fully remote, or does it require on-site presence? If on-site, in which city and country?',
     ],
   },
   fulltime: {
@@ -46,6 +48,7 @@ const CONTRACT_TYPES = {
       'How long is the contract term? (e.g. 6 months, 1 year)',
       'What is the monthly compensation or salary range?',
       'What is the primary tech stack and any must-have skills?',
+      'Is this role remote, hybrid, or on-site? If on-site, in which city and country? If outside Indonesia, will you provide visa sponsorship for Ryan?',
     ],
   },
   permanent: {
@@ -55,8 +58,8 @@ const CONTRACT_TYPES = {
     questions: [
       'What is the job title and team Ryan would be joining?',
       'What is the offered salary range?',
-      'Is this role remote, hybrid, or on-site? And in which location?',
       'What are the most important skills and technologies for this role?',
+      'Is this role remote, hybrid, or on-site? If on-site, in which city and country? If outside Indonesia, will you provide visa sponsorship for Ryan?',
     ],
   },
 };
@@ -146,10 +149,11 @@ Generate a JSON object with these fields:
     ...
   ],
   "compensationNote": "${isIndonesian ? 'State minimum in IDR only (Rp 15,000,000/month minimum). No USD.' : 'State minimum in USD only ($80K/year or $40/hour). No IDR.'}",
+  "visaSponsorshipNote": "If the role is on-site outside Indonesia: clearly state whether visa sponsorship is provided or not based on the recruiter's answer. If remote or on-site in Indonesia: state 'Not applicable — role is remote/in Indonesia.' If no info given: state 'Please confirm visa sponsorship availability for on-site relocation.'",
   "availability": "Ryan's general availability note",
   "nextSteps": ["Step 1", "Step 2", "Step 3"],
   "closingMessage": "Professional closing note from Ryan to the recruiter",
-  "emailDraft": "Full professional email from Ryan to the recruiter expressing interest, summarizing his fit, and stating minimum compensation expectations in the correct currency only"
+  "emailDraft": "Full professional email from Ryan to the recruiter expressing interest, summarizing his fit, stating minimum compensation expectations in the correct currency only, and mentioning visa sponsorship if applicable"
 }
 
 Be specific, reference actual experience from Ryan's profile. Show concrete skill matches. Be persuasive but honest. ONLY use the currency specified — never mix IDR and USD.`;
