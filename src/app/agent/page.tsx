@@ -1457,7 +1457,7 @@ export default function TestAgentPage() {
           briefToSet = await translateCandidateBrief(data.brief, preferredLanguage);
         }
         setCandidateBrief(briefToSet);
-        setStage('brief');
+        setStage('followup');
         addMessage('assistant', "Ryan's candidate brief is ready! 🎉 It shows exactly how his experience and skills match your role requirements.");
       } else throw new Error('No brief returned');
     } catch {
@@ -1523,7 +1523,7 @@ export default function TestAgentPage() {
           proposalToSet = await translateProposal(data.proposal, preferredLanguage);
         }
         setProposal(proposalToSet);
-        setStage('proposal');
+        setStage('followup');
         addMessage('assistant', "Your custom proposal is ready! 🎉 Scroll down to review everything. If it looks good, I can help you take the next step.");
       } else {
         throw new Error('No proposal returned');
@@ -1822,36 +1822,17 @@ export default function TestAgentPage() {
           </AnimatePresence>
 
           {/* Candidate Brief Display — Recruiter */}
-          {candidateBrief && stage === 'brief' && (
+          {candidateBrief && (stage === 'brief' || stage === 'followup') && (
             <div className="mt-6">
               <CandidateBriefCard brief={candidateBrief} recruiterName={visitorName} recruiterCompany={visitorCompany} />
             </div>
           )}
 
           {/* Proposal Display — Client */}
-          {proposal && stage === 'proposal' && (
+          {proposal && (stage === 'proposal' || stage === 'followup') && (
             <div className="mt-6">
               <ProposalCard proposal={proposal} />
             </div>
-          )}
-
-          {/* Recruiter CTA */}
-          {stage === 'followup' && detectedIntent === 'recruiter' && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-4 mt-4"
-            >
-              <h3 className="text-white font-semibold">Schedule an Interview with Ryan</h3>
-              <p className="text-white/60 text-sm">Book a time directly — Ryan typically responds within 24 hours.</p>
-              <a
-                href="mailto:ryradit@gmail.com?subject=Interview Request"
-                className="flex items-center justify-center gap-2 w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl transition-colors"
-              >
-                <Mail size={16} />
-                Email Ryan to Schedule
-              </a>
-            </motion.div>
           )}
 
           <div ref={messagesEndRef} />
