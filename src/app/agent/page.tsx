@@ -773,26 +773,77 @@ export default function TestAgentPage() {
       } else if (stage === 'scope') {
         if (!tierData) return;
         const currentQ = tierData.scopeQuestions[currentScopeIdx];
-        const newAnswers = [...scopeAnswers, { question: currentQ, answer: text }];
-        setScopeAnswers(newAnswers);
+        const remainingQuestions = tierData.scopeQuestions.slice(currentScopeIdx + 1);
 
-        if (currentScopeIdx + 1 < tierData.scopeQuestions.length) {
-          setCurrentScopeIdx(currentScopeIdx + 1);
+        let acknowledgment = '';
+        let skippedIndices: number[] = [];
+        let extracted: { questionIndex: number; answer: string }[] = [];
+
+        try {
+          const analyzeRes = await fetch('/api/agent/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userMessage: text,
+              currentQuestion: currentQ,
+              upcomingQuestions: remainingQuestions,
+            }),
+          });
+          if (analyzeRes.ok) {
+            const data = await analyzeRes.json();
+            acknowledgment = data.acknowledgment || '';
+            skippedIndices = data.skippedQuestionIndices || [];
+            extracted = data.extractedAnswers || [];
+          }
+        } catch (e) {
+          console.warn("Analysis failed, proceeding with normal flow:", e);
+        }
+
+        let updatedAnswers = [...scopeAnswers, { question: currentQ, answer: text }];
+        
+        const prefilledMap: Record<number, string> = {};
+        extracted.forEach((item) => {
+          const absIdx = currentScopeIdx + 1 + item.questionIndex;
+          if (absIdx < tierData.scopeQuestions.length) {
+            prefilledMap[absIdx] = item.answer;
+          }
+        });
+
+        let nextUnskippedIdx = currentScopeIdx + 1;
+        while (nextUnskippedIdx < tierData.scopeQuestions.length) {
+          const relativeIdx = nextUnskippedIdx - (currentScopeIdx + 1);
+          if (skippedIndices.includes(relativeIdx)) {
+            const qText = tierData.scopeQuestions[nextUnskippedIdx];
+            const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
+            updatedAnswers.push({ question: qText, answer: aText });
+            nextUnskippedIdx++;
+          } else {
+            break;
+          }
+        }
+
+        setScopeAnswers(updatedAnswers);
+
+        if (nextUnskippedIdx < tierData.scopeQuestions.length) {
+          setCurrentScopeIdx(nextUnskippedIdx);
           await simulatedDelay(1000);
-          addMessage('assistant', tierData.scopeQuestions[currentScopeIdx + 1]);
+
+          const nextQ = tierData.scopeQuestions[nextUnskippedIdx];
+          const combinedMsg = acknowledgment ? `${acknowledgment} ` + nextQ : nextQ;
+          addMessage('assistant', combinedMsg);
         } else {
-          // All questions answered — generate proposal
           await simulatedDelay(1000);
-          addMessage('assistant', "Perfect! I have everything I need. Let me generate your custom proposal now... ✨");
+          const finalMsg = acknowledgment 
+            ? `${acknowledgment} Perfect! I have everything I need. Let me generate your custom proposal now... ✨`
+            : "Perfect! I have everything I need. Let me generate your custom proposal now... ✨";
+          addMessage('assistant', finalMsg);
           setStage('generating');
-          await generateProposal(newAnswers);
+          await generateProposal(updatedAnswers);
         }
       } else if (stage === 'role_details') {
         if (!selectedContract) return;
         const currentQ = selectedContract.questions[currentRoleQIdx];
-        const newAnswers = [...roleAnswers, { question: currentQ, answer: text }];
-        setRoleAnswers(newAnswers);
-
+        
         // Auto-extract name if not yet set or to override default
         let extractedName = visitorName;
         if (currentRoleQIdx === 0) {
@@ -804,22 +855,81 @@ export default function TestAgentPage() {
           }
         }
 
-        if (currentRoleQIdx + 1 < selectedContract.questions.length) {
-          setCurrentRoleQIdx(currentRoleQIdx + 1);
+        const remainingQuestions = selectedContract.questions.slice(currentRoleQIdx + 1);
+
+        let acknowledgment = '';
+        let skippedIndices: number[] = [];
+        let extracted: { questionIndex: number; answer: string }[] = [];
+
+        try {
+          const analyzeRes = await fetch('/api/agent/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              userMessage: text,
+              currentQuestion: currentQ,
+              upcomingQuestions: remainingQuestions,
+            }),
+          });
+          if (analyzeRes.ok) {
+            const data = await analyzeRes.json();
+            acknowledgment = data.acknowledgment || '';
+            skippedIndices = data.skippedQuestionIndices || [];
+            extracted = data.extractedAnswers || [];
+          }
+        } catch (e) {
+          console.warn("Analysis failed, proceeding with normal flow:", e);
+        }
+
+        let updatedAnswers = [...roleAnswers, { question: currentQ, answer: text }];
+
+        const prefilledMap: Record<number, string> = {};
+        extracted.forEach((item) => {
+          const absIdx = currentRoleQIdx + 1 + item.questionIndex;
+          if (absIdx < selectedContract.questions.length) {
+            prefilledMap[absIdx] = item.answer;
+          }
+        });
+
+        let nextUnskippedIdx = currentRoleQIdx + 1;
+        while (nextUnskippedIdx < selectedContract.questions.length) {
+          const relativeIdx = nextUnskippedIdx - (currentRoleQIdx + 1);
+          if (skippedIndices.includes(relativeIdx)) {
+            const qText = selectedContract.questions[nextUnskippedIdx];
+            const aText = prefilledMap[nextUnskippedIdx] || "Pre-filled/Details provided in conversation";
+            updatedAnswers.push({ question: qText, answer: aText });
+            nextUnskippedIdx++;
+          } else {
+            break;
+          }
+        }
+
+        setRoleAnswers(updatedAnswers);
+
+        if (nextUnskippedIdx < selectedContract.questions.length) {
+          setCurrentRoleQIdx(nextUnskippedIdx);
           await simulatedDelay(1000);
+
+          const nextQ = selectedContract.questions[nextUnskippedIdx];
           
+          let combinedMsg = '';
           if (currentRoleQIdx === 0) {
             const displayName = extractedName || "there";
-            const greeting = `Nice to meet you, ${displayName}! ` + selectedContract.questions[currentRoleQIdx + 1];
-            addMessage('assistant', greeting);
+            const greeting = `Nice to meet you, ${displayName}!`;
+            combinedMsg = `${greeting} ` + nextQ;
           } else {
-            addMessage('assistant', selectedContract.questions[currentRoleQIdx + 1]);
+            combinedMsg = acknowledgment ? `${acknowledgment} ` + nextQ : nextQ;
           }
+
+          addMessage('assistant', combinedMsg);
         } else {
           await simulatedDelay(1000);
-          addMessage('assistant', "Perfect! Let me generate a tailored candidate brief showing exactly why Ryan is the right fit for this role... ✨");
+          const finalMsg = acknowledgment 
+            ? `${acknowledgment} Perfect! Let me generate a tailored candidate brief showing exactly why Ryan is the right fit for this role... ✨`
+            : "Perfect! Let me generate a tailored candidate brief showing exactly why Ryan is the right fit for this role... ✨";
+          addMessage('assistant', finalMsg);
           setStage('generating_brief');
-          await generateCandidateBrief(newAnswers);
+          await generateCandidateBrief(updatedAnswers);
         }
       }
     } catch (err) {
