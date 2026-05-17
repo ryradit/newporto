@@ -187,14 +187,112 @@ Ensure the output is clean JSON. Do not include markdown wraps or anything else 
 /**
  * 📅 SUB-AGENT C: Interview Scheduler Agent
  * Generates dynamic meeting parameters and convenient booking availability.
+ * Connects directly to Google Calendar API using standard fetch query to parse live free slots.
  */
 export async function schedulerAgent(): Promise<{ bookingLink: string; flexibleSlots: string[] }> {
-  return {
-    bookingLink: "https://drive.google.com/drive/u/1/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing", // CV Folder link or Cal.com fallback
-    flexibleSlots: [
-      "Mondays: 2:00 PM - 5:00 PM WIB (Jakarta Time)",
-      "Wednesdays: 10:00 AM - 1:00 PM WIB (Jakarta Time)",
-      "Thursdays: 3:00 PM - 6:00 PM WIB (Jakarta Time)"
-    ]
-  };
+  const fallbackLink = "https://drive.google.com/drive/u/1/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing";
+  const fallbackSlots = [
+    "Mondays: 2:00 PM - 5:00 PM WIB (Jakarta Time)",
+    "Wednesdays: 10:00 AM - 1:00 PM WIB (Jakarta Time)",
+    "Thursdays: 3:00 PM - 6:00 PM WIB (Jakarta Time)"
+  ];
+
+  const apiKey = process.env.GOOGLE_CALENDAR_API_KEY;
+  const calendarId = process.env.GOOGLE_CALENDAR_ID || "ryradit@gmail.com";
+
+  if (!apiKey) {
+    console.warn("Google Calendar API key not configured, using fallback slots.");
+    return { bookingLink: fallbackLink, flexibleSlots: fallbackSlots };
+  }
+
+  try {
+    const timeMin = new Date().toISOString();
+    const timeMax = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const endpoint = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${apiKey}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`;
+
+    const res = await fetch(endpoint);
+    if (!res.ok) {
+      throw new Error(`Google Calendar API responded with status ${res.status}`);
+    }
+
+    const data = await res.json();
+    const events: any[] = data.items || [];
+
+    // Parse busy ranges
+    const busyRanges = events.map(event => {
+      const start = event.start?.dateTime ? new Date(event.start.dateTime) : (event.start?.date ? new Date(event.start.date + "T00:00:00Z") : null);
+      const end = event.end?.dateTime ? new Date(event.end.dateTime) : (event.end?.date ? new Date(event.end.date + "T23:59:59Z") : null);
+      return { start, end };
+    }).filter(r => r.start !== null && r.end !== null) as { start: Date; end: Date }[];
+
+    // Calculate free slots for the next 7 days (Monday - Friday)
+    const freeSlots: string[] = [];
+    const now = new Date();
+
+    // Standard hourly slots in WIB (Jakarta Time is UTC+7)
+    // Map standard slot hours to their UTC offsets
+    const slotsConfig = [
+      { wibHour: 9, utcHour: 2 },
+      { wibHour: 10, utcHour: 3 },
+      { wibHour: 11, utcHour: 4 },
+      { wibHour: 13, utcHour: 6 }, // 13:00 WIB (1:00 PM) is 06:00 UTC
+      { wibHour: 14, utcHour: 7 },
+      { wibHour: 15, utcHour: 8 },
+      { wibHour: 16, utcHour: 9 }
+    ];
+
+    for (let dayOffset = 1; dayOffset <= 7; dayOffset++) {
+      const targetDate = new Date(Date.now() + dayOffset * 24 * 60 * 60 * 1000);
+      const dayOfWeek = targetDate.getUTCDay();
+
+      // Skip Saturdays (6) and Sundays (0)
+      if (dayOfWeek === 0 || dayOfWeek === 6) continue;
+
+      for (const slot of slotsConfig) {
+        // Construct standard slot start & end in UTC
+        const slotStart = new Date(Date.UTC(
+          targetDate.getUTCFullYear(),
+          targetDate.getUTCMonth(),
+          targetDate.getUTCDate(),
+          slot.utcHour,
+          0,
+          0,
+          0
+        ));
+
+        const slotEnd = new Date(slotStart.getTime() + 60 * 60 * 1000);
+
+        // Ensure slot is in the future
+        if (slotStart.getTime() <= now.getTime()) continue;
+
+        // Check if slot overlaps with any busy range
+        const isOverlapping = busyRanges.some(busy => {
+          return busy.start.getTime() < slotEnd.getTime() && busy.end.getTime() > slotStart.getTime();
+        });
+
+        if (!isOverlapping) {
+          const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'short', day: 'numeric' };
+          const dateStr = slotStart.toLocaleDateString('en-US', options);
+          const hour12 = slot.wibHour > 12 ? slot.wibHour - 12 : slot.wibHour;
+          const ampm = slot.wibHour >= 12 ? 'PM' : 'AM';
+          freeSlots.push(`${dateStr} at ${hour12}:00 ${ampm} WIB (Jakarta Time)`);
+        }
+
+        // Limit to top 5 available slots to keep it clean
+        if (freeSlots.length >= 5) break;
+      }
+      if (freeSlots.length >= 5) break;
+    }
+
+    if (freeSlots.length > 0) {
+      return {
+        bookingLink: `https://calendar.google.com/calendar/u/0/r?cid=${encodeURIComponent(calendarId)}`,
+        flexibleSlots: freeSlots
+      };
+    }
+  } catch (err) {
+    console.error("Failed to query live Google Calendar API:", err);
+  }
+
+  return { bookingLink: fallbackLink, flexibleSlots: fallbackSlots };
 }
