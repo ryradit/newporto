@@ -9,6 +9,7 @@ import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles
 type Stage =
   | 'greeting'
   | 'who_are_you'
+  | 'preferred_language'
   | 'intent'
   | 'budget'
   | 'scope'
@@ -525,6 +526,7 @@ export default function TestAgentPage() {
   const [roleAnswers, setRoleAnswers] = useState<{ question: string; answer: string }[]>([]);
   const [currentRoleQIdx, setCurrentRoleQIdx] = useState(0);
   const [candidateBrief, setCandidateBrief] = useState<CandidateBrief | null>(null);
+  const [preferredLanguage, setPreferredLanguage] = useState('English');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -554,6 +556,7 @@ export default function TestAgentPage() {
         if (data.roleAnswers) setRoleAnswers(data.roleAnswers);
         if (data.currentRoleQIdx !== undefined) setCurrentRoleQIdx(data.currentRoleQIdx);
         if (data.candidateBrief) setCandidateBrief(data.candidateBrief);
+        if (data.preferredLanguage) setPreferredLanguage(data.preferredLanguage);
       } else {
         // No saved session: parse query parameter ?project=...
         const params = new URLSearchParams(window.location.search);
@@ -595,6 +598,7 @@ export default function TestAgentPage() {
           roleAnswers,
           currentRoleQIdx,
           candidateBrief,
+          preferredLanguage,
         };
         sessionStorage.setItem('hiring_agent_session', JSON.stringify(sessionData));
       } catch (err) {
@@ -619,6 +623,7 @@ export default function TestAgentPage() {
     roleAnswers,
     currentRoleQIdx,
     candidateBrief,
+    preferredLanguage,
   ]);
 
   const handleReset = () => {
@@ -655,11 +660,32 @@ export default function TestAgentPage() {
       setRoleAnswers([]);
       setCurrentRoleQIdx(0);
       setCandidateBrief(null);
+      setPreferredLanguage('English');
     }
   };
 
-  const addMessage = (role: 'user' | 'assistant', content: string) => {
-    setMessages((prev) => [...prev, { role, content, isNew: role === 'assistant' }]);
+  const addMessage = async (role: 'user' | 'assistant', content: string) => {
+    if (role === 'user') {
+      setMessages((prev) => [...prev, { role, content }]);
+    } else {
+      let textToShow = content;
+      if (preferredLanguage && preferredLanguage.toLowerCase() !== 'english') {
+        try {
+          const res = await fetch('/api/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: content, targetLanguage: preferredLanguage }),
+          });
+          const data = await res.json();
+          if (data.translation) {
+            textToShow = data.translation;
+          }
+        } catch (err) {
+          console.warn("Auto-translation failed:", err);
+        }
+      }
+      setMessages((prev) => [...prev, { role, content: textToShow, originalContent: content, isNew: true }]);
+    }
   };
 
   const [translatingIdx, setTranslatingIdx] = useState<number | null>(null);
@@ -730,6 +756,9 @@ export default function TestAgentPage() {
         addMessage('assistant', `Thanks! Now, which best describes you?`);
         setStage('who_are_you');
 
+      } else if (stage === 'preferred_language') {
+        await handleLanguageSelection(text);
+
       } else if (stage === 'intent') {
         setProjectDescription(text);
         await simulatedDelay(1200);
@@ -794,14 +823,56 @@ export default function TestAgentPage() {
     setIsLoading(true);
     if (intent === 'client') {
       addMessage('user', "I have a project for Ryan 💼");
-      await simulatedDelay(1000);
-      addMessage('assistant', "Awesome! Tell me a bit about what you're looking to build — what's the project idea or goal?");
+    } else {
+      addMessage('user', "I want to hire Ryan 🤝");
+    }
+    await simulatedDelay(1000);
+    addMessage('assistant', "Awesome! Before we proceed, which language would you be most comfortable communicating in? Feel free to type any language (e.g., 'English', 'Indonesian', 'Japanese'), or select an option below! 🌐");
+    setStage('preferred_language');
+    setIsLoading(false);
+  };
+
+  const handleLanguageSelection = async (lang: string) => {
+    setPreferredLanguage(lang);
+    setIsLoading(true);
+
+    let confirmation = `Perfect! We will proceed in ${lang}.`;
+    let nextMsg = "";
+    if (detectedIntent === 'client') {
+      nextMsg = "Tell me a bit about what you're looking to build — what's the project idea or goal?";
+    } else {
+      nextMsg = "Great! Let's find the right engagement type. What kind of contract are you offering?";
+    }
+
+    if (lang.toLowerCase() !== 'english') {
+      try {
+        const [translatedConf, translatedNext] = await Promise.all([
+          fetch('/api/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: confirmation, targetLanguage: lang }),
+          }).then(r => r.json()),
+          fetch('/api/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: nextMsg, targetLanguage: lang }),
+          }).then(r => r.json()),
+        ]);
+        if (translatedConf.translation) confirmation = translatedConf.translation;
+        if (translatedNext.translation) nextMsg = translatedNext.translation;
+      } catch (err) {
+        console.warn("Failed to translate startup messages:", err);
+      }
+    }
+
+    addMessage('assistant', confirmation);
+    await simulatedDelay(1200);
+    addMessage('assistant', nextMsg);
+
+    if (detectedIntent === 'client') {
       setStage('intent');
       setIsLoading(false);
     } else {
-      addMessage('user', "I want to hire Ryan 🤝");
-      await simulatedDelay(1000);
-      addMessage('assistant', "Great! Let's find the right engagement type. What kind of contract are you offering?");
       try {
         const res = await fetch('/api/agent/recruiter', {
           method: 'POST',
@@ -809,7 +880,34 @@ export default function TestAgentPage() {
           body: JSON.stringify({ action: 'contract_types' }),
         });
         const data = await res.json();
-        setContractOptions(data.contractTypes || []);
+        if (lang.toLowerCase() !== 'english' && data.contractTypes) {
+          const translatedOpts = await Promise.all(
+            data.contractTypes.map(async (opt: any) => {
+              try {
+                const labelRes = await fetch('/api/translate', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ text: opt.label, targetLanguage: lang }),
+                }).then(r => r.json());
+                const subRes = await fetch('/api/translate', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ text: opt.sublabel, targetLanguage: lang }),
+                }).then(r => r.json());
+                return {
+                  ...opt,
+                  label: labelRes.translation || opt.label,
+                  sublabel: subRes.translation || opt.sublabel,
+                };
+              } catch {
+                return opt;
+              }
+            })
+          );
+          setContractOptions(translatedOpts);
+        } else {
+          setContractOptions(data.contractTypes || []);
+        }
         setStage('contract_type');
       } catch {
         addMessage('assistant', 'Let me ask you a few questions about the role.');
@@ -1137,6 +1235,55 @@ export default function TestAgentPage() {
                       <div className="text-base font-bold text-white">I want to hire Ryan</div>
                       <div className="text-xs text-white/50 mt-0.5">Full-time, part-time, freelance contract, or permanent role</div>
                     </div>
+                  </div>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Preferred Language Selection UI */}
+          <AnimatePresence>
+            {stage === 'preferred_language' && !isLoading && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="grid grid-cols-2 md:grid-cols-3 gap-3 my-4"
+              >
+                <button
+                  onClick={() => {
+                    addMessage('user', "English 🇬🇧");
+                    handleLanguageSelection('English');
+                  }}
+                  className="bg-gradient-to-br from-purple-500 to-indigo-500 p-0.5 rounded-xl hover:scale-105 transition-transform"
+                >
+                  <div className="bg-[#0A0A0F] rounded-[11px] p-4 text-center">
+                    <span className="text-2xl block mb-1">🇬🇧</span>
+                    <span className="text-sm font-bold text-white">English</span>
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    addMessage('user', "Bahasa Indonesia 🇮🇩");
+                    handleLanguageSelection('Indonesian');
+                  }}
+                  className="bg-gradient-to-br from-purple-500 to-indigo-500 p-0.5 rounded-xl hover:scale-105 transition-transform"
+                >
+                  <div className="bg-[#0A0A0F] rounded-[11px] p-4 text-center">
+                    <span className="text-2xl block mb-1">🇮🇩</span>
+                    <span className="text-sm font-bold text-white">Bahasa Indonesia</span>
+                  </div>
+                </button>
+                <button
+                  onClick={() => {
+                    addMessage('user', "简体中文 🇨🇳");
+                    handleLanguageSelection('Chinese');
+                  }}
+                  className="bg-gradient-to-br from-purple-500 to-indigo-500 p-0.5 rounded-xl hover:scale-105 transition-transform"
+                >
+                  <div className="bg-[#0A0A0F] rounded-[11px] p-4 text-center">
+                    <span className="text-2xl block mb-1">🇨🇳</span>
+                    <span className="text-sm font-bold text-white">简体中文</span>
                   </div>
                 </button>
               </motion.div>
