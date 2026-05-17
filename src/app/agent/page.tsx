@@ -20,7 +20,7 @@ type Stage =
   | 'brief'
   | 'followup';
 
-type Message = { role: 'user' | 'assistant'; content: string; isNew?: boolean };
+type Message = { role: 'user' | 'assistant'; content: string; originalContent?: string; isNew?: boolean };
 
 type BudgetTier = {
   tier: string;
@@ -662,6 +662,52 @@ export default function TestAgentPage() {
     setMessages((prev) => [...prev, { role, content, isNew: role === 'assistant' }]);
   };
 
+  const [translatingIdx, setTranslatingIdx] = useState<number | null>(null);
+
+  const translateMessage = async (idx: number, langCode: 'en' | 'id' | 'zh') => {
+    const msg = messages[idx];
+    if (!msg || msg.role !== 'assistant') return;
+
+    let targetLanguage = 'English';
+    if (langCode === 'id') targetLanguage = 'Indonesian';
+    if (langCode === 'zh') targetLanguage = 'Chinese (Simplified)';
+
+    if (langCode === 'en' && msg.originalContent) {
+      setMessages((prev) =>
+        prev.map((m, i) => (i === idx ? { ...m, content: m.originalContent! } : m))
+      );
+      return;
+    }
+
+    setTranslatingIdx(idx);
+    try {
+      const textToTranslate = msg.originalContent || msg.content;
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textToTranslate, targetLanguage }),
+      });
+      const data = await res.json();
+      if (data.translation) {
+        setMessages((prev) =>
+          prev.map((m, i) =>
+            i === idx
+              ? {
+                  ...m,
+                  content: data.translation,
+                  originalContent: m.originalContent || textToTranslate,
+                }
+              : m
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to translate message:", err);
+    } finally {
+      setTranslatingIdx(null);
+    }
+  };
+
   const simulatedDelay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleSend = async (overrideInput?: string) => {
@@ -966,7 +1012,7 @@ export default function TestAgentPage() {
                   </div>
                 )}
                 <div
-                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                  className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed relative group/msg ${
                     msg.role === 'user'
                       ? 'bg-purple-600 text-white rounded-tr-sm'
                       : 'bg-white/8 border border-white/10 text-white/90 rounded-tl-sm'
@@ -983,6 +1029,33 @@ export default function TestAgentPage() {
                     />
                   ) : (
                     msg.content
+                  )}
+
+                  {msg.role === 'assistant' && !msg.isNew && (
+                    <div className="flex items-center gap-1 mt-2 pt-1.5 border-t border-white/5 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-300">
+                      <span className="text-[10px] text-white/40">Translate:</span>
+                      <button
+                        onClick={() => translateMessage(i, 'en')}
+                        className="text-[10px] text-white/50 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition-colors"
+                      >
+                        EN
+                      </button>
+                      <button
+                        onClick={() => translateMessage(i, 'id')}
+                        className="text-[10px] text-white/50 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition-colors"
+                      >
+                        ID
+                      </button>
+                      <button
+                        onClick={() => translateMessage(i, 'zh')}
+                        className="text-[10px] text-white/50 hover:text-white px-1.5 py-0.5 rounded bg-white/5 hover:bg-white/10 transition-colors"
+                      >
+                        ZH
+                      </button>
+                      {translatingIdx === i && (
+                        <Loader2 size={10} className="animate-spin text-purple-400 ml-1" />
+                      )}
+                    </div>
                   )}
                 </div>
                 {msg.role === 'user' && (
