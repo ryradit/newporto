@@ -325,25 +325,28 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 animation: "spin 8s linear infinite"
               }}></div>
               
-              {/* Golden Plasma Ring Layer 1 (Outer - clockwise fast) */}
-              <div className="absolute w-[101%] h-[101%] top-[-0.5%] left-[-0.5%] rounded-full" style={{
-                border: "8px dashed rgba(255, 140, 0, 0.95)",
-                animation: "spin 5s linear infinite",
-                filter: "blur(1px) drop-shadow(0 0 8px rgba(255,140,0,0.8))"
+              {/* Golden Plasma Ring Layer 1 (Outer - clockwise fast organic swirl) */}
+              <div className="absolute inset-[-4px] rounded-full" style={{
+                background: "conic-gradient(from 0deg, rgba(255, 140, 0, 0.95), rgba(255, 200, 0, 0.75), rgba(255, 69, 0, 0.95), rgba(255, 140, 0, 0.95))",
+                animation: "spin 5s linear infinite, fireWave 4s ease-in-out infinite alternate",
+                filter: "blur(3px)",
+                opacity: 0.8
               }}></div>
 
-              {/* Golden Plasma Ring Layer 2 (Middle - counter-clockwise super fast) */}
-              <div className="absolute w-full h-full rounded-full" style={{
-                border: "6px dotted rgba(255, 215, 0, 0.95)",
-                animation: "spin-reverse 3s linear infinite",
-                filter: "blur(0.5px) drop-shadow(0 0 10px rgba(255,215,0,0.9))"
+              {/* Golden Plasma Ring Layer 2 (Middle - counter-clockwise super fast organic swirl) */}
+              <div className="absolute inset-[-2px] rounded-full" style={{
+                background: "conic-gradient(from 180deg, rgba(255, 215, 0, 0.95), rgba(255, 100, 0, 0.75), rgba(255, 255, 255, 0.9), rgba(255, 215, 0, 0.95))",
+                animation: "spin-reverse 3s linear infinite, fireWave 5s ease-in-out infinite alternate-reverse",
+                filter: "blur(2px)",
+                opacity: 0.85
               }}></div>
 
-              {/* Golden Plasma Ring Layer 3 (Inner - clockwise medium) */}
-              <div className="absolute w-[99%] h-[99%] top-[0.5%] left-[0.5%] rounded-full" style={{
-                border: "4px dashed rgba(255, 69, 0, 0.85)",
-                animation: "spin 8s linear infinite",
-                filter: "drop-shadow(0 0 6px rgba(255,69,0,0.8))"
+              {/* Golden Plasma Ring Layer 3 (Inner - clockwise medium organic swirl) */}
+              <div className="absolute inset-[0px] rounded-full" style={{
+                background: "conic-gradient(from 90deg, rgba(255, 69, 0, 0.9), rgba(255, 165, 0, 0.75), rgba(255, 140, 0, 0.9), rgba(255, 69, 0, 0.9))",
+                animation: "spin 8s linear infinite, fireWave 3s ease-in-out infinite alternate",
+                filter: "blur(2.5px)",
+                opacity: 0.75
               }}></div>
               
               {/* Running particles animation around circle */}
@@ -446,15 +449,15 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                     <div 
                       style={{
                         position: 'absolute',
-                        top: '-1px',
+                        top: '-10px',
                         left: '50%',
-                        width: '30px',
-                        height: '8px',
-                        background: 'linear-gradient(90deg, transparent, rgba(255,215,0,0.9), transparent)',
-                        filter: 'blur(2px)',
-                        boxShadow: '0 0 10px rgba(255,215,0,0.8)',
+                        width: '20px',
+                        height: '20px',
+                        background: 'radial-gradient(circle, rgba(255,235,120,0.95) 0%, rgba(255,165,0,0.7) 60%, transparent 100%)',
+                        filter: 'blur(1.5px)',
+                        boxShadow: '0 0 14px rgba(255,215,0,0.9)',
                         transform: 'translateX(-50%)',
-                        borderRadius: '4px'
+                        borderRadius: '50%'
                       }}
                     />
                   </div>
@@ -469,21 +472,20 @@ export function PortalSelector({ open, onOpenChange }: PortalSelectorProps) {
                 const posX = 50 + distance * Math.cos(angle * Math.PI/180);
                 const posY = 50 + distance * Math.sin(angle * Math.PI/180);
                 
+                const sparkSize = Math.random() * 4 + 2;
                 return (
                   <div
                     key={i}
-                    className="absolute"
+                    className="absolute rounded-full"
                     style={{
-                      width: `${Math.random() * 8 + 3}px`,
-                      height: `${Math.random() * 10 + 8}px`,
+                      width: `${sparkSize}px`,
+                      height: `${sparkSize}px`,
                       left: `${posX}%`,
                       top: `${posY}%`,
-                      background: `linear-gradient(to ${angle > 180 ? 'bottom' : 'top'}, rgba(255, 140, 0, 0.8), rgba(255, 180, 0, 0.9), rgba(255, 220, 0, 0.4), transparent)`,
-                      borderRadius: '50% 50% 50% 50% / 30% 30% 70% 70%',
-                      transform: `rotate(${angle}deg)`,
-                      filter: 'blur(1px)',
-                      animation: `spark ${Math.random() * 2 + 0.5}s ease-out infinite`,
-                      boxShadow: '0 0 5px rgba(255, 165, 0, 0.4)'
+                      background: i % 2 === 0 ? 'rgba(255, 215, 0, 0.95)' : 'rgba(255, 140, 0, 0.9)',
+                      filter: 'blur(0.5px)',
+                      animation: `spark ${Math.random() * 1.5 + 0.5}s ease-out infinite`,
+                      boxShadow: '0 0 6px rgba(255, 165, 0, 0.8)'
                     }}
                   />
                 );
