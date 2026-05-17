@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles, User } from 'lucide-react';
+import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles, User, RotateCcw } from 'lucide-react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -531,6 +531,111 @@ export default function TestAgentPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isLoading]);
 
+  // Load session from sessionStorage on mount
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem('hiring_agent_session');
+      if (saved) {
+        const data = JSON.parse(saved);
+        if (data.showWelcome !== undefined) setShowWelcome(data.showWelcome);
+        if (data.messages) setMessages(data.messages);
+        if (data.stage) setStage(data.stage);
+        if (data.visitorName) setVisitorName(data.visitorName);
+        if (data.visitorCompany) setVisitorCompany(data.visitorCompany);
+        if (data.detectedIntent) setDetectedIntent(data.detectedIntent);
+        if (data.selectedBudget) setSelectedBudget(data.selectedBudget);
+        if (data.tierData) setTierData(data.tierData);
+        if (data.scopeAnswers) setScopeAnswers(data.scopeAnswers);
+        if (data.currentScopeIdx !== undefined) setCurrentScopeIdx(data.currentScopeIdx);
+        if (data.proposal) setProposal(data.proposal);
+        if (data.projectDescription) setProjectDescription(data.projectDescription);
+        if (data.contractOptions) setContractOptions(data.contractOptions);
+        if (data.selectedContract) setSelectedContract(data.selectedContract);
+        if (data.roleAnswers) setRoleAnswers(data.roleAnswers);
+        if (data.currentRoleQIdx !== undefined) setCurrentRoleQIdx(data.currentRoleQIdx);
+        if (data.candidateBrief) setCandidateBrief(data.candidateBrief);
+      }
+    } catch (err) {
+      console.warn("Failed to load saved agent session:", err);
+    }
+  }, []);
+
+  // Save session to sessionStorage on state changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const sessionData = {
+          showWelcome,
+          messages,
+          stage,
+          visitorName,
+          visitorCompany,
+          detectedIntent,
+          selectedBudget,
+          tierData,
+          scopeAnswers,
+          currentScopeIdx,
+          proposal,
+          projectDescription,
+          contractOptions,
+          selectedContract,
+          roleAnswers,
+          currentRoleQIdx,
+          candidateBrief,
+        };
+        sessionStorage.setItem('hiring_agent_session', JSON.stringify(sessionData));
+      } catch (err) {
+        console.warn("Failed to save agent session:", err);
+      }
+    }
+  }, [
+    showWelcome,
+    messages,
+    stage,
+    visitorName,
+    visitorCompany,
+    detectedIntent,
+    selectedBudget,
+    tierData,
+    scopeAnswers,
+    currentScopeIdx,
+    proposal,
+    projectDescription,
+    contractOptions,
+    selectedContract,
+    roleAnswers,
+    currentRoleQIdx,
+    candidateBrief,
+  ]);
+
+  const handleReset = () => {
+    if (confirm("Are you sure you want to restart the conversation? This will clear your current progress.")) {
+      sessionStorage.removeItem('hiring_agent_session');
+      setShowWelcome(true);
+      setMessages([
+        {
+          role: 'assistant',
+          content: "Hi! 👋 I'm Ryan's AI assistant. Before we get started — quick question: are you here to commission a project, or are you a recruiter looking to hire Ryan?",
+        },
+      ]);
+      setStage('who_are_you');
+      setVisitorName('');
+      setVisitorCompany('');
+      setDetectedIntent('unknown');
+      setSelectedBudget('');
+      setTierData(null);
+      setScopeAnswers([]);
+      setCurrentScopeIdx(0);
+      setProposal(null);
+      setProjectDescription('');
+      setContractOptions([]);
+      setSelectedContract(null);
+      setRoleAnswers([]);
+      setCurrentRoleQIdx(0);
+      setCandidateBrief(null);
+    }
+  };
+
   const addMessage = (role: 'user' | 'assistant', content: string) => {
     setMessages((prev) => [...prev, { role, content, isNew: role === 'assistant' }]);
   };
@@ -799,17 +904,27 @@ export default function TestAgentPage() {
       {/* Right Panel — Chat */}
       <div className="flex-1 flex flex-col min-h-screen relative z-10">
         {/* Header */}
-        <div className="border-b border-white/10 bg-black/20 backdrop-blur-xl px-6 py-4 flex items-center gap-3">
-          <div className="lg:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
-            <Bot size={16} className="text-white" />
-          </div>
-          <div>
-            <h1 className="text-sm font-semibold text-white">Ryan's Proposal Agent</h1>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs text-white/40">Live · Agentic AI Pipeline</span>
+        <div className="border-b border-white/10 bg-black/20 backdrop-blur-xl px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="lg:hidden w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+              <Bot size={16} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold text-white">Ryan's Proposal Agent</h1>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs text-white/40">Live · Agentic AI Pipeline</span>
+              </div>
             </div>
           </div>
+          <button
+            onClick={handleReset}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 hover:border-white/20 text-white/60 hover:text-white/90 text-xs transition-colors"
+            title="Reset Agent Session"
+          >
+            <RotateCcw size={12} />
+            <span>Reset Agent</span>
+          </button>
         </div>
 
         {/* Messages */}
