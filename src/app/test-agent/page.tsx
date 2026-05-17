@@ -216,12 +216,13 @@ function CandidateBriefCard({
   // Dynamically construct mailto URL based on the real-time form inputs
   const recruiterSubject = `Interview Request: Ryan Radityatama for ${brief.briefTitle || 'Contract Opportunity'}`;
   
-  let recruiterEmailBody = `Hi Ryan,\n\n`;
-  recruiterEmailBody += `I'm reaching out regarding the opportunity for the role: ${brief.briefTitle}.\n\n`;
-  recruiterEmailBody += `I reviewed your AI candidate brief on your portfolio, and your experience looks like an excellent fit for our team.\n\n`;
+  let recruiterEmailBody = `Dear Ryan,\n\n`;
+  recruiterEmailBody += `I hope this email finds you well.\n\n`;
+  recruiterEmailBody += `I recently visited your portfolio website and engaged with your AI conductor agent. I am highly impressed by your credentials, technical expertise, and senior-level portfolio, which align perfectly with the caliber of professionals we look for.\n\n`;
+  recruiterEmailBody += `On behalf of ${recruiterCompany && recruiterCompany.trim() ? recruiterCompany : 'our team'}, I would love to invite you for an initial conversation to discuss opportunities. We've reviewed your compensation requirements and expectations (${brief.compensationNote || 'Meets expectations'}) and believe there is a great mutual alignment.\n\n`;
   
   if (proposedDate && proposedTime) {
-    recruiterEmailBody += `We would love to schedule a discussion. Here is our proposed interview slot:\n`;
+    recruiterEmailBody += `We would love to propose the following time slot for our discussion:\n`;
     recruiterEmailBody += `• Date: ${proposedDate}\n`;
     recruiterEmailBody += `• Time: ${proposedTime} WIB (Jakarta Time)\n`;
     if (proposeNote) {
@@ -229,18 +230,18 @@ function CandidateBriefCard({
     }
     recruiterEmailBody += `\n`;
   } else {
-    recruiterEmailBody += `We would love to schedule a discussion. Please let us know if any of your standard availability slots work for you.\n\n`;
+    recruiterEmailBody += `We would love to schedule an initial conversation at your earliest convenience. Please let us know what times work best for you.\n\n`;
   }
 
-  recruiterEmailBody += `Here are the position details we entered:\n`;
-  recruiterEmailBody += `- Company: ${recruiterCompany || 'Not specified'}\n`;
-  recruiterEmailBody += `- Recruiter Name: ${recruiterName || 'Hiring Manager'}\n`;
-  recruiterEmailBody += `- Your Compensation Note: ${brief.compensationNote || 'Not specified'}\n\n`;
-  
-  recruiterEmailBody += `Looking forward to hearing from you!\n\n`;
-  recruiterEmailBody += `Best regards,\n`;
-  recruiterEmailBody += `${recruiterName || 'Hiring Manager'}\n`;
-  recruiterEmailBody += `${recruiterCompany || ''}\n`;
+  recruiterEmailBody += `Should this slot work for you, please let me know and I will forward a calendar invitation with a Google Meet link. If you need to suggest an alternative time, please feel free to propose it in your reply.\n\n`;
+  recruiterEmailBody += `Thank you for your time, and I look forward to connecting with you.\n\n`;
+  recruiterEmailBody += `Best regards,\n\n`;
+  recruiterEmailBody += `${recruiterName || 'Talent Acquisition'}\n`;
+  if (recruiterCompany && recruiterCompany.trim()) {
+    recruiterEmailBody += `Talent Acquisition at ${recruiterCompany}\n`;
+  } else {
+    recruiterEmailBody += `Talent Acquisition Specialist\n`;
+  }
 
   const mailtoUrl = `mailto:ryradit@gmail.com?subject=${encodeURIComponent(recruiterSubject)}&body=${encodeURIComponent(recruiterEmailBody)}`;
 
