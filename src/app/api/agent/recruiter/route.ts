@@ -128,7 +128,7 @@ Ryan's Compensation Expectations:
 ${compensationInstruction}
 
 Recruiter Details:
-- Name: ${recruiterName || 'Recruiter'}
+- Name: ${recruiterName && recruiterName.trim() ? recruiterName : 'Hiring Manager'}
 - Company: ${recruiterCompany || 'Not specified'}
 - Contract Type: ${contractLabel}
 - Company Origin: ${isIndonesian ? 'Indonesia (show IDR only)' : 'International (show USD only)'}
@@ -156,7 +156,7 @@ Generate a JSON object with these fields:
   "availability": "Ryan's general availability note",
   "nextSteps": ["Step 1", "Step 2", "Step 3"],
   "closingMessage": "Professional closing note from Ryan to the recruiter",
-  "emailDraft": "Full professional email from Ryan to the recruiter expressing interest, summarizing his fit, stating minimum compensation expectations in the correct currency only, and mentioning visa sponsorship if applicable"
+  "emailDraft": "Full professional email from Ryan to the recruiter. If the recruiter's name is not specified (it is 'Hiring Manager'), address the email to 'Hiring Manager' (NEVER use bracketed placeholders like '[Recruiter Name]' or '[Name]'). Summarize your fit, state minimum compensation expectations in the correct currency only, and mention visa sponsorship if applicable."
 }
 
 Be specific, reference actual experience from Ryan's profile. Show concrete skill matches. Be persuasive but honest. ONLY use the currency specified — never mix IDR and USD.`;
