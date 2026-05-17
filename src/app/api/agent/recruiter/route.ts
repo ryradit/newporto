@@ -164,7 +164,7 @@ Generate a JSON object with these fields:
   "emailDraft": "Full professional email from Ryan to the recruiter. If the recruiter's name is not specified (it is 'Hiring Manager'), address the email to 'Hiring Manager' (NEVER use bracketed placeholders like '[Recruiter Name]' or '[Name]'). Summarize your fit, state minimum compensation expectations in the correct currency only, and mention visa sponsorship if applicable."
 }
 
-Be specific, reference actual experience from Ryan's profile. Show concrete skill matches. Be persuasive but honest. ONLY use the currency specified — never mix IDR and USD.`;
+Be specific, reference actual experience from Ryan's profile. Show concrete skill matches. Be persuasive but honest. STRICTLY ONLY use the currency specified — never mix IDR and USD. If the recruiter is Indonesian or answered with Rupiahs (IDR), under no circumstances should you mention USD or use USD rates (like $40/hour or $80K) anywhere in the compensationNote or emailDraft. For Indonesian part-time roles, only use Rp 100,000/hour as the standard minimum threshold.`;
 
 
       const MODELS = ["gemini-2.5-flash-lite", "gemini-2.5-flash", "gemini-3.1-flash-lite", "gemini-3-flash"];
