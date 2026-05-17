@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RYAN_PROFILE_DATA } from '@/lib/profile-data';
+import { supabase } from '@/lib/supabase';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
@@ -17,6 +18,7 @@ export async function POST(req: NextRequest) {
       timeline,
       projectDescription,
       scopeAnswers,
+      language,
     } = body;
 
     const scopeText = (scopeAnswers || [])
@@ -93,6 +95,23 @@ Be specific, reference actual skills and projects from Ryan's profile. Make it f
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const proposal = JSON.parse(jsonMatch[0]);
+
+      // Save proposal response to Supabase leads table gracefully
+      try {
+        await supabase.from('agent_leads').insert({
+          visitor_name: visitorName || 'Valued Client',
+          visitor_company: visitorCompany || 'Not specified',
+          intent: 'client',
+          selected_budget: priceRange || 'Not specified',
+          project_description: projectDescription || 'No description provided',
+          scope_answers: scopeAnswers || [],
+          proposal_data: proposal,
+          language: language || 'English',
+        });
+      } catch (err) {
+        console.warn("Could not save client lead to agent_leads Supabase table (please ensure agent_leads table exists in Supabase):", err);
+      }
+
       return NextResponse.json({ proposal });
     }
 

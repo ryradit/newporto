@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RYAN_PROFILE_DATA } from '@/lib/profile-data';
+import { supabase } from '@/lib/supabase';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
@@ -96,6 +97,7 @@ export async function POST(req: NextRequest) {
         contractType,
         contractLabel,
         roleAnswers,
+        language,
       } = body;
 
       const answersText = (roleAnswers || [])
@@ -194,9 +196,24 @@ Be specific, reference actual experience from Ryan's profile. Show concrete skil
       }
 
       const jsonMatch = text.match(/\{[\s\S]*\}/);
-
       if (jsonMatch) {
         const brief = JSON.parse(jsonMatch[0]);
+
+        // Save recruiter brief to Supabase agent_leads table gracefully
+        try {
+          await supabase.from('agent_leads').insert({
+            visitor_name: recruiterName || 'Recruiter / Hiring Manager',
+            visitor_company: recruiterCompany || 'Not specified',
+            intent: 'recruiter',
+            contract_type: contractLabel || 'Not specified',
+            role_answers: roleAnswers || [],
+            candidate_brief_data: brief,
+            language: language || 'English',
+          });
+        } catch (err) {
+          console.warn("Could not save recruiter lead to agent_leads Supabase table (please ensure agent_leads table exists in Supabase):", err);
+        }
+
         return NextResponse.json({ brief });
       }
 

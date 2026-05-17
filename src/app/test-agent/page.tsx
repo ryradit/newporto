@@ -1087,6 +1087,7 @@ export default function TestAgentPage() {
           contractType: selectedContract?.type,
           contractLabel: selectedContract?.label,
           roleAnswers: answers,
+          language: preferredLanguage,
         }),
       });
       const data = await res.json();
