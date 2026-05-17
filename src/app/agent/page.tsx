@@ -379,9 +379,84 @@ function ProposalCard({ proposal }: { proposal: Proposal }) {
   );
 }
 
+function WelcomeModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md"
+      >
+        <motion.div
+          initial={{ scale: 0.95, y: 20, opacity: 0 }}
+          animate={{ scale: 1, y: 0, opacity: 1 }}
+          exit={{ scale: 0.95, y: 20, opacity: 0 }}
+          transition={{ type: "spring", duration: 0.5 }}
+          className="relative max-w-2xl w-full bg-[#0D0D15]/95 border border-white/10 rounded-[2.5rem] p-6 md:p-10 shadow-2xl overflow-hidden"
+        >
+          {/* Neon background glows */}
+          <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-600/30 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col items-center text-center">
+            {/* Sparkling Icon */}
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/20 mb-6 animate-pulse">
+              <Bot size={32} className="text-white" />
+            </div>
+
+            <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent font-headline">
+              Ryan's Proposal & Hiring AI Agent
+            </h2>
+            <p className="text-sm md:text-base text-zinc-400 mt-3 max-w-lg leading-relaxed">
+              Welcome! This state-of-the-art AI assistant is a specialized digital twin designed to instantly qualify, match, and automate your hiring and project collaboration needs.
+            </p>
+
+            {/* Split Roles Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-8 text-left">
+              {/* Client card */}
+              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 hover:border-purple-500/30 hover:bg-white/[0.04] transition-all duration-300">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">💼</span>
+                  <h4 className="font-bold text-white text-sm uppercase tracking-wider">For Clients</h4>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Have a web app, website, or development idea? The agent will qualify your project, recommend the best budget tier, scope deliverables, and generate a **custom timeline proposal** instantly.
+                </p>
+              </div>
+
+              {/* Recruiter card */}
+              <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 hover:border-indigo-500/30 hover:bg-white/[0.04] transition-all duration-300">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-lg">🤝</span>
+                  <h4 className="font-bold text-white text-sm uppercase tracking-wider">For Recruiters</h4>
+                </div>
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Looking to hire Ryan for a contract or full-time role? The agent matches your details, validates relocation sponsorship, evaluates salary ranges against thresholds, and drafts a **ready-to-send follow-up email**.
+                </p>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <button
+              onClick={onClose}
+              className="mt-8 px-8 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2 group"
+            >
+              Get Started ⚡
+              <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function TestAgentPage() {
+  const [showWelcome, setShowWelcome] = useState(true);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -650,6 +725,7 @@ export default function TestAgentPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0A0F] text-white flex">
+      <WelcomeModal isOpen={showWelcome} onClose={() => setShowWelcome(false)} />
       {/* Ambient gradient */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl" />
