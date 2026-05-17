@@ -160,8 +160,59 @@ function StageTracker({ current, intent }: { current: Stage; intent: 'client' | 
   );
 }
 
-function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
+function CandidateBriefCard({
+  brief,
+  recruiterName,
+  recruiterCompany,
+}: {
+  brief: CandidateBrief;
+  recruiterName?: string;
+  recruiterCompany?: string;
+}) {
   const [showEmail, setShowEmail] = useState(false);
+  const [showProposeForm, setShowProposeForm] = useState(false);
+  const [proposedDate, setProposedDate] = useState('');
+  const [proposedTime, setProposedTime] = useState('');
+  const [proposeNote, setProposeNote] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const handleProposeSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!proposedDate || !proposedTime) {
+      setSubmitError('Please select both a date and a time.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      const res = await fetch('/api/agent/schedule-proposal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          recruiterName,
+          recruiterCompany,
+          proposedDate,
+          proposedTime,
+          notes: proposeNote,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to submit proposed meeting time.');
+      }
+
+      setSubmitSuccess(true);
+    } catch (err: any) {
+      setSubmitError(err.message || 'Something went wrong.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="space-y-5">
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-6">
@@ -202,7 +253,7 @@ function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4">
           <div className="text-xs text-emerald-400 font-semibold uppercase tracking-wide mb-1">Availability</div>
-          <div className="text-white text-sm font-medium">{brief.availability}</div>
+          <div className="text-white text-sm font-medium whitespace-pre-line">{brief.availability}</div>
         </div>
         <div className={`rounded-xl p-4 border transition-colors ${
           brief.compensationNote?.includes('Below Preferred Minimum') || brief.compensationNote?.includes('⚠️')
@@ -217,6 +268,100 @@ function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
           <div className="text-white text-sm font-medium">{brief.compensationNote}</div>
         </div>
       </div>
+
+      {/* Propose a custom slot block */}
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-emerald-400 uppercase tracking-wide">Propose Custom Time</h3>
+            <p className="text-xs text-white/50 mt-0.5 font-medium">Suggest an interview slot that works best for you</p>
+          </div>
+          {!submitSuccess && (
+            <button
+              onClick={() => setShowProposeForm(!showProposeForm)}
+              className="px-3.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 hover:border-emerald-500/50 rounded-lg text-emerald-400 text-xs font-semibold transition-all"
+            >
+              {showProposeForm ? 'Close' : 'Propose Slot'}
+            </button>
+          )}
+        </div>
+
+        <AnimatePresence>
+          {showProposeForm && !submitSuccess && (
+            <motion.form
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              onSubmit={handleProposeSubmit}
+              className="space-y-3 pt-3 border-t border-white/10"
+            >
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-white/60 mb-1 font-medium">Select Date</label>
+                  <input
+                    type="date"
+                    required
+                    value={proposedDate}
+                    onChange={(e) => setProposedDate(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-white/60 mb-1 font-medium">Select Time (WIB)</label>
+                  <input
+                    type="time"
+                    required
+                    value={proposedTime}
+                    onChange={(e) => setProposedTime(e.target.value)}
+                    className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-white/60 mb-1 font-medium">Add a message or notes (Optional)</label>
+                <textarea
+                  placeholder="e.g. Proposing Google Meet link..."
+                  value={proposeNote}
+                  onChange={(e) => setProposeNote(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 transition-colors h-16 resize-none"
+                />
+              </div>
+              {submitError && <p className="text-red-400 text-xs font-semibold">{submitError}</p>}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full flex items-center justify-center gap-2 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-black font-bold rounded-lg text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" />
+                    Sending slot...
+                  </>
+                ) : (
+                  'Submit Proposed Interview Time'
+                )}
+              </button>
+            </motion.form>
+          )}
+        </AnimatePresence>
+
+        {submitSuccess && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-4 flex items-start gap-3"
+          >
+            <CheckCircle className="text-emerald-400 shrink-0 mt-0.5" size={18} />
+            <div>
+              <div className="text-sm font-semibold text-white">Proposed interview slot sent!</div>
+              <p className="text-xs text-white/70 mt-0.5 leading-relaxed">
+                Ryan has been automatically notified of your proposed slot (**{proposedDate} at {proposedTime} WIB**) and will confirm with you via email shortly!
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
       {brief.visaSponsorshipNote && (
         <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
           <div className="text-xs text-amber-400 font-semibold uppercase tracking-wide mb-1">🚫 Visa Sponsorship</div>
@@ -1626,7 +1771,7 @@ export default function TestAgentPage() {
           {/* Candidate Brief Display — Recruiter */}
           {candidateBrief && stage === 'brief' && (
             <div className="mt-6">
-              <CandidateBriefCard brief={candidateBrief} />
+              <CandidateBriefCard brief={candidateBrief} recruiterName={visitorName} recruiterCompany={visitorCompany} />
               <div className="mt-6 flex flex-col gap-3">
                 <a
                   href="mailto:ryradit@gmail.com?subject=Contract Opportunity"

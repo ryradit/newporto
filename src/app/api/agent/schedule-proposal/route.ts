@@ -1,0 +1,92 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { recruiterName, recruiterCompany, proposedDate, proposedTime, notes } = body;
+
+    if (!proposedDate || !proposedTime) {
+      return NextResponse.json({ error: 'Date and Time are required' }, { status: 400 });
+    }
+
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.warn("RESEND_API_KEY is not defined in environment variables. Propose email alert skipped.");
+      return NextResponse.json({ success: true, warning: 'Email configuration missing' });
+    }
+
+    const name = recruiterName || 'Recruiter / Hiring Manager';
+    const company = recruiterCompany || 'Not specified';
+    const subject = `📅 [AI Agent] Interview Proposed by ${name} (${company})`;
+
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #eee; padding: 20px; border-radius: 8px;">
+        <h2 style="color: #10b981; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; margin-top: 0;">
+          📅 New Proposed Interview Slot
+        </h2>
+        
+        <p style="font-size: 16px;">Hey Ryan,</p>
+        <p style="font-size: 16px;">A recruiter has just proposed a custom meeting slot directly from your Candidate Brief card!</p>
+        
+        <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; margin: 20px 0;">
+          <h3 style="margin-top: 0; color: #065f46; font-size: 18px;">Proposed Time</h3>
+          <p style="font-size: 20px; font-weight: bold; margin: 5px 0; color: #047857;">
+            ${proposedDate} at ${proposedTime} WIB
+          </p>
+          <p style="font-size: 14px; color: #065f46; margin: 5px 0 0 0;">
+            (Jakarta / Western Indonesian Time)
+          </p>
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+          <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold; width: 120px;">Name</td>
+            <td style="padding: 10px; border-bottom: 1px solid #eee;">${name}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Company</td>
+            <td style="padding: 10px; border-bottom: 1px solid #eee;">${company}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">Notes</td>
+            <td style="padding: 10px; border-bottom: 1px solid #eee; italic">${notes || 'None provided'}</td>
+          </tr>
+        </table>
+
+        <div style="margin-top: 30px; text-align: center;">
+          <a href="mailto:${encodeURIComponent('ryradit@gmail.com')}" style="background-color: #10b981; color: white; padding: 12px 24px; text-decoration: none; font-weight: bold; border-radius: 6px; display: inline-block;">
+            Confirm / Reply to Recruiter
+          </a>
+        </div>
+
+        <p style="font-size: 12px; color: #9ca3af; margin-top: 40px; border-top: 1px solid #f3f4f6; padding-top: 15px; text-align: center;">
+          Sent automatically by your portfolio AI Conductor Agent.
+        </p>
+      </div>
+    `;
+
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${resendApiKey}`,
+      },
+      body: JSON.stringify({
+        from: 'AI Agent <onboarding@resend.dev>',
+        to: 'ryradit@gmail.com',
+        subject: subject,
+        html: htmlContent,
+      }),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(`Resend API returned ${res.status}: ${errorText}`);
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error('Schedule proposal error:', error);
+    return NextResponse.json({ error: error.message || 'Server error' }, { status: 500 });
+  }
+}
