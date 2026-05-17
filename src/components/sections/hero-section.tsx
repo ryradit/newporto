@@ -160,9 +160,18 @@ export function HeroSection() {
   ];
 
   const [activeCategory, setActiveCategory] = useState<'all' | 'ai' | 'frontend' | 'backend'>('all');
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const filteredTech = activeCategory === 'all' 
     ? techStack 
     : techStack.filter(t => t.category === activeCategory);
+
+  const displayedTech = isExpanded ? filteredTech : filteredTech.slice(0, 12);
+
+  const handleCategoryChange = (cat: 'all' | 'ai' | 'frontend' | 'backend') => {
+    setActiveCategory(cat);
+    setIsExpanded(false);
+  };
 
   return (
     <AnimatedSection id="hero" className="flex flex-col relative overflow-hidden">
@@ -214,7 +223,7 @@ export function HeroSection() {
                 return (
                   <button
                     key={cat}
-                    onClick={() => setActiveCategory(cat)}
+                    onClick={() => handleCategoryChange(cat)}
                     className={cn(
                       "relative flex-1 inline-flex items-center justify-center rounded-xl py-2 px-3 text-xs font-bold tracking-wide uppercase transition-colors duration-300 focus:outline-none z-10 whitespace-nowrap",
                       isActive ? "text-purple-400 font-extrabold" : "text-white/60 hover:text-white"
@@ -236,10 +245,10 @@ export function HeroSection() {
             {/* Tech Stack Grid */}
             <motion.div 
               layout
-              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 mb-12 md:mb-16 max-w-5xl mx-auto"
+              className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4 mb-8 max-w-5xl mx-auto"
             >
               <AnimatePresence mode="popLayout">
-                {filteredTech.map((tech) => (
+                {displayedTech.map((tech) => (
                   <motion.div 
                     layout
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -280,6 +289,29 @@ export function HeroSection() {
                 ))}
               </AnimatePresence>
             </motion.div>
+
+            {/* Show More / Show Less Toggle Button */}
+            {filteredTech.length > 12 && (
+              <div className="flex justify-center mb-12">
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold uppercase tracking-wider text-purple-400 transition-all duration-300 shadow-md hover:scale-105 active:scale-95"
+                >
+                  <span>{isExpanded ? 'Show Less' : 'Show More'}</span>
+                  <motion.svg
+                    animate={{ rotate: isExpanded ? 180 : 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    className="w-4 h-4 text-purple-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                  </motion.svg>
+                </button>
+              </div>
+            )}
+
             {/* Feature Cards Section */}
             <div className="relative max-w-5xl mx-auto w-full mt-8">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/20 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
