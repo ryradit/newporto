@@ -148,7 +148,10 @@ Generate a JSON object with these fields:
     {"role": "Ryan's past role", "company": "Company", "relevance": "Why this is relevant to this position"},
     ...
   ],
-  "compensationNote": "${isIndonesian ? 'State minimum in IDR only (Rp 15,000,000/month minimum). No USD.' : 'State minimum in USD only ($80K/year or $40/hour). No IDR.'}",
+  "compensationNote": "${isIndonesian 
+    ? 'State minimum in IDR only (Rp 15,000,000/month minimum). No USD. Analyze the recruiter Q&A answers for their offered rate: if it is BELOW Rp 15,000,000, start the note with ⚠️ Below Preferred Minimum, and offer a creative, constructive suggestion or compromise (e.g. switching to freelance contract, hourly basis, or scoped-down hours). If it meets the minimum, start with ✅ Meets expectations.' 
+    : 'State minimum in USD only ($80K/year or $40/hour minimum). No IDR. Analyze the recruiter Q&A answers for their offered rate: if it is BELOW $80,000/year or $40/hour, start the note with ⚠️ Below Preferred Minimum, and offer a creative, constructive suggestion or compromise (e.g. converting to freelance, part-time, or scoped-down hours). If it meets the minimum, start with ✅ Meets expectations.'
+  }",
   "visaSponsorshipNote": "If the role is on-site outside Indonesia: clearly state whether visa sponsorship is provided or not based on the recruiter's answer. If remote or on-site in Indonesia: state 'Not applicable — role is remote/in Indonesia.' If no info given: state 'Please confirm visa sponsorship availability for on-site relocation.'",
   "availability": "Ryan's general availability note",
   "nextSteps": ["Step 1", "Step 2", "Step 3"],

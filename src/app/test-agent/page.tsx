@@ -20,7 +20,7 @@ type Stage =
   | 'brief'
   | 'followup';
 
-type Message = { role: 'user' | 'assistant'; content: string };
+type Message = { role: 'user' | 'assistant'; content: string; isNew?: boolean };
 
 type BudgetTier = {
   tier: string;
@@ -74,7 +74,29 @@ const BUDGET_OPTIONS = [
   { label: '🚀 Enterprise', sublabel: '$3,000+', value: 'over 3000', color: 'from-orange-500 to-red-500' },
 ];
 
-// ─── Sub-Components ───────────────────────────────────────────────────────────
+function TypewriterText({ text, onComplete }: { text: string; onComplete?: () => void }) {
+  const [displayedText, setDisplayedText] = useState('');
+  
+  useEffect(() => {
+    let index = 0;
+    const words = text.split(' ');
+    setDisplayedText('');
+    
+    const interval = setInterval(() => {
+      if (index < words.length) {
+        setDisplayedText((prev) => prev + (prev ? ' ' : '') + words[index]);
+        index++;
+      } else {
+        clearInterval(interval);
+        onComplete?.();
+      }
+    }, 45); // Natural human-like typing speed
+    
+    return () => clearInterval(interval);
+  }, [text, onComplete]);
+
+  return <span>{displayedText}</span>;
+}
 
 function TypingIndicator() {
   return (
@@ -181,8 +203,16 @@ function CandidateBriefCard({ brief }: { brief: CandidateBrief }) {
           <div className="text-xs text-emerald-400 font-semibold uppercase tracking-wide mb-1">Availability</div>
           <div className="text-white text-sm font-medium">{brief.availability}</div>
         </div>
-        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-          <div className="text-xs text-blue-400 font-semibold uppercase tracking-wide mb-1">Compensation</div>
+        <div className={`rounded-xl p-4 border transition-colors ${
+          brief.compensationNote?.includes('Below Preferred Minimum') || brief.compensationNote?.includes('⚠️')
+            ? 'bg-amber-500/10 border-amber-500/30'
+            : 'bg-blue-500/10 border-blue-500/30'
+        }`}>
+          <div className={`text-xs font-semibold uppercase tracking-wide mb-1 ${
+            brief.compensationNote?.includes('Below Preferred Minimum') || brief.compensationNote?.includes('⚠️')
+              ? 'text-amber-400 font-bold'
+              : 'text-blue-400'
+          }`}>Compensation</div>
           <div className="text-white text-sm font-medium">{brief.compensationNote}</div>
         </div>
       </div>
@@ -383,8 +413,10 @@ export default function TestAgentPage() {
   }, [messages, isLoading]);
 
   const addMessage = (role: 'user' | 'assistant', content: string) => {
-    setMessages((prev) => [...prev, { role, content }]);
+    setMessages((prev) => [...prev, { role, content, isNew: role === 'assistant' }]);
   };
+
+  const simulatedDelay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleSend = async (overrideInput?: string) => {
     const text = (overrideInput ?? input).trim();
@@ -402,11 +434,13 @@ export default function TestAgentPage() {
           const compMatch = text.match(/from\s+([\w\s]+?)(?:\.|,|$)/i);
           if (compMatch) setVisitorCompany(compMatch[1].trim());
         }
+        await simulatedDelay(1000);
         addMessage('assistant', `Thanks! Now, which best describes you?`);
         setStage('who_are_you');
 
       } else if (stage === 'intent') {
         setProjectDescription(text);
+        await simulatedDelay(1200);
         addMessage('assistant', "Great! Now let's talk budget. Which tier best fits your project? You can also just type your budget.");
         setStage('budget');
 
@@ -422,9 +456,11 @@ export default function TestAgentPage() {
 
         if (currentScopeIdx + 1 < tierData.scopeQuestions.length) {
           setCurrentScopeIdx(currentScopeIdx + 1);
+          await simulatedDelay(1000);
           addMessage('assistant', tierData.scopeQuestions[currentScopeIdx + 1]);
         } else {
           // All questions answered — generate proposal
+          await simulatedDelay(1000);
           addMessage('assistant', "Perfect! I have everything I need. Let me generate your custom proposal now... ✨");
           setStage('generating');
           await generateProposal(newAnswers);
@@ -437,8 +473,10 @@ export default function TestAgentPage() {
 
         if (currentRoleQIdx + 1 < selectedContract.questions.length) {
           setCurrentRoleQIdx(currentRoleQIdx + 1);
+          await simulatedDelay(1000);
           addMessage('assistant', selectedContract.questions[currentRoleQIdx + 1]);
         } else {
+          await simulatedDelay(1000);
           addMessage('assistant', "Perfect! Let me generate a tailored candidate brief showing exactly why Ryan is the right fit for this role... ✨");
           setStage('generating_brief');
           await generateCandidateBrief(newAnswers);
@@ -456,11 +494,13 @@ export default function TestAgentPage() {
     setIsLoading(true);
     if (intent === 'client') {
       addMessage('user', "I have a project for Ryan 💼");
+      await simulatedDelay(1000);
       addMessage('assistant', "Awesome! Tell me a bit about what you're looking to build — what's the project idea or goal?");
       setStage('intent');
       setIsLoading(false);
     } else {
       addMessage('user', "I want to hire Ryan 🤝");
+      await simulatedDelay(1000);
       addMessage('assistant', "Great! Let's find the right engagement type. What kind of contract are you offering?");
       try {
         const res = await fetch('/api/agent/recruiter', {
@@ -672,7 +712,18 @@ export default function TestAgentPage() {
                       : 'bg-white/8 border border-white/10 text-white/90 rounded-tl-sm'
                   }`}
                 >
-                  {msg.content}
+                  {msg.role === 'assistant' && msg.isNew ? (
+                    <TypewriterText
+                      text={msg.content}
+                      onComplete={() => {
+                        setMessages((prev) =>
+                          prev.map((m, idx) => (idx === i ? { ...m, isNew: false } : m))
+                        );
+                      }}
+                    />
+                  ) : (
+                    msg.content
+                  )}
                 </div>
                 {msg.role === 'user' && (
                   <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0 mt-0.5">
