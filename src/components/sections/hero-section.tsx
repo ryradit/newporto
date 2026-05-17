@@ -250,9 +250,6 @@ export function HeroSection() {
                       <span className="text-xs font-bold tracking-wide text-white/90 group-hover:text-white transition-colors text-center truncate w-full max-w-[120px]">
                         {tech.name}
                       </span>
-                      <span className="text-[9px] font-semibold text-purple-400/70 tracking-widest uppercase mt-1">
-                        {tech.level}
-                      </span>
                     </div>
                   </motion.div>
                 ))}
