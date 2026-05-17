@@ -1,5 +1,5 @@
 "use client";
- 
+
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/language-context";
 import { translate } from "@/translations";
 import { PortalSelector } from "@/components/ui/portal-selector";
- 
+
 interface NavigationItem {
   name: string;
   href: string;
@@ -83,7 +83,7 @@ const getNavigationItems = (pathname: string, lang: 'en' | 'id' | 'zh'): Navigat
       </svg>
     ),
   },
- 
+
   {
     name: translate('menu.contact', lang),
     href: '/contact',
@@ -114,7 +114,7 @@ export function MobileNav() {
   const [activeSection, setActiveSection] = useState('#hero');
   const { language } = useLanguage();
   const [navigationItems, setNavigationItems] = useState<NavigationItem[]>(() => []);
-  
+
   useEffect(() => {
     setNavigationItems(getNavigationItems(pathname || '/', language));
   }, [pathname, language]);
@@ -155,8 +155,8 @@ export function MobileNav() {
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent 
-          side="left" 
+        <SheetContent
+          side="left"
           className="w-full max-w-[300px] p-0 bg-background/95 backdrop-blur-md border-r border-r-border"
         >
           <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
@@ -219,7 +219,7 @@ export function MobileNav() {
                     }}
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all mb-1",
-                      isActive 
+                      isActive
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
                     )}
@@ -230,15 +230,15 @@ export function MobileNav() {
                 );
               })}
             </nav>
- 
+
             {/* Bottom Action Section */}
-            <div className="mt-auto p-4 border-t border-border bg-accent/20 flex flex-col gap-4">
+            <div className="mt-auto p-4 border-t border-border bg-accent/20 flex items-center justify-center">
               <button
                 onClick={() => {
                   setIsOpen(false);
                   setIsPortalOpen(true);
                 }}
-                className="w-full flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold border border-orange-500/30 hover:border-orange-500 bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 hover:text-orange-300 shadow-[0_4px_20px_rgba(234,88,12,0.1)] transition-all duration-300 active:scale-98 group"
+                className="flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold border border-orange-500/20 bg-orange-500/5 hover:bg-orange-500/10 text-orange-400/90 hover:text-orange-450 transition-all duration-300 active:scale-95 group shadow-sm"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -248,7 +248,7 @@ export function MobileNav() {
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="w-4.5 h-4.5 text-orange-500 animate-spin-slow group-hover:scale-110 transition-transform duration-300"
+                  className="w-3.5 h-3.5 text-orange-500 animate-spin-slow group-hover:scale-110 transition-transform duration-300"
                 >
                   <path d="M12 2v2" />
                   <path d="M12 20v2" />
@@ -261,16 +261,16 @@ export function MobileNav() {
                   <circle cx="12" cy="12" r="4" fill="rgba(255,140,0,0.15)" stroke="currentColor" />
                 </svg>
                 <span className="tracking-wide">
-                  {language === 'id' ? 'Pilih Dimensi 🌀' : language === 'zh' ? '选择维度 🌀' : 'Choose Dimension 🌀'}
+                  {language === 'id' ? 'Dimensi 🌀' : language === 'zh' ? '维度 🌀' : 'Dimensions 🌀'}
                 </span>
               </button>
             </div>
           </div>
         </SheetContent>
       </Sheet>
-      <PortalSelector 
-        open={isPortalOpen} 
-        onOpenChange={setIsPortalOpen} 
+      <PortalSelector
+        open={isPortalOpen}
+        onOpenChange={setIsPortalOpen}
       />
     </>
   );
