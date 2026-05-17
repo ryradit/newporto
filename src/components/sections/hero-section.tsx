@@ -35,7 +35,12 @@ import {
   SiJupyter,
   SiKeras,
   SiFastapi,
-  SiAnaconda
+  SiAnaconda,
+  SiOpenai,
+  SiGooglegemini,
+  SiAnthropic,
+  SiLangchain,
+  SiOllama
 } from "react-icons/si";
 import { BarChart, User, FolderKanban, MessageSquare, Mail, Bot, Code2 } from "lucide-react";
 import { BrainCircuit, ScanText, Camera, Cpu } from "lucide-react";
@@ -112,8 +117,14 @@ export function HeroSection() {
   const techStack = [
     // AI / ML
     { name: "Python", icon: SiPython, color: "#3776AB", category: "ai", level: "Expert" },
-    { name: "TensorFlow", icon: SiTensorflow, color: "#FF6F00", category: "ai", level: "Expert" },
+    { name: "OpenAI", icon: SiOpenai, color: "#10A37F", category: "ai", level: "Expert" },
+    { name: "Gemini", icon: SiGooglegemini, color: "#8E75C2", category: "ai", level: "Expert" },
+    { name: "DeepSeek", icon: BrainCircuit, color: "#1E6FFF", category: "ai", level: "Expert" },
+    { name: "Claude", icon: SiAnthropic, color: "#D97706", category: "ai", level: "Expert" },
+    { name: "LangChain", icon: SiLangchain, color: "#138F9E", category: "ai", level: "Expert" },
+    { name: "Ollama", icon: SiOllama, color: "#ffffff", category: "ai", level: "Expert" },
     { name: "PyTorch", icon: SiPytorch, color: "#EE4C2C", category: "ai", level: "Expert" },
+    { name: "TensorFlow", icon: SiTensorflow, color: "#FF6F00", category: "ai", level: "Expert" },
     { name: "Keras", icon: SiKeras, color: "#D00000", category: "ai", level: "Expert" },
     { name: "scikit-learn", icon: SiScikitlearn, color: "#F7931E", category: "ai", level: "Expert" },
     { name: "OpenCV", icon: SiOpencv, color: "#5C3EE8", category: "ai", level: "Expert" },
