@@ -7,7 +7,8 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '
 // Ryan's minimum compensation expectations
 const RYAN_COMPENSATION = `
 Ryan's Minimum Compensation Requirements:
-- Indonesia (IDR): Rp 15,000,000 per month minimum
+- Indonesia (IDR Full-Time / Monthly): Rp 15,000,000 per month minimum
+- Indonesia (IDR Part-Time / Hourly): Rp 100,000 per hour minimum
 - International (USD Salary): $80,000 per year minimum (annualized)
 - International (USD Hourly): $40 per hour minimum
 - Actual rate may be higher depending on job responsibilities, scope of work, and required expertise.
@@ -105,7 +106,7 @@ export async function POST(req: NextRequest) {
       const INDONESIAN_INDICATORS = [
         'indonesia', 'indonesian', 'jakarta', 'bandung', 'surabaya', 'bali', 'medan',
         'semarang', 'yogyakarta', 'makassar', 'tangerang', 'depok', 'bekasi', 'bogor',
-        'pt.', 'pt ', 'cv.', 'cv ', 'tbk', 'persero', '.id', 'go.id',
+        'pt.', 'pt ', 'cv.', 'cv ', 'tbk', 'persero', '.id', 'go.id', 'rupiah', 'idr', 'rp',
       ];
 
       const companyLower = (recruiterCompany || '').toLowerCase();
@@ -115,7 +116,9 @@ export async function POST(req: NextRequest) {
       );
 
       const compensationInstruction = isIndonesian
-        ? `For this Indonesian company: Ryan's minimum salary is Rp 15,000,000 per month. Only show IDR (Indonesian Rupiah). Do not show USD rates. The final rate may be negotiated higher depending on role scope and responsibilities.`
+        ? (contractType === 'parttime'
+            ? `For this Indonesian company: Ryan's minimum part-time pay is Rp 100,000 per hour. Only show IDR (Indonesian Rupiah). Do not show USD rates. The final rate may be negotiated higher depending on role scope and responsibilities.`
+            : `For this Indonesian company: Ryan's minimum salary is Rp 15,000,000 per month. Only show IDR (Indonesian Rupiah). Do not show USD rates. The final rate may be negotiated higher depending on role scope and responsibilities.`)
         : `For this international company: Ryan's minimum is $80,000/year (annualized salary) or $40/hour for hourly/contract roles. Only show USD. Do not show IDR rates. The final rate may be higher depending on role complexity and responsibilities.`;
 
       const prompt = `You are a professional recruiter liaison for Ryan Radityatama.
@@ -149,7 +152,9 @@ Generate a JSON object with these fields:
     ...
   ],
   "compensationNote": "${isIndonesian 
-    ? 'State minimum in IDR only (Rp 15,000,000/month minimum). No USD. Analyze the recruiter Q&A answers for their offered rate: if it is BELOW Rp 15,000,000, start the note with ⚠️ Below Preferred Minimum, and offer a creative, constructive suggestion or compromise (e.g. switching to freelance contract, hourly basis, or scoped-down hours). If it meets the minimum, start with ✅ Meets expectations.' 
+    ? (contractType === 'parttime'
+        ? 'State minimum in IDR only (Rp 100,000/hour minimum). No USD. Analyze the recruiter Q&A answers for their offered rate: if it is BELOW Rp 100,000/hour, start the note with ⚠️ Below Preferred Minimum, and offer a creative, constructive suggestion or compromise (e.g. converting to freelance, hourly basis, or scoped-down hours). If it meets the minimum, start with ✅ Meets expectations.'
+        : 'State minimum in IDR only (Rp 15,000,000/month minimum). No USD. Analyze the recruiter Q&A answers for their offered rate: if it is BELOW Rp 15,000,000, start the note with ⚠️ Below Preferred Minimum, and offer a creative, constructive suggestion or compromise (e.g. switching to freelance contract, hourly basis, or scoped-down hours). If it meets the minimum, start with ✅ Meets expectations.')
     : 'State minimum in USD only ($80K/year or $40/hour minimum). No IDR. Analyze the recruiter Q&A answers for their offered rate: if it is BELOW $80,000/year or $40/hour, start the note with ⚠️ Below Preferred Minimum, and offer a creative, constructive suggestion or compromise (e.g. converting to freelance, part-time, or scoped-down hours). If it meets the minimum, start with ✅ Meets expectations.'
   }",
   "visaSponsorshipNote": "If the role is on-site outside Indonesia: clearly state whether visa sponsorship is provided or not based on the recruiter's answer. If remote or on-site in Indonesia: state 'Not applicable — role is remote/in Indonesia.' If no info given: state 'Please confirm visa sponsorship availability for on-site relocation.'",
