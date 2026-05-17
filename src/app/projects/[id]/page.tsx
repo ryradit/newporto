@@ -203,47 +203,36 @@ export default function ProjectDetail() {
               </div>
             </div>
           )}
-        </motion.div>
-      </div>
 
-      {/* Inspired / Wanna Build CTA Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="max-w-4xl mx-auto px-6 mt-16 md:mt-24"
-      >
-        <div className="relative bg-gradient-to-br from-[#0D0D15]/90 via-[#0D0D15]/95 to-[#150D20]/90 border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-2xl overflow-hidden text-center">
-          {/* Neon glow */}
-          <div className="absolute -top-32 -left-32 w-72 h-72 bg-purple-600/20 rounded-full blur-[90px] pointer-events-none" />
-          <div className="absolute -bottom-32 -right-32 w-72 h-72 bg-indigo-600/20 rounded-full blur-[90px] pointer-events-none" />
-
-          <div className="relative z-10 flex flex-col items-center">
-            <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent font-headline">
-              Inspired by this project?
-            </h3>
-            <p className="text-sm md:text-base text-zinc-400 mt-3 max-w-lg leading-relaxed">
-              If you want to build a similar high-performance application, website, or custom machine learning model, let's make it a reality.
-            </p>
-
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full max-w-md justify-center">
-              <a
-                href="/agent"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all group"
-              >
-                ⚡ AI Hiring Agent
-              </a>
-              <a
-                href="/contact"
-                className="flex items-center justify-center gap-2 px-6 py-3.5 bg-white/5 border border-white/10 hover:border-white/30 text-white text-sm font-semibold rounded-xl hover:bg-white/10 transition-all hover:scale-[1.02]"
-              >
-                ✉️ Reach Out Directly
-              </a>
+          {/* Wanna Build Similar CTA Card */}
+          <div className="relative bg-[#121212] rounded-[2rem] p-8 border border-white/5 shadow-2xl overflow-hidden group">
+            <div className="absolute -top-24 -left-24 w-48 h-48 bg-purple-600/10 rounded-full blur-[60px] pointer-events-none" />
+            <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-indigo-600/10 rounded-full blur-[60px] pointer-events-none" />
+            
+            <div className="relative z-10 text-center">
+              <h3 className="text-lg font-semibold mb-2 text-white/90">Wanna build similar?</h3>
+              <p className="text-xs text-zinc-400 mb-6 leading-relaxed">
+                If you want to build a similar high-performance application, website, or custom machine learning model, let's connect!
+              </p>
+              
+              <div className="flex flex-col gap-3">
+                <a
+                  href="/agent"
+                  className="flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-semibold rounded-xl shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  ⚡ AI Hiring Agent
+                </a>
+                <a
+                  href="/contact"
+                  className="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/10 hover:border-white/30 text-white text-xs font-semibold rounded-xl hover:bg-white/10 transition-all hover:scale-[1.02]"
+                >
+                  ✉️ Reach Out Directly
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
