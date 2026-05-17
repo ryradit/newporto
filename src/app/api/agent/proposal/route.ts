@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RYAN_PROFILE_DATA } from '@/lib/profile-data';
 import { supabase } from '@/lib/supabase';
+import { sendLeadEmailNotification } from '@/lib/email';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
@@ -107,6 +108,19 @@ Be specific, reference actual skills and projects from Ryan's profile. Make it f
           scope_answers: scopeAnswers || [],
           proposal_data: proposal,
           language: language || 'English',
+        });
+
+        // Send email notification
+        const scopeSummary = (scopeAnswers || [])
+          .map((s: { question: string; answer: string }) => `• ${s.question}\n  → ${s.answer}`)
+          .join('\n\n');
+
+        await sendLeadEmailNotification({
+          visitorName: visitorName || 'Valued Client',
+          visitorCompany: visitorCompany || 'Not specified',
+          intent: 'client',
+          details: `Tier: ${tierLabel || 'Not specified'} (${priceRange || 'Not specified'})\nLanguage preferred: ${language || 'English'}\n\nProject Description:\n${projectDescription || 'No description provided'}\n\nScope Answers:\n${scopeSummary}`,
+          summary: `Proposal Title: ${proposal.proposalTitle}\n\nExecutive Summary:\n${proposal.executiveSummary}\n\nWhy Ryan:\n${proposal.whyRyan}\n\nTimeline:\n${proposal.timeline}\n\nEstimated Cost:\n${proposal.estimatedCost}`,
         });
       } catch (err) {
         console.warn("Could not save client lead to agent_leads Supabase table (please ensure agent_leads table exists in Supabase):", err);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { RYAN_PROFILE_DATA } from '@/lib/profile-data';
 import { supabase } from '@/lib/supabase';
+import { sendLeadEmailNotification } from '@/lib/email';
 
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || '');
 
@@ -209,6 +210,19 @@ Be specific, reference actual experience from Ryan's profile. Show concrete skil
             role_answers: roleAnswers || [],
             candidate_brief_data: brief,
             language: language || 'English',
+          });
+
+          // Send email notification
+          const answersSummary = (roleAnswers || [])
+            .map((r: { question: string; answer: string }) => `• ${r.question}\n  → ${r.answer}`)
+            .join('\n\n');
+
+          await sendLeadEmailNotification({
+            visitorName: recruiterName || 'Recruiter / Hiring Manager',
+            visitorCompany: recruiterCompany || 'Not specified',
+            intent: 'recruiter',
+            details: `Contract Type: ${contractLabel || 'Not specified'}\nLanguage preferred: ${language || 'English'}\n\nQ&A Responses:\n${answersSummary}`,
+            summary: `Brief Title: ${brief.briefTitle}\n\nExecutive Summary:\n${brief.executiveSummary}\n\nAvailability:\n${brief.availability}\n\nCompensation Note:\n${brief.compensationNote}\n\nVisa Note:\n${brief.visaSponsorshipNote}`,
           });
         } catch (err) {
           console.warn("Could not save recruiter lead to agent_leads Supabase table (please ensure agent_leads table exists in Supabase):", err);
