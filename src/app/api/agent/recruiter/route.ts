@@ -131,6 +131,11 @@ export async function POST(req: NextRequest) {
         schedulerAgent()
       ]);
 
+      const isProposeTime = scheduleInfo.bookingLink === 'propose-time';
+      const bookingLinkPrompt = isProposeTime
+        ? 'IMPORTANT scheduling fallback: Ryan has no online calendar booking link configured. Under no circumstances should you generate or show any booking URL or Drive link. Instead, explicitly state that they can propose/suggest their preferred interview time slot directly using the scheduling card on their screen.'
+        : `Ryan's online booking calendar is available at: "${scheduleInfo.bookingLink}". Tell recruiters they can click it to schedule directly.`;
+
       const prompt = `You are a professional recruiter liaison for Ryan Radityatama.
 Generate a compelling candidate brief showing why Ryan is the perfect fit for this role incorporating the verified sub-agent inputs below.
 
@@ -160,6 +165,9 @@ ${JSON.stringify(matchedProjects, null, 2)}
 Ryan's calendar booking link is: "${scheduleInfo.bookingLink}"
 Offer these flexible slots:
 ${scheduleInfo.flexibleSlots.join('\n')}
+
+Scheduling Link Context:
+${bookingLinkPrompt}
 =======================================================
 
 Generate a JSON object with these fields:
@@ -180,10 +188,16 @@ Generate a JSON object with these fields:
     : 'Analyze the recruiter answers for their offered rate (whether in USD, SGD, EUR, GBP etc.): if the offered compensation meets or clearly exceeds Ryan baseline ($80,000/year or $40/hour), start with ✅ Meets expectations, and write a positive confirmation confirming that the compensation is highly attractive, competitive, and aligns with the senior role scope. IMPORTANT NEGOTIATION RULE: In this case, DO NOT mention or leak Ryan standard minimum thresholds ($80,000/year or $40/hour), as this might tempt them to reduce their offer. Only if the offered rate is BELOW these requirements, start the note with ⚠️ Below Preferred Minimum, and mention Ryan standard baseline expectations as a starting point to guide the negotiation toward a compromise.'
   }",
   "visaSponsorshipNote": "If the role is on-site outside Indonesia: clearly state whether visa sponsorship is provided or not based on the recruiter's answer. If remote or on-site in Indonesia: state 'Not applicable — role is remote/in Indonesia.' If no info given: state 'Please confirm visa sponsorship availability for on-site relocation.'",
-  "availability": "Ryan's general availability note, offering the following flexible slots:\n${scheduleInfo.flexibleSlots.join('\n')}\nBooking link: ${scheduleInfo.bookingLink}",
+  "availability": "${isProposeTime 
+    ? "Ryan is available for a technical discussion. You can propose a preferred time slot directly using the scheduling card on your screen!" 
+    : `Ryan is available for a technical discussion during the following slots:\\n\${scheduleInfo.flexibleSlots.join('\\n')}\\nBooking link: \${scheduleInfo.bookingLink}`}",
   "nextSteps": ["Step 1", "Step 2", "Step 3"],
-  "closingMessage": "Professional closing note from Ryan to the recruiter, inviting them to book a slot at: ${scheduleInfo.bookingLink}",
-  "emailDraft": "Full professional email from Ryan to the recruiter. Address the email to the recruiter (using their name if provided, otherwise 'Hiring Manager'). The email MUST be signed off as coming from 'Ryan Radityatama' (NEVER use placeholders like '[Your Name]', '[Name]', '[Nama Anda]', or '[Recruiter Liaison]'). Include Ryan's email (ryradit@gmail.com) and portfolio website (https://ryanraditya.com). Summarize your fit, and mention visa sponsorship if applicable. IMPORTANT NEGOTIATION RULE: If the recruiter offered rate meets or exceeds expectations, write a positive confirmation acknowledging that the proposed compensation package is attractive and fits the position caliber, but DO NOT mention Ryan's baseline minimum numbers in the email. Only if the offered rate is below expectations, mention Ryan's preferred minimum expectations as a baseline for discussion. Also include Ryan's Cal.com calendar scheduling link: ${scheduleInfo.bookingLink}."
+  "closingMessage": "${isProposeTime 
+    ? 'Professional closing note from Ryan to the recruiter, inviting them to propose their preferred slot using the scheduling card on this screen.' 
+    : `Professional closing note from Ryan to the recruiter, inviting them to book a slot at: \${scheduleInfo.bookingLink}`}",
+  "emailDraft": "${isProposeTime 
+    ? 'Full professional email from Ryan to the recruiter. Address the email to the recruiter (using their name if provided, otherwise Hiring Manager). The email MUST be signed off as coming from Ryan Radityatama. Include Ryans email (ryradit@gmail.com) and portfolio website (https://ryanraditya.com). Summarize your fit, and explain that they can suggest a custom slot on this page.' 
+    : `Full professional email from Ryan to the recruiter. Address the email to the recruiter (using their name if provided, otherwise 'Hiring Manager'). The email MUST be signed off as coming from 'Ryan Radityatama'. Include Ryan's email (ryradit@gmail.com) and portfolio website (https://ryanraditya.com). Summarize your fit, and include Ryan's Cal.com calendar scheduling link: \${scheduleInfo.bookingLink}`}"
 }
 
 Be specific, reference actual experience from Ryan's profile. Show concrete skill matches. Be persuasive but honest. STRICTLY ONLY use the currency specified — never mix IDR and USD. If the recruiter is Indonesian or answered with Rupiahs (IDR), under no circumstances should you mention USD or use USD rates (like $40/hour or $80K) anywhere in the compensationNote or emailDraft. For Indonesian part-time roles, only use Rp 100,000/hour as the standard minimum threshold.`;

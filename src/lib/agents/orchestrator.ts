@@ -190,7 +190,7 @@ Ensure the output is clean JSON. Do not include markdown wraps or anything else 
  * Connects directly to Google Calendar API using standard fetch query to parse live free slots.
  */
 export async function schedulerAgent(): Promise<{ bookingLink: string; flexibleSlots: string[] }> {
-  const fallbackLink = process.env.GOOGLE_CALENDAR_BOOKING_LINK || "https://drive.google.com/drive/u/1/folders/1TLOvtTZNk3MOc39ARQ9Ndg-wOP_MvPoy?usp=sharing";
+  const fallbackLink = process.env.GOOGLE_CALENDAR_BOOKING_LINK || "propose-time";
   const fallbackSlots = [
     "Mondays: 2:00 PM - 5:00 PM WIB (Jakarta Time)",
     "Wednesdays: 10:00 AM - 1:00 PM WIB (Jakarta Time)",
