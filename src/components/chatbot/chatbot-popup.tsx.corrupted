@@ -1,0 +1,360 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bot, MessageCircle, Send, X, Loader2, Mic } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { ChatMessage, type ChatMessageProps } from "./chat-message";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/language-context";
+import { translate } from "@/translations";
+import { startVoiceCall, type VapiCallState } from "@/lib/vapi-config";
+import { VoiceCallPopup } from "./voice-call-popup";
+import Client from '@vapi-ai/web';
+import { Button } from "@/components/ui/button";
+import { GradientButton } fr    try {
+      // Check if this is a CV download request
+      if (isCVRequest(userMessage.content)) {
+        // First, simulate initial thinking time (1.5 to 2.5 seconds)
+        await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+        
+        // Then simulate typing the response (50-80ms per character)
+        const responseText = "Here's Ryan's Software Engineering CV. It includes his technical skills, work experience, and projects. Feel free to download it below.";
+        const typingDelay = responseText.length * (50 + Math.random() * 30);
+        await new Promise(resolve => setTimeout(resolve, typingDelay));
+        
+        const cvMessage: ChatMessageProps = {
+          role: "assistant",
+          content: responseText,
+          action: {
+            type: "download-cv",
+            label: "Download CV",
+            onClick: handleCVDownload
+          }
+        };
+        setMessages((prev) => [...prev, cvMessage]);
+        setIsLoading(false);
+        return;
+      }/ui/gradient-button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Bot, MessageCircle, Send, X, Loader2, Mic } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { ChatMessage, type ChatMessageProps } from "./chat-message";
+import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/language-context";
+import { translate } from "@/translations";
+import { startVoiceCall, type VapiCallState } from "@/lib/vapi-config";
+import { VoiceCallPopup } from "./voice-call-popup";
+import Client from '@vapi-ai/web';
+
+interface ChatbotPopupProps {
+  profileData: string;
+}
+
+export function ChatbotPopup({ profileData }: ChatbotPopupProps) {
+  const { language } = useLanguage();
+  const { toast } = useToast();
+
+  // Function to simulate human-like typing delay
+  const simulateThinking = async (messageLength: number) => {
+    // Base delay of 1 second + additional time based on message length
+    const baseDelay = 1000;
+    const charDelay = 20; // ms per character
+    const maxDelay = 4000; // maximum 4 seconds
+    const delay = Math.min(baseDelay + (messageLength * charDelay), maxDelay);
+    
+    await new Promise(resolve => setTimeout(resolve, delay));
+  };
+  const [isOpen, setIsOpen] = useState(false);
+  const [showVoiceCall, setShowVoiceCall] = useState(false);
+  const [callState, setCallState] = useState<VapiCallState>({
+    isCallActive: false,
+    isSpeaking: false,
+    isMuted: false,
+    error: null
+  });
+  const activeCallRef = useRef<Client | null>(null);
+  const [messages, setMessages] = useState<ChatMessageProps[]>([
+    { role: "assistant", content: "👋 Hi! I can help answer questions about Ryan. Feel free to type or use voice chat." }
+  ]);
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  const toggleChatbot = () => setIsOpen(!isOpen);
+  const toggleVoiceCall = () => setShowVoiceCall(!showVoiceCall);
+
+  const startCall = async () => {
+    try {
+      const call = await startVoiceCall(profileData, (newState) => {
+        setCallState(newState);
+      });
+
+      if (call) {
+        activeCallRef.current = call;
+        toast({
+          title: "Voice call started",
+          description: "You can now speak with the AI assistant",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Failed to start voice call",
+        description: error instanceof Error ? error.message : "Please try again later",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const endCall = async () => {
+    if (activeCallRef.current) {
+      await activeCallRef.current.stop();
+      activeCallRef.current = null;
+    }
+    setCallState(prev => ({ ...prev, isCallActive: false }));
+  };
+
+  const handleVoiceCall = () => {
+    setShowVoiceCall(true);
+  };
+
+  const handleCVDownload = async () => {
+    const fileName = 'Ryan Radityatama - Software Engineer.pdf';
+    const encodedFileName = encodeURIComponent(fileName);
+    const cvUrl = `/${encodedFileName}`;
+
+    try {
+      const response = await fetch(cvUrl);
+      if (!response.ok) {
+        throw new Error('CV file not found');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+
+      toast({
+        title: "Download Started",
+        description: "Your download should begin shortly.",
+      });
+    } catch (error) {
+      console.error('CV download error:', error);
+      toast({
+        title: "Download Failed",
+        description: "Could not download the CV. Please try again later.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const isCVRequest = (text: string): boolean => {
+    const cvKeywords = [
+      'cv', 'resume', 'curriculum vitae',
+      'can you provide his cv', 'download cv',
+      'can i see his cv', 'get cv', 'view cv',
+      'share cv', 'send cv', 'give cv'
+    ];
+    return cvKeywords.some(keyword => text.toLowerCase().includes(keyword));
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim()) return;
+
+    const userMessage: ChatMessageProps = { role: "user", content: inputValue };
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    setIsLoading(true);
+
+    try {
+      // Check if this is a CV download request
+      if (isCVRequest(userMessage.content)) {
+        const cvMessage: ChatMessageProps = {
+          role: "assistant",
+          content: "Here's Ryan's Software Engineering CV. It includes his technical skills, work experience, and projects. Feel free to download it below. �",
+          action: {
+            type: "download-cv",
+            label: "Download CV",
+            onClick: handleCVDownload
+          }
+        };
+        setMessages((prev) => [...prev, cvMessage]);
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: inputValue,
+          profile: profileData,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get response from AI');
+      }
+
+      const data = await response.json();
+      // Add thinking delay based on response length
+      await simulateThinking(data.answer.length);
+      const assistantMessage: ChatMessageProps = { role: "assistant", content: data.answer };
+      setMessages((prev) => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error("Error getting answer from AI:", error);
+      const errorMessage: ChatMessageProps = { 
+        role: "assistant", 
+        content: "Sorry, I encountered an error. Please try again." 
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (scrollAreaRef.current) {
+        const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
+      }
+    };
+
+    // Scroll when messages change
+    scrollToBottom();
+    
+    // Also scroll after a small delay to ensure content is rendered
+    const timeoutId = setTimeout(scrollToBottom, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, [messages]);
+
+  return (
+    <>
+      <GradientButton
+        className="fixed bottom-6 right-6 h-14 !min-w-0 !px-6 !py-0 !rounded-full z-50 animate-fade-in group shadow-lg backdrop-blur-[2px]"
+        onClick={toggleChatbot}
+        aria-label="Toggle Chatbot"
+      >
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            {isOpen ? 
+              <X size={20} className="transition-transform duration-300 ease-out group-hover:rotate-90" /> : 
+              <MessageCircle size={20} className="transition-transform duration-300 ease-out group-hover:rotate-12" />
+            }
+          </div>
+          <span className="text-sm font-medium whitespace-nowrap tracking-wide">
+            {translate('smartTalk.button', language)}
+          </span>
+        </div>
+      </GradientButton>
+
+      {isOpen && (
+        <div className={cn(
+            "fixed bottom-24 right-6 z-40 w-full max-w-sm",
+            isOpen ? "animate-slide-in-up" : "animate-slide-out-down"
+          )}
+        >
+          <Card className="shadow-2xl h-[60vh] flex flex-col">
+            <CardHeader className="flex flex-row items-center justify-between p-4 border-b">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-2">
+                  <Bot className="h-6 w-6 text-primary" />
+                  <CardTitle className="font-headline text-lg">AI Assistant</CardTitle>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleChatbot} 
+                  className="text-muted-foreground hover:text-primary"
+                >
+                  <X size={20} />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0 flex-grow overflow-hidden">
+              <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
+                <div className="space-y-4">
+                  {messages.map((msg, index) => (
+                    <ChatMessage 
+                      key={index} 
+                      role={msg.role} 
+                      content={msg.content}
+                      action={msg.action} 
+                    />
+                  ))}
+                   {isLoading && (
+                    <div className="flex justify-start p-3">
+                       <div className="flex items-center gap-3 p-3 rounded-lg bg-card text-card-foreground rounded-bl-none shadow-sm">
+                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                        <span className="text-sm text-muted-foreground">Thinking...</span>
+                       </div>
+                    </div>
+                  )}
+                </div>
+              </ScrollArea>
+            </CardContent>
+            <CardFooter className="p-4 border-t">
+              <form onSubmit={handleSendMessage} className="flex w-full items-center space-x-2">
+                <Input
+                  type="text"
+                  placeholder="Type a message or use voice..."
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  className="flex-1"
+                  disabled={isLoading}
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => handleVoiceCall()}
+                  className="text-muted-foreground hover:text-primary"
+                  title="Voice Input"
+                >
+                  <Mic size={20} />
+                </Button>
+                <Button 
+                  type="submit" 
+                  size="icon" 
+                  disabled={isLoading || !inputValue.trim()} 
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground"
+                >
+                  <Send size={20} />
+                </Button>
+              </form>
+            </CardFooter>
+          </Card>
+        </div>
+      )}
+
+      {/* Voice Call Popup */}
+      <VoiceCallPopup
+        isOpen={showVoiceCall}
+        onClose={() => setShowVoiceCall(false)}
+        onStartCall={startCall}
+        onEndCall={endCall}
+        callState={callState}
+      />
+    </>
+  );
+}
