@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles, User, RotateCcw, ArrowLeft, Briefcase, Handshake } from 'lucide-react';
+import { Send, Loader2, Bot, CheckCircle, ChevronRight, Download, Mail, Sparkles, User, RotateCcw, ArrowLeft, Briefcase, Handshake, SlidersHorizontal, Paperclip, FileText, Upload } from 'lucide-react';
 import Link from 'next/link';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -42,6 +42,12 @@ type Proposal = {
   estimatedCost: string;
   nextSteps: string[];
   relevantProjects: { name: string; relevance: string }[];
+  budgetConsideration?: {
+    summary: string;
+    scopeTradeOff: string;
+    phasedOptions: { phase: string; scope: string; cost: string; timeline: string }[];
+    flexibleTerms: string[];
+  };
   closingMessage: string;
   emailDraft: string;
 };
@@ -52,6 +58,10 @@ type CandidateBrief = {
   skillsMatch: { requirement: string; ryanHas: string }[];
   relevantExperience: { role: string; company: string; relevance: string }[];
   compensationNote: string;
+  compensationFlexibility?: {
+    summary: string;
+    tradeOffs: string[];
+  };
   visaSponsorshipNote: string;
   availability: string;
   nextSteps: string[];
@@ -64,6 +74,21 @@ type ContractOption = {
   label: string;
   description: string;
   questions: string[];
+};
+
+type DocumentAnalysis = {
+  detectedType: 'recruiter' | 'client';
+  documentTitle: string;
+  companyName: string;
+  summary: string;
+  extractedData: {
+    roleOrProject: string;
+    budgetOrSalary: string;
+    suggestedTier?: 'starter' | 'standard' | 'professional' | 'enterprise' | null;
+    timeline: string;
+    keyPoints: string[];
+  };
+  chatReply: string;
 };
 
 const CLIENT_STAGES: Stage[] = ['greeting', 'who_are_you', 'intent', 'budget', 'scope', 'proposal', 'followup'];
@@ -302,6 +327,36 @@ function CandidateBriefCard({
         </div>
       </div>
 
+      {/* Compensation Flexibility & Trade-off Consideration */}
+      {brief.compensationFlexibility && (
+        <div className="bg-gradient-to-br from-blue-950/20 via-indigo-950/15 to-purple-950/10 border border-blue-500/25 rounded-2xl p-5 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal size={15} className="text-blue-400" />
+              <h3 className="text-sm font-semibold text-blue-300 uppercase tracking-wide">
+                Compensation Flexibility & Trade-offs
+              </h3>
+            </div>
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20">
+              Open to Negotiation
+            </span>
+          </div>
+          <p className="text-xs text-ag-fg/80 leading-relaxed">
+            {brief.compensationFlexibility.summary}
+          </p>
+          {brief.compensationFlexibility.tradeOffs?.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-ag-fg/10">
+              {brief.compensationFlexibility.tradeOffs.map((item, idx) => (
+                <div key={idx} className="flex items-start gap-2 text-xs text-ag-fg/70">
+                  <CheckCircle size={13} className="text-blue-400 mt-0.5 shrink-0" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Propose a custom slot block */}
       <div className="bg-ag-fg/5 border border-ag-fg/10 rounded-2xl p-5 space-y-4">
         <div className="flex items-center justify-between">
@@ -493,6 +548,70 @@ function ProposalCard({ proposal, visitorName }: { proposal: Proposal; visitorNa
           <div className="text-ag-fg font-bold text-lg">{proposal.timeline}</div>
         </div>
       </div>
+
+      {/* Budget & Scope Consideration */}
+      {proposal.budgetConsideration && (
+        <div className="bg-gradient-to-br from-indigo-950/20 via-purple-950/15 to-violet-950/10 border border-indigo-500/25 rounded-2xl p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal size={15} className="text-indigo-400" />
+              <h3 className="text-sm font-semibold text-indigo-300 uppercase tracking-wide">
+                Budget & Scope Flexibility
+              </h3>
+            </div>
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+              Customizable Terms
+            </span>
+          </div>
+
+          <p className="text-xs text-ag-fg/80 leading-relaxed">
+            {proposal.budgetConsideration.summary}
+          </p>
+
+          {/* Phased Milestones Breakdown */}
+          {proposal.budgetConsideration.phasedOptions?.length > 0 && (
+            <div className="space-y-2 pt-1">
+              <div className="text-[11px] font-semibold text-ag-fg/60 uppercase tracking-wider">
+                Recommended Milestone Phasing:
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+                {proposal.budgetConsideration.phasedOptions.map((po, idx) => (
+                  <div key={idx} className="rounded-xl border border-ag-fg/10 bg-ag-fg/[0.03] p-3 text-xs space-y-1.5">
+                    <div className="flex items-center justify-between font-semibold text-ag-fg">
+                      <span>{po.phase}</span>
+                      <span className="text-indigo-400 font-mono text-[11px]">{po.cost}</span>
+                    </div>
+                    <p className="text-ag-fg/60 text-[11px] leading-relaxed">{po.scope}</p>
+                    <div className="text-[10px] text-ag-fg/40 font-mono">⏱️ {po.timeline}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Scope Trade-off Advice */}
+          {proposal.budgetConsideration.scopeTradeOff && (
+            <div className="rounded-xl bg-purple-500/[0.06] border border-purple-500/20 p-3 text-xs text-purple-200/90 leading-relaxed">
+              <span className="font-semibold text-purple-300">💡 Scope Trade-off: </span>
+              {proposal.budgetConsideration.scopeTradeOff}
+            </div>
+          )}
+
+          {/* Flexible Terms Checklist */}
+          {proposal.budgetConsideration.flexibleTerms?.length > 0 && (
+            <div className="pt-1 border-t border-ag-fg/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] text-ag-fg/70">
+                {proposal.budgetConsideration.flexibleTerms.map((term, idx) => (
+                  <div key={idx} className="flex items-center gap-1.5">
+                    <CheckCircle size={12} className="text-emerald-400 shrink-0" />
+                    <span>{term}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Features */}
       <div className="bg-ag-fg/5 border border-ag-fg/10 rounded-2xl p-5">
@@ -701,6 +820,134 @@ function WelcomeModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   );
 }
 
+function AnalyzedDocCard({
+  doc,
+  onGenerate,
+  onDismiss,
+  isLoading,
+}: {
+  doc: { fileName: string; analysis: DocumentAnalysis };
+  onGenerate: () => void;
+  onDismiss: () => void;
+  isLoading: boolean;
+}) {
+  const isRecruiter = doc.analysis.detectedType === 'recruiter';
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      className="p-5 rounded-2xl border border-purple-500/30 bg-purple-500/[0.04] backdrop-blur-xl shadow-lg relative my-4"
+    >
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-300 shrink-0">
+            <FileText size={18} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-semibold text-ag-fg truncate max-w-[200px] md:max-w-[300px]">
+                {doc.fileName}
+              </span>
+              <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
+                isRecruiter
+                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                  : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+              }`}>
+                {isRecruiter ? '🤝 Job Opening / JD' : '💼 Project Scope / RFP'}
+              </span>
+            </div>
+            <p className="text-[11px] text-ag-fg/50 mt-0.5">
+              Analyzed with Multimodal AI
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={onDismiss}
+          className="text-xs text-ag-fg/40 hover:text-ag-fg/80 px-2 py-1 rounded hover:bg-ag-fg/5 transition-colors"
+          title="Dismiss card"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div className="space-y-2.5 mb-4 text-xs">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-semibold text-sm text-purple-200">
+            {doc.analysis.documentTitle}
+          </span>
+          {doc.analysis.companyName && (
+            <span className="text-ag-fg/60 text-xs">· {doc.analysis.companyName}</span>
+          )}
+        </div>
+
+        <p className="text-ag-fg/75 leading-relaxed bg-ag-fg/[0.03] p-2.5 rounded-lg border border-ag-fg/5">
+          {doc.analysis.summary}
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+          <div className="px-3 py-2 rounded-lg bg-ag-fg/[0.03] border border-ag-fg/5">
+            <span className="text-[10px] text-ag-fg/40 uppercase tracking-wider block">
+              {isRecruiter ? 'Target Role & Rate' : 'Deliverables & Budget'}
+            </span>
+            <span className="text-xs font-medium text-emerald-400 mt-0.5 block">
+              {doc.analysis.extractedData.budgetOrSalary || 'Not specified'}
+            </span>
+          </div>
+          <div className="px-3 py-2 rounded-lg bg-ag-fg/[0.03] border border-ag-fg/5">
+            <span className="text-[10px] text-ag-fg/40 uppercase tracking-wider block">
+              Timeline / Engagement
+            </span>
+            <span className="text-xs font-medium text-purple-300 mt-0.5 block">
+              {doc.analysis.extractedData.timeline || 'Flexible'}
+            </span>
+          </div>
+        </div>
+
+        {doc.analysis.extractedData.keyPoints?.length > 0 && (
+          <div className="pt-1">
+            <span className="text-[10px] text-ag-fg/40 uppercase tracking-wider block mb-1.5">
+              Key Requirements
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {doc.analysis.extractedData.keyPoints.map((pt, i) => (
+                <span
+                  key={i}
+                  className="px-2 py-1 rounded-md bg-purple-500/10 border border-purple-500/20 text-purple-200 text-[11px]"
+                >
+                  ✓ {pt}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-2 pt-1 border-t border-ag-fg/10">
+        <button
+          onClick={onGenerate}
+          disabled={isLoading}
+          className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-md hover:shadow-purple-500/25 transition-all disabled:opacity-50"
+        >
+          {isLoading ? (
+            <>
+              <Loader2 size={14} className="animate-spin" />
+              Generating...
+            </>
+          ) : (
+            <>
+              <Sparkles size={14} />
+              {isRecruiter
+                ? 'Generate Candidate Match Brief (1-Click)'
+                : 'Generate Custom Project Proposal (1-Click)'}
+            </>
+          )}
+        </button>
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function TestAgentPage() {
@@ -714,6 +961,9 @@ export default function TestAgentPage() {
   const [stage, setStage] = useState<Stage>('who_are_you');
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [analyzedDoc, setAnalyzedDoc] = useState<{ fileName: string; analysis: DocumentAnalysis } | null>(null);
+  const [isAnalyzingDoc, setIsAnalyzingDoc] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [visitorName, setVisitorName] = useState('');
   const [visitorCompany, setVisitorCompany] = useState('');
   const [detectedIntent, setDetectedIntent] = useState<'client' | 'recruiter' | 'unknown'>('unknown');
@@ -760,6 +1010,7 @@ export default function TestAgentPage() {
         if (data.currentRoleQIdx !== undefined) setCurrentRoleQIdx(data.currentRoleQIdx);
         if (data.candidateBrief) setCandidateBrief(data.candidateBrief);
         if (data.preferredLanguage) setPreferredLanguage(data.preferredLanguage);
+        if (data.analyzedDoc) setAnalyzedDoc(data.analyzedDoc);
       } else {
         // No saved session: parse query parameter ?project=...
         const params = new URLSearchParams(window.location.search);
@@ -802,6 +1053,7 @@ export default function TestAgentPage() {
           currentRoleQIdx,
           candidateBrief,
           preferredLanguage,
+          analyzedDoc,
         };
         sessionStorage.setItem('hiring_agent_session', JSON.stringify(sessionData));
       } catch (err) {
@@ -827,6 +1079,7 @@ export default function TestAgentPage() {
     currentRoleQIdx,
     candidateBrief,
     preferredLanguage,
+    analyzedDoc,
   ]);
 
   const handleReset = () => {
@@ -864,6 +1117,7 @@ export default function TestAgentPage() {
       setCurrentRoleQIdx(0);
       setCandidateBrief(null);
       setPreferredLanguage('English');
+      setAnalyzedDoc(null);
     }
   };
 
@@ -1535,6 +1789,227 @@ export default function TestAgentPage() {
     }
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Reset input value to allow re-uploading the same file if needed
+    e.target.value = '';
+
+    if (file.size > 10 * 1024 * 1024) {
+      addMessage('assistant', 'The uploaded file exceeds the 10MB limit. Please upload a smaller PDF, text file, or screenshot.');
+      return;
+    }
+
+    setIsAnalyzingDoc(true);
+    addMessage('user', `📎 Uploaded document: ${file.name}`);
+    addMessage('assistant', `Analyzing "${file.name}" with multimodal AI... please hold on a moment 🔍`);
+
+    try {
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve, reject) => {
+        reader.onload = () => {
+          const res = reader.result as string;
+          const base64 = res.includes(',') ? res.split(',')[1] : res;
+          resolve(base64);
+        };
+        reader.onerror = (err) => reject(err);
+      });
+      reader.readAsDataURL(file);
+      const fileBase64 = await base64Promise;
+
+      const res = await fetch('/api/agent/analyze-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileBase64,
+          fileName: file.name,
+          fileType: file.type,
+          currentIntent: detectedIntent,
+          language: preferredLanguage,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.analysis) {
+        throw new Error(data.error || 'Failed to analyze document');
+      }
+
+      const analysis: DocumentAnalysis = data.analysis;
+      setAnalyzedDoc({ fileName: file.name, analysis });
+
+      if (analysis.companyName && !visitorCompany) {
+        setVisitorCompany(analysis.companyName);
+      }
+
+      if (analysis.detectedType === 'recruiter') {
+        setDetectedIntent('recruiter');
+      } else {
+        setDetectedIntent('client');
+        if (analysis.summary) {
+          setProjectDescription(analysis.summary);
+        }
+      }
+
+      addMessage('assistant', analysis.chatReply || `I've analyzed "${file.name}"! You can review the extracted details below and generate a tailored proposal or brief with one click.`);
+    } catch (err: any) {
+      console.error('File upload error:', err);
+      addMessage('assistant', `I ran into an issue reading "${file.name}". You can describe your requirements directly in the chat or contact Ryan directly at ryradit@gmail.com.`);
+    } finally {
+      setIsAnalyzingDoc(false);
+    }
+  };
+
+  const handleGenerateFromDoc = async () => {
+    if (!analyzedDoc) return;
+    const { analysis } = analyzedDoc;
+
+    if (analysis.detectedType === 'recruiter') {
+      setIsLoading(true);
+      setStage('generating_brief');
+      addMessage('assistant', `Generating your candidate evaluation brief tailored to "${analysis.documentTitle || 'Job Description'}"...`);
+
+      const answers = [
+        {
+          question: 'What specific role or project scope are you hiring for?',
+          answer: `${analysis.extractedData.roleOrProject} at ${analysis.companyName || visitorCompany || 'Company'} (${analysis.extractedData.timeline || 'Full-time / Contract'})`,
+        },
+        {
+          question: 'What are the core technical requirements and responsibilities?',
+          answer: (analysis.extractedData.keyPoints || []).join('; '),
+        },
+        {
+          question: 'What is the compensation or salary range?',
+          answer: analysis.extractedData.budgetOrSalary || 'Competitive / negotiable',
+        },
+      ];
+
+      try {
+        const res = await fetch('/api/agent/recruiter', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'generate_brief',
+            recruiterName: visitorName || 'Hiring Team',
+            recruiterCompany: visitorCompany || analysis.companyName || 'Hiring Company',
+            contractType: 'fulltime',
+            contractLabel: analysis.extractedData.roleOrProject || 'Open Position',
+            roleAnswers: answers,
+            language: preferredLanguage,
+          }),
+        });
+        const data = await res.json();
+        if (data.brief) {
+          let briefToSet = data.brief;
+          if (preferredLanguage && preferredLanguage.toLowerCase() !== 'english') {
+            briefToSet = await translateCandidateBrief(data.brief, preferredLanguage);
+          }
+          setCandidateBrief(briefToSet);
+          setStage('followup');
+          addMessage('assistant', `Candidate Brief ready! 🎉 I've matched Ryan's tech stack and experience against the requirements from "${analyzedDoc.fileName}".`);
+        } else {
+          throw new Error('Failed to generate brief');
+        }
+      } catch (err) {
+        console.error(err);
+        addMessage('assistant', "I had trouble generating the brief. Please contact Ryan directly at ryradit@gmail.com");
+        setStage('followup');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setIsLoading(true);
+      setStage('generating');
+      addMessage('assistant', `Generating your custom proposal based on "${analyzedDoc.fileName}"...`);
+
+      const tierToUse = analysis.extractedData.suggestedTier || 'standard';
+      const tierMap: Record<string, { tier: string; tierLabel: string; priceRange: string; deliverables: string[]; timeline: string }> = {
+        starter: {
+          tier: 'starter',
+          tierLabel: 'Starter MVP',
+          priceRange: 'Under $300',
+          deliverables: ['Landing page or responsive web presence', 'Fast performance & clean UI', 'Deployment setup'],
+          timeline: '3 - 7 days',
+        },
+        standard: {
+          tier: 'standard',
+          tierLabel: 'Standard Web Application',
+          priceRange: '$300 - $1,000',
+          deliverables: ['Full dynamic web application', 'Database integration & CMS', 'Responsive mobile-first design', 'Basic SEO & analytics'],
+          timeline: '1 - 3 weeks',
+        },
+        professional: {
+          tier: 'professional',
+          tierLabel: 'Professional Platform',
+          priceRange: '$1,000 - $3,000',
+          deliverables: ['End-to-end fullstack platform', 'Custom AI / ML integration', 'Authentication & billing', 'Admin dashboard & API endpoints'],
+          timeline: '3 - 6 weeks',
+        },
+        enterprise: {
+          tier: 'enterprise',
+          tierLabel: 'Enterprise System',
+          priceRange: '$3,000+',
+          deliverables: ['High-throughput scalable architecture', 'Custom multi-agent workflows', 'Enterprise security & audits', 'Dedicated SLA & support'],
+          timeline: '6+ weeks',
+        },
+      };
+
+      const chosenTier = tierMap[tierToUse] || tierMap.standard;
+      setTierData({
+        ...chosenTier,
+        scopeQuestions: [],
+      });
+
+      const answers = [
+        {
+          question: 'Project Overview & Deliverables',
+          answer: (analysis.extractedData.keyPoints || []).join('; ') || analysis.summary,
+        },
+        {
+          question: 'Estimated Timeline',
+          answer: analysis.extractedData.timeline || chosenTier.timeline,
+        },
+        {
+          question: 'Target Budget',
+          answer: analysis.extractedData.budgetOrSalary || chosenTier.priceRange,
+        },
+      ];
+
+      try {
+        const res = await fetch('/api/agent/proposal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            visitorName: visitorName || 'Valued Partner',
+            visitorCompany: visitorCompany || analysis.companyName || 'Client Project',
+            tier: chosenTier.tier,
+            tierLabel: chosenTier.tierLabel,
+            priceRange: chosenTier.priceRange,
+            deliverables: chosenTier.deliverables,
+            timeline: chosenTier.timeline,
+            projectDescription: analysis.summary || projectDescription,
+            scopeAnswers: answers,
+            language: preferredLanguage,
+          }),
+        });
+        const data = await res.json();
+        if (res.ok && data.proposal) {
+          setProposal(data.proposal);
+          setStage('followup');
+          addMessage('assistant', `Custom Proposal ready! 🎉 I've compiled the scope, deliverables, and estimated budget based on "${analyzedDoc.fileName}".`);
+        } else {
+          throw new Error('Failed to generate proposal');
+        }
+      } catch (err) {
+        console.error(err);
+        addMessage('assistant', "I had trouble generating the proposal. Please try again or contact Ryan directly at ryradit@gmail.com");
+        setStage('followup');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -1743,6 +2218,31 @@ export default function TestAgentPage() {
                     <div className="text-xs text-ag-fg/50 mt-0.5">Full-time, part-time, freelance contract, or permanent role</div>
                   </div>
                 </button>
+
+                <div className="relative flex py-1 items-center">
+                  <div className="flex-grow border-t border-ag-fg/10"></div>
+                  <span className="flex-shrink mx-3 text-[11px] text-ag-fg/40 uppercase tracking-wider font-medium">Or Quick-Start with a Document</span>
+                  <div className="flex-grow border-t border-ag-fg/10"></div>
+                </div>
+
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="p-3.5 rounded-xl border border-dashed border-purple-400/40 hover:border-purple-400/80 bg-purple-500/[0.04] hover:bg-purple-500/[0.08] text-left flex items-center justify-between transition-all duration-150 active:scale-[0.98] group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-purple-500/15 flex items-center justify-center text-purple-300 group-hover:scale-105 transition-transform shrink-0">
+                      <Paperclip size={18} />
+                    </div>
+                    <div>
+                      <div className="text-xs md:text-sm font-semibold text-purple-200 flex items-center gap-1.5 flex-wrap">
+                        Upload Job Description or Project Brief
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 font-mono">PDF / Image</span>
+                      </div>
+                      <div className="text-[11px] text-ag-fg/50 mt-0.5">Let AI extract requirements and auto-draft your proposal/brief with 1 click</div>
+                    </div>
+                  </div>
+                  <Upload size={14} className="text-purple-400 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -1799,6 +2299,14 @@ export default function TestAgentPage() {
                 exit={{ opacity: 0 }}
                 className="grid grid-cols-2 gap-3 my-4"
               >
+                <div className="col-span-2 p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between text-xs text-indigo-300">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal size={14} className="text-indigo-400 shrink-0" />
+                    <span>Select a baseline tier below, or type your custom budget in the chatbox!</span>
+                  </div>
+                  <span className="text-[10px] text-indigo-400 font-mono hidden sm:inline">Phased MVP Available</span>
+                </div>
+
                 {BUDGET_OPTIONS.map((opt) => (
                   <button
                     key={opt.value}
@@ -1812,9 +2320,41 @@ export default function TestAgentPage() {
                     <div className="text-xs text-ag-fg/60 mt-1">{opt.sublabel}</div>
                   </button>
                 ))}
+
+                <div className="col-span-2 flex flex-wrap items-center gap-2 pt-1">
+                  <span className="text-[11px] text-ag-fg/50">Need custom terms?</span>
+                  <button
+                    onClick={() => {
+                      addMessage('user', 'I need a lean MVP (Core features first to keep budget optimized)');
+                      handleBudgetSelection('Starter (under 300) - Lean MVP focus');
+                    }}
+                    className="px-2.5 py-1 rounded-lg border border-ag-fg/10 bg-ag-fg/[0.04] hover:bg-ag-fg/[0.08] text-[11px] text-ag-fg/80 transition-colors"
+                  >
+                    ⚡ Lean MVP (Budget-optimized)
+                  </button>
+                  <button
+                    onClick={() => {
+                      addMessage('user', 'I want to phase into milestones (e.g. Phase 1 launch then Phase 2 scale)');
+                      handleBudgetSelection('Standard ($300 - $1000) - Milestone Phasing');
+                    }}
+                    className="px-2.5 py-1 rounded-lg border border-ag-fg/10 bg-ag-fg/[0.04] hover:bg-ag-fg/[0.08] text-[11px] text-ag-fg/80 transition-colors"
+                  >
+                    📅 Milestone Phased Delivery
+                  </button>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Analyzed Document Card */}
+          {analyzedDoc && !candidateBrief && !proposal && (
+            <AnalyzedDocCard
+              doc={analyzedDoc}
+              onGenerate={handleGenerateFromDoc}
+              onDismiss={() => setAnalyzedDoc(null)}
+              isLoading={isLoading}
+            />
+          )}
 
           {/* Candidate Brief Display — Recruiter */}
           {candidateBrief && (stage === 'brief' || stage === 'followup') && (
@@ -1834,26 +2374,48 @@ export default function TestAgentPage() {
         </div>
 
         {/* Input */}
-        <div className="border-t border-ag-fg/10 bg-ag-inv/20 backdrop-blur-xl px-4 md:px-8 py-4">
-          <div className="max-w-3xl mx-auto flex gap-3">
+        <div className="border-t border-ag-fg/10 bg-ag-inv/20 backdrop-blur-xl px-4 md:px-8 py-3.5">
+          <div className="max-w-3xl mx-auto flex items-center gap-2 md:gap-3">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.png,.jpg,.jpeg,.txt,.md"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isLoading || isAnalyzingDoc}
+              title="Upload Job Description or Project Brief (PDF, Image, TXT)"
+              className="w-11 h-11 rounded-xl border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 flex items-center justify-center transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0 group relative shadow-sm"
+            >
+              {isAnalyzingDoc ? (
+                <Loader2 size={16} className="text-purple-400 animate-spin" />
+              ) : (
+                <Paperclip size={16} className="group-hover:rotate-12 transition-transform" />
+              )}
+            </button>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={
-                stage === 'budget'
+                isAnalyzingDoc
+                  ? 'Reading and analyzing your document...'
+                  : stage === 'budget'
                   ? 'Or type your budget (e.g. "$500" or "around $2000")'
                   : stage === 'proposal' || stage === 'followup'
                   ? 'Ask a follow-up question...'
-                  : 'Type your message...'
+                  : 'Type your message or attach a PDF/doc...'
               }
-              disabled={isLoading}
+              disabled={isLoading || isAnalyzingDoc}
               className="flex-1 bg-ag-fg/5 border border-ag-fg/10 rounded-xl px-4 py-3 text-sm text-ag-fg placeholder-ag-fg/30 focus:outline-none focus:border-purple-500/50 focus:bg-ag-fg/8 transition-all disabled:opacity-50"
             />
             <button
               onClick={() => handleSend()}
-              disabled={isLoading || !input.trim()}
+              disabled={isLoading || isAnalyzingDoc || !input.trim()}
               className="w-11 h-11 bg-purple-600 hover:bg-purple-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-xl flex items-center justify-center transition-colors shrink-0"
             >
               {isLoading ? (
@@ -1862,6 +2424,13 @@ export default function TestAgentPage() {
                 <Send size={16} className="text-white" />
               )}
             </button>
+          </div>
+          <div className="max-w-3xl mx-auto flex items-center justify-between text-[10px] text-ag-fg/40 px-1 pt-2">
+            <span>Supports PDF, Images (PNG/JPG), TXT, MD up to 10MB</span>
+            <span className="flex items-center gap-1 text-purple-400/80">
+              <Sparkles size={10} />
+              Multimodal AI Reader
+            </span>
           </div>
         </div>
       </div>

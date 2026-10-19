@@ -188,6 +188,14 @@ Generate a JSON object with these fields:
         : 'Analyze the recruiter answers for their offered rate: if they offered a rate that meets or exceeds Rp 15,000,000/month, start with ✅ Meets expectations, and write a positive confirmation stating that the rate is highly attractive and aligned. IMPORTANT NEGOTIATION RULE: In this case, DO NOT mention or reveal Ryan standard Rp 15,000,000/month minimum baseline, as this might tempt them to reduce their offer. Only if the offered rate is BELOW Rp 15,000,000/month, start the note with ⚠️ Below Preferred Minimum, and mention Ryan baseline of Rp 15,000,000/month to guide the negotiation towards a creative compromise.')
     : 'Analyze the recruiter answers for their offered rate (whether in USD, SGD, EUR, GBP etc.): if the offered compensation meets or clearly exceeds Ryan baseline ($80,000/year or $40/hour), start with ✅ Meets expectations, and write a positive confirmation confirming that the compensation is highly attractive, competitive, and aligns with the senior role scope. IMPORTANT NEGOTIATION RULE: In this case, DO NOT mention or leak Ryan standard minimum thresholds ($80,000/year or $40/hour), as this might tempt them to reduce their offer. Only if the offered rate is BELOW these requirements, start the note with ⚠️ Below Preferred Minimum, and mention Ryan standard baseline expectations as a starting point to guide the negotiation toward a compromise.'
   }",
+  "compensationFlexibility": {
+    "summary": "1-2 sentences on how Ryan approaches total compensation (equity, bonuses, async remote autonomy, or milestone incentives)",
+    "tradeOffs": [
+      "Open to discuss equity / stock options or performance milestone bonuses",
+      "Flexible contract structures (e.g. part-time advisory or deliverable-based retainer)",
+      "High autonomy remote arrangements can balance compensation adjustments"
+    ]
+  },
   "visaSponsorshipNote": "If the role is on-site outside Indonesia: clearly state whether visa sponsorship is provided or not based on the recruiter's answer. If remote or on-site in Indonesia: state 'Not applicable — role is remote/in Indonesia.' If no info given: state 'Please confirm visa sponsorship availability for on-site relocation.'",
   "availability": "${isProposeTime 
     ? "Ryan is available for a technical discussion. You can propose a preferred time slot directly using the scheduling card on your screen!" 

@@ -143,11 +143,17 @@ Return JSON: { "intent": "client"|"recruiter"|"unknown", "reply": "your warm res
         try {
           const model = genAI.getGenerativeModel({
             model: modelName,
-            systemInstruction: `You are a helpful assistant for Ryan Radityatama. 
-Generate 3 specific, relevant scope questions for a ${tierData.tierLabel} web project.
-Project description: ${projectDescription || 'not specified yet'}.
-Return JSON: { "reply": "warm message about what's included", "scopeQuestions": ["question1", "question2", "question3"] }
-Make questions specific to this tier and project type. Be concise and friendly.`,
+            systemInstruction: `You are a consultative, friendly project advisor for Ryan Radityatama, a fullstack web developer & AI engineer. 
+A prospective client provided their budget: "${budget}".
+The closest baseline tier is ${tierData.tierLabel} (${tierData.priceRange}).
+
+COMMUNICATION GOAL:
+- Acknowledge their budget with warmth and professional confidence.
+- Reassure them that Ryan is collaborative and flexible: if their budget is on the tighter side, Ryan can prioritize high-impact MVP features or deliver in milestone phases so they never overspend.
+- Generate 3 specific, actionable scope questions to identify their must-have essentials vs nice-to-haves.
+
+Return JSON: { "reply": "1-2 warm sentences confirming Ryan can work within their budget/tier through tailored scope and milestone phasing", "scopeQuestions": ["question1", "question2", "question3"] }
+Be encouraging, concise, and consultative.`,
           });
 
           const result = await model.generateContent(`Budget: ${budget}. Tier: ${tierData.tierLabel}. ${projectDescription ? `Project: ${projectDescription}` : ''}`);

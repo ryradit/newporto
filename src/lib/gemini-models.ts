@@ -8,11 +8,10 @@
  * as a safety net when a pinned ID is retired), and finally the Pro model.
  */
 export const GEMINI_MODELS: string[] = [
-  'gemini-2.5-flash-lite',
-  'gemini-2.5-flash',
+  'gemini-3.8-flash',
   'gemini-3.1-flash-lite',
-  'gemini-3-flash',
-  'gemini-flash-lite-latest',
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
   'gemini-flash-latest',
-  'gemini-2.5-pro',
+  'gemini-flash-lite-latest',
 ];

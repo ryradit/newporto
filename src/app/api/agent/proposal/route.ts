@@ -22,6 +22,36 @@ function normalizeProposal(raw: any, ctx: { tierLabel: string; priceRange: strin
         .map((p: any) => ({ name: asString(p?.name), relevance: asString(p?.relevance) }))
         .filter((p: any) => p.name)
     : [];
+
+  const phasedOptions = Array.isArray(raw?.budgetConsideration?.phasedOptions)
+    ? raw.budgetConsideration.phasedOptions.map((po: any) => ({
+        phase: asString(po?.phase, "Phase 1"),
+        scope: asString(po?.scope, "Core MVP Delivery"),
+        cost: asString(po?.cost, "Flexible"),
+        timeline: asString(po?.timeline, ctx.timeline),
+      }))
+    : [
+        {
+          phase: "Phase 1 (Core MVP)",
+          scope: "Essential features and high-impact deliverables to launch quickly",
+          cost: `~60-70% of ${ctx.priceRange || 'tier estimate'}`,
+          timeline: "Fast-tracked initial delivery",
+        },
+        {
+          phase: "Phase 2 (Growth & Add-ons)",
+          scope: "Advanced features, additional integrations, and ongoing optimization",
+          cost: "Remaining milestone balance",
+          timeline: "Iterative roll-out",
+        },
+      ];
+
+  const flexibleTerms = asStringArray(raw?.budgetConsideration?.flexibleTerms);
+  const defaultTerms = [
+    "Milestone payments (e.g. 50% kick-off / 50% upon final sign-off)",
+    "Modular scope: add or remove features to hit your exact budget target",
+    "Direct consultation with Ryan to finalize terms before commitment",
+  ];
+
   return {
     proposalTitle: asString(raw?.proposalTitle, `${ctx.tierLabel} Project Proposal`),
     executiveSummary: asString(raw?.executiveSummary),
@@ -31,6 +61,18 @@ function normalizeProposal(raw: any, ctx: { tierLabel: string; priceRange: strin
     estimatedCost: asString(raw?.estimatedCost, ctx.priceRange),
     nextSteps: asStringArray(raw?.nextSteps),
     relevantProjects: projects,
+    budgetConsideration: {
+      summary: asString(
+        raw?.budgetConsideration?.summary,
+        "Ryan is committed to value-driven development and offers flexible milestone terms and scope prioritization to fit your budget."
+      ),
+      scopeTradeOff: asString(
+        raw?.budgetConsideration?.scopeTradeOff,
+        "If you need to optimize your budget, we can prioritize the core MVP deliverables first and roll out secondary features in subsequent phases."
+      ),
+      phasedOptions,
+      flexibleTerms: flexibleTerms.length > 0 ? flexibleTerms : defaultTerms,
+    },
     closingMessage: asString(raw?.closingMessage),
     emailDraft: asString(raw?.emailDraft)
       // Never leak template placeholders into a client-facing email
@@ -128,6 +170,29 @@ Return a JSON object with these exact fields:
   "relevantProjects": [
     {"name": "Project Name", "relevance": "Why this project is relevant to their needs"}
   ],
+  "budgetConsideration": {
+    "summary": "1-2 sentences explaining how Ryan accommodates budget flexibility via phasing and scope prioritization",
+    "scopeTradeOff": "Concrete advice on which core deliverables to prioritize first if the client needs to lower upfront investment",
+    "phasedOptions": [
+      {
+        "phase": "Phase 1: Core MVP",
+        "scope": "Essential deliverables to launch fast",
+        "cost": "Phase 1 cost estimate",
+        "timeline": "Phase 1 timeline"
+      },
+      {
+        "phase": "Phase 2: Scale & Enhancement",
+        "scope": "Advanced features, automations, and optimizations",
+        "cost": "Phase 2 cost estimate",
+        "timeline": "Phase 2 timeline"
+      }
+    ],
+    "flexibleTerms": [
+      "Milestone-based payments (e.g. 50% start / 50% launch)",
+      "Scope modularity: add/remove features to meet your exact budget target",
+      "Direct consultation with Ryan to finalize terms before commitment"
+    ]
+  },
   "closingMessage": "Warm professional closing paragraph from Ryan, mentioning the booking link: ${scheduleInfo.bookingLink}",
   "emailDraft": "Full follow-up email Ryan would send to the client. Address the email to the client using their name (visitorName) if provided, otherwise 'Team'. The email MUST be signed off as coming from 'Ryan Radityatama' (NEVER use placeholders like '[Your Name]', '[Name]', '[Nama Anda]', or '[Recruiter Liaison]'). Include Ryan's email (ryradit@gmail.com) and portfolio website (https://ryanraditya.com)."
 }
