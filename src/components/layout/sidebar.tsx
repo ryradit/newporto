@@ -22,7 +22,7 @@ import { FlipGallery } from "@/components/ui/flip-gallery";
 import { PortalSelector } from "@/components/ui/portal-selector";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/language-context";
-import { Language, getLanguageLabel } from "@/lib/language";
+import { Language, getLanguageLabel, getLanguageFullName } from "@/lib/language";
 import { translate } from "@/translations";
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
@@ -91,7 +91,7 @@ export function Sidebar() {
             <h2 className="text-lg font-semibold tracking-tight text-foreground">Ryan Radityatama</h2>
             <p className="text-xs font-mono text-muted-foreground mt-0.5">@ryradit</p>
           </div>
-          <div className="relative flex items-center justify-between gap-1 mt-3 bg-muted/40 p-1 rounded-xl border border-border/50 w-full">
+          <div className="relative flex items-center justify-between gap-1 mt-3 bg-muted/40 p-1 rounded-xl border border-border/50 w-full select-none">
             {(['en', 'id', 'zh'] as Language[]).map((lang) => {
               const isActive = language === lang;
               const flags: Record<Language, string> = {
@@ -99,24 +99,27 @@ export function Sidebar() {
                 id: '🇮🇩',
                 zh: '🇨🇳'
               };
+              const fullName = getLanguageFullName(lang);
               return (
                 <button
                   key={lang}
                   onClick={() => setLanguage(lang)}
+                  title={fullName}
+                  aria-label={`Switch to ${fullName}`}
                   className={cn(
-                    "relative flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg py-1.5 px-1 text-[11px] font-medium tracking-wide uppercase transition-colors duration-150 focus:outline-none z-10 active:scale-95",
-                    isActive ? "text-foreground font-semibold" : "text-muted-foreground hover:text-foreground"
+                    "relative flex-1 h-7 inline-flex items-center justify-center gap-1.5 rounded-lg px-2 text-[11px] font-semibold tracking-wider uppercase transition-colors duration-150 focus:outline-none z-10 active:scale-95 whitespace-nowrap",
+                    isActive ? "text-foreground" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="active-lang-pill"
                       className="absolute inset-0 bg-background border border-border rounded-lg shadow-sm -z-10"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
                     />
                   )}
-                  <span className="text-xs shrink-0">{flags[lang]}</span>
-                  <span>{getLanguageLabel(lang)}</span>
+                  <span className="text-xs leading-none shrink-0" role="img" aria-hidden="true">{flags[lang]}</span>
+                  <span className="leading-none">{getLanguageLabel(lang)}</span>
                 </button>
               );
             })}

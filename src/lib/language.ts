@@ -18,8 +18,19 @@ export function getLanguageLabel(language: Language): string {
     case 'id':
       return 'ID';
     case 'zh':
-      return '简体中文';
+      return 'ZH';
     default:
       return 'EN';
+  }
+}
+
+export function getLanguageFullName(language: Language): string {
+  switch (language) {
+    case 'id':
+      return 'Bahasa Indonesia';
+    case 'zh':
+      return '简体中文';
+    default:
+      return 'English';
   }
 }
